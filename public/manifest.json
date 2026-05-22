@@ -1,0 +1,17 @@
+{
+  "name": "NS_To-Do (by WS.Kim)",
+  "short_name": "NS_To-Do",
+  "description": "신경외과 의국용 할일 공유 앱",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fafaf7",
+  "theme_color": "#1f2937",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
