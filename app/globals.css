@@ -1,0 +1,127 @@
+:root,
+[data-theme="light"] {
+  --bg: #fafaf7;
+  --surface: #ffffff;
+  --surface-2: #f3f1ea;
+  --surface-3: #ecead9;
+  --border: #e8e5dc;
+  --border-strong: #d4d1c5;
+  --text: #2a2a28;
+  --text-2: #6b6a64;
+  --text-3: #9a9892;
+  --accent: #5a5550;
+  --danger: #c44536;
+  --danger-bg: #fdf0ed;
+  --danger-border: #f0c5be;
+  --success: #6b8e4e;
+  --info: #5b7a99;
+  --overlay: rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] {
+  --bg: #1a1a18;
+  --surface: #25241f;
+  --surface-2: #2e2d27;
+  --surface-3: #383631;
+  --border: #3a3833;
+  --border-strong: #4a4842;
+  --text: #ebe9e2;
+  --text-2: #a8a59c;
+  --text-3: #6b6962;
+  --accent: #b8b3a9;
+  --danger: #e07868;
+  --danger-bg: #3d2520;
+  --danger-border: #5c352e;
+  --success: #8db870;
+  --info: #8aa8c2;
+  --overlay: rgba(0, 0, 0, 0.6);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'IBM Plex Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 400;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior-y: none;
+  transition: background 0.2s, color 0.2s;
+}
+
+input, textarea, button, select {
+  font-family: inherit;
+  font-size: 16px;
+  color: inherit;
+}
+
+button { cursor: pointer; background: none; border: none; }
+
+input[type="text"], input[type="date"], input[type="time"], textarea, select {
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+input:focus, textarea:focus, select:focus { border-color: var(--accent); }
+textarea { resize: none; font-family: inherit; }
+
+.display-font { font-family: 'Gowun Dodum', serif; }
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--overlay);
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.modal-sheet {
+  background: var(--bg);
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  border-radius: 20px 20px 0 0;
+  padding: 24px 20px 32px;
+  animation: slideUp 0.2s ease;
+  overflow-y: auto;
+}
+
+@media (min-width: 600px) {
+  .modal-overlay { align-items: center; }
+  .modal-sheet { border-radius: 16px; max-height: 80vh; }
+}
+
+.slide-down { animation: slideDown 0.15s ease; }
+.pulse { animation: pulse 2s ease-in-out infinite; }
+
+.fade-in { animation: fadeIn 0.2s ease; }
