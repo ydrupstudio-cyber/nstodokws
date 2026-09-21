@@ -14,13 +14,20 @@ import { loadAttendMonth, todayKST, SLOT_LABELS } from '../lib/game';
 
 const DOW = ['일', '월', '화', '수', '목', '금', '토'];
 
-/** 네 조각 링. filled 에 든 구간(1~4)만 칠한다 */
+/**
+ * 하루 도장.
+ *
+ * ⚠ 읽는 순서가 중요하다. 연속 출석은 '그날 왔느냐'로만 정해지고 구간 수와 무관하다.
+ *   그래서 **한 번이라도 왔으면 가운데가 꽉 찬다** — 이게 1순위 신호다.
+ *   바깥 네 조각은 '얼마나 자주 들렀나'를 덧붙이는 2순위 정보일 뿐이다.
+ *   (예전엔 한 구간만 찍은 날이 빈 링처럼 보여서 결석으로 오해됐다)
+ */
 function Stamp({ filled, size = 30, muted }) {
   const n = filled.length;
+  const came = n > 0;
   const full = n >= 4;
   const r = size / 2 - 2.6;
   const c = size / 2;
-  // 12시 방향부터 시계방향으로 네 조각
   const arc = (i) => {
     const a0 = (-90 + i * 90 + 4) * Math.PI / 180;
     const a1 = (-90 + (i + 1) * 90 - 4) * Math.PI / 180;
@@ -31,11 +38,12 @@ function Stamp({ filled, size = 30, muted }) {
   return (
     <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} aria-hidden="true">
       {[0, 1, 2, 3].map((i) => (
-        <path key={i} d={arc(i)} fill="none" strokeLinecap="round" strokeWidth={3}
+        <path key={i} d={arc(i)} fill="none" strokeLinecap="round" strokeWidth={2.6}
               stroke={filled.includes(i + 1) ? on : 'var(--border)'} />
       ))}
-      {full && <circle cx={c} cy={c} r={r * 0.46} fill={on} />}
-      {!full && n > 0 && <circle cx={c} cy={c} r={r * 0.2} fill={on} opacity={0.45} />}
+      {/* 채움 정도는 반드시 단조 증가해야 한다.
+          완주한 날에 구멍을 뚫었더니 한 번만 온 날보다 덜 채워져 보였다 */}
+      {came && <circle cx={c} cy={c} r={r * (full ? 0.58 : 0.40)} fill={on} />}
     </svg>
   );
 }
@@ -95,18 +103,29 @@ export default function AttendCalendar({ memberId }) {
       ))}</div>
 
       <div style={{ ...s.grid, opacity: loading ? 0.4 : 1 }}>
-        {cells.map((c, i) => c === null ? <span key={'x' + i} /> : (
-          <button key={c.key} onClick={() => setSel(sel === c.key ? null : c.key)}
-            style={{ ...s.cell, ...(c.key === today ? s.cellToday : {}),
-                     ...(sel === c.key ? s.cellSel : {}) }}>
-            <Stamp filled={c.slots} muted={c.key > today} />
-            <span style={{ ...s.num, ...(c.slots.length ? s.numOn : {}) }}>{c.d}</span>
-          </button>
-        ))}
+        {cells.map((c, i) => {
+          if (c === null) return <span key={'x' + i} />;
+          // 좌우 이웃도 출석했으면 선으로 잇는다. 연속이 눈에 보이게 하는 장치다.
+          // 줄이 바뀌는 칸(일요일·토요일)에서는 잇지 않는다
+          const prev = cells[i - 1], next = cells[i + 1];
+          const linkL = i % 7 !== 0 && c.slots.length > 0 && prev && prev.slots?.length > 0;
+          const linkR = i % 7 !== 6 && c.slots.length > 0 && next && next.slots?.length > 0;
+          return (
+            <button key={c.key} onClick={() => setSel(sel === c.key ? null : c.key)}
+              style={{ ...s.cell, ...(c.key === today ? s.cellToday : {}),
+                       ...(sel === c.key ? s.cellSel : {}) }}>
+              {linkL && <span style={{ ...s.link, left: -3, right: '50%' }} />}
+              {linkR && <span style={{ ...s.link, left: '50%', right: -3 }} />}
+              <Stamp filled={c.slots} muted={c.key > today} />
+              <span style={{ ...s.num, ...(c.slots.length ? s.numOn : {}) }}>{c.d}</span>
+            </button>
+          );
+        })}
       </div>
 
       <div style={s.summary}>
         출석 <b>{stats.attended}일</b> · 네 구간 완주 <b>{stats.full}일</b>
+        <div style={s.legend}>하루 한 번만 들러도 연속은 이어집니다</div>
       </div>
 
       {sel && (
@@ -128,14 +147,18 @@ const s = {
   dow: { display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', marginBottom: 2 },
   dowCell: { textAlign: 'center', fontSize: 11 },
   grid: { display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', gap: 2, transition: 'opacity .2s' },
-  cell: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1,
+  cell: { position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1,
           padding: '4px 0 3px', border: '1px solid transparent', borderRadius: 9,
           background: 'none', cursor: 'pointer' },
+  // 도장 뒤에 깔리는 연속 표시선. 도장 한가운데 높이에 맞춘다
+  link: { position: 'absolute', top: 18, height: 3, background: 'var(--border-strong)',
+          borderRadius: 2, zIndex: 0 },
   cellToday: { borderColor: 'var(--text-3)' },
   cellSel: { background: 'var(--surface-2)' },
   num: { fontSize: 10, color: 'var(--text-3)', fontVariantNumeric: 'tabular-nums' },
   numOn: { color: 'var(--text-2)', fontWeight: 600 },
   summary: { textAlign: 'center', fontSize: 12, color: 'var(--text-3)', marginTop: 10 },
+  legend: { fontSize: 11, color: 'var(--text-3)', marginTop: 3, opacity: .85 },
   detail: { marginTop: 8, padding: '9px 11px', borderRadius: 9, background: 'var(--surface-2)',
             fontSize: 12, color: 'var(--text-2)', textAlign: 'center' },
 };
