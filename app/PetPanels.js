@@ -101,32 +101,42 @@ export function BagPanel({ currentMember, inventory, foods, fedToday, discovered
 // ============================================================
 // 옷장 — 전체 / 자리별
 // ============================================================
-export function ClosetPanel({ currentMember, inventory, catalog, shopItems, equipped, onClose, onChanged }) {
+export function ClosetPanel({ currentMember, inventory, catalog, shopItems, equipped,
+                              wearables = [], species, onClose, onChanged }) {
   const [cat, setCat] = useState('all');
   const [busy, setBusy] = useState(null);
   const [msg, setMsg] = useState(null);
 
   useEffect(() => { if (!msg) return; const t = setTimeout(() => setMsg(null), 3000); return () => clearTimeout(t); }, [msg]);
 
-  // 가지고 있는 착용 아이템. 자리(slot)는 상점 표가 정답이다
+  // 가지고 있는 착용 아이템.
+  // 자리·그림 경로는 manifest 의 wearables 가 정답이다 (에셋 카탈로그에는 없다).
+  // 상점 표는 '파는 물건인가' 만 확인하는 데 쓴다.
   const owned = useMemo(() => {
-    const bySlot = {};
-    shopItems.forEach((it) => { if (it.kind === 'wearable') bySlot[it.item_id] = it; });
+    const byId = {};
+    wearables.forEach((w) => { byId[w.id] = w; });
+    shopItems.forEach((it) => {
+      if (it.kind !== 'wearable' || byId[it.item_id]) return;
+      byId[it.item_id] = { id: it.item_id, name: it.name, slot: it.slot || 'neck', path: null };
+    });
     return Object.keys(inventory)
-      .filter((id) => bySlot[id])
-      .map((id) => ({
-        id,
-        slot: bySlot[id].slot || 'neck',
-        name: bySlot[id].name || catalog?.[id]?.name || id,
-        path: catalog?.[id]?.path || null,
-      }));
-  }, [inventory, shopItems, catalog]);
+      .filter((id) => byId[id])
+      .map((id) => ({ ...byId[id], id }));
+  }, [inventory, shopItems, wearables]);
+
+  /** 귀걸이는 귀가 있는 캐릭터만 — 뇌·척추는 부착점 자체가 없다 */
+  const wearableHere = (item) =>
+    !Array.isArray(item.available) || item.available.includes(species);
 
   const slotsWithItems = WEAR_SLOTS.filter((w) => owned.some((o) => o.slot === w.slot));
   const shown = cat === 'all' ? owned : owned.filter((o) => o.slot === cat);
 
   async function toggle(item) {
     if (busy) return;
+    if (!wearableHere(item)) {
+      setMsg({ bad: true, text: `${item.name} 은(는) 이 친구에게 채울 곳이 없어요` });
+      return;
+    }
     const on = equipped?.[item.slot] === item.id;
     setBusy(item.id);
     const r = await equip(currentMember.id, item.slot, on ? null : item.id);
@@ -159,16 +169,17 @@ export function ClosetPanel({ currentMember, inventory, catalog, shopItems, equi
           <div style={s.wearGrid}>
             {shown.map((item) => {
               const on = equipped?.[item.slot] === item.id;
+              const fits = wearableHere(item);
               return (
                 <button key={item.id} onClick={() => toggle(item)} disabled={busy}
-                  style={{ ...s.wearCard, ...(on ? s.wearOn : {}) }}>
+                  style={{ ...s.wearCard, ...(on ? s.wearOn : {}), ...(fits ? {} : s.off) }}>
                   <div style={s.wearThumb}>
                     {item.path
                       ? <img src={ASSET_BASE + item.path} alt="" style={s.wearImg} />
                       : <span style={s.wearNoImg}>?</span>}
                   </div>
                   <span style={s.wearName}>{item.name}</span>
-                  <span style={s.wearState}>{on ? '입는 중' : '입히기'}</span>
+                  <span style={s.wearState}>{!fits ? '못 채워요' : on ? '입는 중' : '입히기'}</span>
                 </button>
               );
             })}

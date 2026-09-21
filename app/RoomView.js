@@ -30,6 +30,13 @@ import { stageOf, josa } from '../lib/game';
 const MAX_DELTA = 0.06;       // 탭이 멈췄다 돌아와도 순간이동하지 않게
 
 /**
+ * 걸음을 멈춘 뒤 하는 것. 2차 킷이 준 동작을 섞는다.
+ * roll(데굴데굴)은 옆으로 눕는 자세라 바닥에서만 한다 — 가구 위에서 구르면 이상하다.
+ */
+const REST_ACTIONS       = ['groom', 'yawn', 'look', 'sit', 'idle', 'doze', 'roll'];
+const REST_ON_FURNITURE  = ['groom', 'yawn', 'sit', 'idle', 'doze', 'nap'];
+
+/**
  * 친밀도가 쌓일수록 활발해진다.
  * 서먹한 사이에는 구석에서 잘 안 움직이고, 가족이 되면 방을 돌아다닌다.
  * 이 값들은 '느낌' 이라 정답이 없다 — 실제로 보고 조정한 값이다.
@@ -146,9 +153,9 @@ export default function RoomView({
   // 여기서는 '방 대비 얼마나 크게 보일까' 만 정한다.
   // 0.62/0.72 로 뒀더니 아기가 한 칸의 절반도 안 돼 눈에 띄지 않았다 (실측 26px).
   const petScale = [0.95, 1.00, 1.06, 1.12, 1.15][stage] || 1.0;
-  // 지금 걸치고 있는 것. 킷의 rig 가 지원하는 자리는 목뿐이라 그것만 그린다
-  const wearPath = catalog && profile?.equipped?.neck
-    ? catalog[profile.equipped.neck]?.path || null : null;
+  // 지금 걸치고 있는 것 전부. 2차 킷의 부착점 체계가 8자리를 모두 받는다
+  const wearing = profile?.equipped && Object.keys(profile.equipped).length
+    ? profile.equipped : null;
 
   // ── 밖에서 시킨 동작 (간식을 먹였다) ──
   useEffect(() => {
@@ -209,8 +216,9 @@ export default function RoomView({
       if (planTo(target)) return;
     }
     if (Math.random() > temper.wander) {
+      const pool = st.lift ? REST_ON_FURNITURE : REST_ACTIONS;
       st.path = [];
-      st.after = ['look', 'sit', 'idle'][Math.floor(Math.random() * 3)];
+      st.after = pool[Math.floor(Math.random() * pool.length)];
       st.action = st.after; setAction(st.after);
       st.afterLift = st.lift;   // 가구 위에 있었다면 계속 거기 있는다
       st.hold = temper.rest[0] + Math.random() * temper.rest[1];
@@ -219,7 +227,7 @@ export default function RoomView({
     const cell = randomFreeCell(size, wall);
     if (!cell) { st.hold = 2; return; }
     st.path = route(st.pos, cell, items, size, catalog);
-    st.after = ['wave', 'stretch', 'look', 'sit', 'idle'][Math.floor(Math.random() * 5)];
+    st.after = REST_ACTIONS[Math.floor(Math.random() * REST_ACTIONS.length)];
     st.afterLift = 0;
     st.hold = st.path.length ? 0 : 1.6;
   }, [catalog, room, items, size, temper, planTo]);
@@ -282,7 +290,8 @@ export default function RoomView({
     if (greetedRef.current || !catalog || !room || !asset || editing) return;
     greetedRef.current = true;
     const st = petRef.current;
-    const act = bond >= 3 ? 'celebrate' : bond >= 1 ? 'wave' : 'look';
+    // perk 는 2차 킷이 '돌아왔을 때' 쓰라고 만든 동작이다. 서먹하면 쳐다만 본다
+    const act = bond >= 1 ? 'perk' : 'look';
     const target = bond >= 1 ? frontCell(size, blocked(items, size, catalog)) : null;
     const path = target ? route(st.pos, target, items, size, catalog) : [];
     if (path.length) {
@@ -317,12 +326,13 @@ export default function RoomView({
     petTapRef.current = now + 1400;
     const st = petRef.current;
     st.path = [];
-    const act = bond >= 2 ? 'celebrate' : 'wave';
+    // 친해지면 하이파이브, 아직 서먹하면 새침하게 곁눈질한다
+    const act = bond >= 2 ? 'highfive' : bond >= 1 ? 'perk' : 'sulk';
     st.action = act; setAction(act);
     st.after = 'idle'; st.afterLift = st.lift;
     st.hold = 2.0;
-    guestRef.current = now + 1600;            // 잠깐은 제 갈 길을 가지 않는다
-    setMark({ kind: 'heart', id: now });
+    guestRef.current = now + 1900;            // 잠깐은 제 갈 길을 가지 않는다
+    if (bond >= 1) setMark({ kind: 'heart', id: now });
   }
 
   /** 바닥을 누르면 그리로 온다. 가구를 누르면 그 가구를 쓰러 간다 */
@@ -344,7 +354,7 @@ export default function RoomView({
     const path = route(st.pos, { x: cell.x + 0.5, y: cell.y + 0.5 }, items, size, catalog);
     if (!path.length) { setMsg('거기까지 갈 길이 없어요'); return; }
     st.path = path;
-    st.after = bond >= 2 ? 'wave' : 'look';
+    st.after = bond >= 2 ? 'perk' : 'look';
     st.afterLift = 0;
     st.hold = 0;
     guestRef.current = 0;
@@ -561,7 +571,7 @@ export default function RoomView({
                       ? `translate(${(pp.x * 2 + petW).toFixed(2)} 0) scale(-1 1)` : undefined}>
                     {asset && <PetCanvas asset={asset} stage={stage} action={action}
                                          size={petW} embedded x={pp.x} y={pp.y}
-                                         mood={temper.mood} wearPath={wearPath} />}
+                                         mood={temper.mood} wearing={wearing} />}
                   </g>
                   {/* 쓰다듬기 판. 펫 그림은 aria-hidden 이라 눌릴 수 없어서 따로 깐다.
                       좌우 반전 바깥에 둬야 누르는 자리가 그림을 따라간다.

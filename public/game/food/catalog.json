@@ -1,0 +1,72 @@
+[
+  {
+    "id": "kibble",
+    "name": "기본 사료",
+    "price": 50,
+    "path": "food/food-kibble.svg",
+    "bondProposal": 4
+  },
+  {
+    "id": "churu",
+    "name": "짜먹는 간식",
+    "price": 150,
+    "path": "food/food-churu.svg",
+    "bondProposal": 12
+  },
+  {
+    "id": "milk",
+    "name": "우유",
+    "price": 150,
+    "path": "food/food-milk.svg",
+    "bondProposal": 12
+  },
+  {
+    "id": "cookie",
+    "name": "별 쿠키",
+    "price": 200,
+    "path": "food/food-cookie.svg",
+    "bondProposal": 17
+  },
+  {
+    "id": "jerky",
+    "name": "육포",
+    "price": 250,
+    "path": "food/food-jerky.svg",
+    "bondProposal": 22
+  },
+  {
+    "id": "sausage",
+    "name": "소세지 스낵",
+    "price": 250,
+    "path": "food/food-sausage.svg",
+    "bondProposal": 22
+  },
+  {
+    "id": "cup-ramen",
+    "name": "의국 컵라면",
+    "price": 300,
+    "path": "food/food-cup-ramen.svg",
+    "bondProposal": 28
+  },
+  {
+    "id": "protein-drink",
+    "name": "단백질 음료",
+    "price": 350,
+    "path": "food/food-protein-drink.svg",
+    "bondProposal": 33
+  },
+  {
+    "id": "cup-rice",
+    "name": "의국 컵밥",
+    "price": 400,
+    "path": "food/food-cup-rice.svg",
+    "bondProposal": 40
+  },
+  {
+    "id": "special-cake",
+    "name": "별 축하 케이크",
+    "price": null,
+    "path": "food/food-special-cake.svg",
+    "bondProposal": 50
+  }
+]

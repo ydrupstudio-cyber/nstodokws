@@ -1,0 +1,1064 @@
+[
+  {
+    "id": "fn-rocking-chair",
+    "name": "민트 흔들의자",
+    "category": "furniture",
+    "footprint": [
+      1,
+      1
+    ],
+    "anchor": [
+      128,
+      164
+    ],
+    "price": 650,
+    "rarity": "고급",
+    "kind": "seating",
+    "blocksMovement": true,
+    "layer": "object",
+    "interaction": "sit",
+    "rotations": [
+      {
+        "degrees": 0,
+        "source": "room/furniture/fn-rocking-chair.svg",
+        "sourceKey": "fn-rocking-chair-r0",
+        "footprint": [
+          1,
+          1
+        ]
+      },
+      {
+        "degrees": 90,
+        "source": "room/furniture/directions/fn-rocking-chair-90.svg",
+        "sourceKey": "fn-rocking-chair-r1",
+        "footprint": [
+          1,
+          1
+        ]
+      },
+      {
+        "degrees": 180,
+        "source": "room/furniture/directions/fn-rocking-chair-180.svg",
+        "sourceKey": "fn-rocking-chair-r2",
+        "footprint": [
+          1,
+          1
+        ]
+      },
+      {
+        "degrees": 270,
+        "source": "room/furniture/directions/fn-rocking-chair-270.svg",
+        "sourceKey": "fn-rocking-chair-r3",
+        "footprint": [
+          1,
+          1
+        ]
+      }
+    ],
+    "mount": "floor",
+    "path": "room/furniture/fn-rocking-chair.svg"
+  },
+  {
+    "id": "fn-floor-pillow",
+    "name": "살구 좌식방석",
+    "category": "furniture",
+    "footprint": [
+      1,
+      1
+    ],
+    "anchor": [
+      128,
+      164
+    ],
+    "price": 180,
+    "rarity": "일반",
+    "kind": "seating",
+    "blocksMovement": true,
+    "layer": "object",
+    "interaction": "sit",
+    "rotations": [
+      {
+        "degrees": 0,
+        "source": "room/furniture/fn-floor-pillow.svg",
+        "sourceKey": "fn-floor-pillow-r0",
+        "footprint": [
+          1,
+          1
+        ]
+      },
+      {
+        "degrees": 90,
+        "source": "room/furniture/directions/fn-floor-pillow-90.svg",
+        "sourceKey": "fn-floor-pillow-r1",
+        "footprint": [
+          1,
+          1
+        ]
+      },
+      {
+        "degrees": 180,
+        "source": "room/furniture/directions/fn-floor-pillow-180.svg",
+        "sourceKey": "fn-floor-pillow-r2",
+        "footprint": [
+          1,
+          1
+        ]
+      },
+      {
+        "degrees": 270,
+        "source": "room/furniture/directions/fn-floor-pillow-270.svg",
+        "sourceKey": "fn-floor-pillow-r3",
+        "footprint": [
+          1,
+          1
+        ]
+      }
+    ],
+    "mount": "floor",
+    "path": "room/furniture/fn-floor-pillow.svg"
+  },
+  {
+    "id": "fn-hammock",
+    "name": "정원 해먹",
+    "category": "furniture",
+    "footprint": [
+      3,
+      1
+    ],
+    "anchor": [
+      128,
+      164
+    ],
+    "price": 1100,
+    "rarity": "고급",
+    "kind": "seating",
+    "blocksMovement": true,
+    "layer": "object",
+    "interaction": "nap",
+    "rotations": [
+      {
+        "degrees": 0,
+        "source": "room/furniture/fn-hammock.svg",
+        "sourceKey": "fn-hammock-r0",
+        "footprint": [
+          3,
+          1
+        ]
+      },
+      {
+        "degrees": 90,
+        "source": "room/furniture/directions/fn-hammock-90.svg",
+        "sourceKey": "fn-hammock-r1",
+        "footprint": [
+          1,
+          3
+        ]
+      },
+      {
+        "degrees": 180,
+        "source": "room/furniture/directions/fn-hammock-180.svg",
+        "sourceKey": "fn-hammock-r2",
+        "footprint": [
+          3,
+          1
+        ]
+      },
+      {
+        "degrees": 270,
+        "source": "room/furniture/directions/fn-hammock-270.svg",
+        "sourceKey": "fn-hammock-r3",
+        "footprint": [
+          1,
+          3
+        ]
+      }
+    ],
+    "mount": "floor",
+    "path": "room/furniture/fn-hammock.svg"
+  },
+  {
+    "id": "fn-round-table",
+    "name": "우드 원형테이블",
+    "category": "furniture",
+    "footprint": [
+      2,
+      2
+    ],
+    "anchor": [
+      128,
+      164
+    ],
+    "price": 700,
+    "rarity": "고급",
+    "kind": "surface",
+    "blocksMovement": true,
+    "layer": "object",
+    "interaction": null,
+    "rotations": [
+      {
+        "degrees": 0,
+        "source": "room/furniture/fn-round-table.svg",
+        "sourceKey": "fn-round-table-r0",
+        "footprint": [
+          2,
+          2
+        ]
+      },
+      {
+        "degrees": 90,
+        "source": "room/furniture/directions/fn-round-table-90.svg",
+        "sourceKey": "fn-round-table-r1",
+        "footprint": [
+          2,
+          2
+        ]
+      },
+      {
+        "degrees": 180,
+        "source": "room/furniture/directions/fn-round-table-180.svg",
+        "sourceKey": "fn-round-table-r2",
+        "footprint": [
+          2,
+          2
+        ]
+      },
+      {
+        "degrees": 270,
+        "source": "room/furniture/directions/fn-round-table-270.svg",
+        "sourceKey": "fn-round-table-r3",
+        "footprint": [
+          2,
+          2
+        ]
+      }
+    ],
+    "mount": "floor",
+    "path": "room/furniture/fn-round-table.svg"
+  },
+  {
+    "id": "fn-storage-chest",
+    "name": "낮은 수납함",
+    "category": "furniture",
+    "footprint": [
+      2,
+      1
+    ],
+    "anchor": [
+      128,
+      164
+    ],
+    "price": 450,
+    "rarity": "고급",
+    "kind": "storage",
+    "blocksMovement": true,
+    "layer": "object",
+    "interaction": null,
+    "rotations": [
+      {
+        "degrees": 0,
+        "source": "room/furniture/fn-storage-chest.svg",
+        "sourceKey": "fn-storage-chest-r0",
+        "footprint": [
+          2,
+          1
+        ]
+      },
+      {
+        "degrees": 90,
+        "source": "room/furniture/directions/fn-storage-chest-90.svg",
+        "sourceKey": "fn-storage-chest-r1",
+        "footprint": [
+          1,
+          2
+        ]
+      },
+      {
+        "degrees": 180,
+        "source": "room/furniture/directions/fn-storage-chest-180.svg",
+        "sourceKey": "fn-storage-chest-r2",
+        "footprint": [
+          2,
+          1
+        ]
+      },
+      {
+        "degrees": 270,
+        "source": "room/furniture/directions/fn-storage-chest-270.svg",
+        "sourceKey": "fn-storage-chest-r3",
+        "footprint": [
+          1,
+          2
+        ]
+      }
+    ],
+    "mount": "floor",
+    "path": "room/furniture/fn-storage-chest.svg"
+  },
+  {
+    "id": "fn-sideboard",
+    "name": "오트밀 사이드보드",
+    "category": "furniture",
+    "footprint": [
+      2,
+      1
+    ],
+    "anchor": [
+      128,
+      164
+    ],
+    "price": 900,
+    "rarity": "고급",
+    "kind": "storage",
+    "blocksMovement": true,
+    "layer": "object",
+    "interaction": null,
+    "rotations": [
+      {
+        "degrees": 0,
+        "source": "room/furniture/fn-sideboard.svg",
+        "sourceKey": "fn-sideboard-r0",
+        "footprint": [
+          2,
+          1
+        ]
+      },
+      {
+        "degrees": 90,
+        "source": "room/furniture/directions/fn-sideboard-90.svg",
+        "sourceKey": "fn-sideboard-r1",
+        "footprint": [
+          1,
+          2
+        ]
+      },
+      {
+        "degrees": 180,
+        "source": "room/furniture/directions/fn-sideboard-180.svg",
+        "sourceKey": "fn-sideboard-r2",
+        "footprint": [
+          2,
+          1
+        ]
+      },
+      {
+        "degrees": 270,
+        "source": "room/furniture/directions/fn-sideboard-270.svg",
+        "sourceKey": "fn-sideboard-r3",
+        "footprint": [
+          1,
+          2
+        ]
+      }
+    ],
+    "mount": "floor",
+    "path": "room/furniture/fn-sideboard.svg"
+  },
+  {
+    "id": "fn-pet-tunnel",
+    "name": "민트 터널",
+    "category": "furniture",
+    "footprint": [
+      2,
+      1
+    ],
+    "anchor": [
+      128,
+      164
+    ],
+    "price": 650,
+    "rarity": "고급",
+    "kind": "pet",
+    "blocksMovement": true,
+    "layer": "object",
+    "interaction": "inspect",
+    "rotations": [
+      {
+        "degrees": 0,
+        "source": "room/furniture/fn-pet-tunnel.svg",
+        "sourceKey": "fn-pet-tunnel-r0",
+        "footprint": [
+          2,
+          1
+        ]
+      },
+      {
+        "degrees": 90,
+        "source": "room/furniture/directions/fn-pet-tunnel-90.svg",
+        "sourceKey": "fn-pet-tunnel-r1",
+        "footprint": [
+          1,
+          2
+        ]
+      },
+      {
+        "degrees": 180,
+        "source": "room/furniture/directions/fn-pet-tunnel-180.svg",
+        "sourceKey": "fn-pet-tunnel-r2",
+        "footprint": [
+          2,
+          1
+        ]
+      },
+      {
+        "degrees": 270,
+        "source": "room/furniture/directions/fn-pet-tunnel-270.svg",
+        "sourceKey": "fn-pet-tunnel-r3",
+        "footprint": [
+          1,
+          2
+        ]
+      }
+    ],
+    "mount": "floor",
+    "path": "room/furniture/fn-pet-tunnel.svg"
+  },
+  {
+    "id": "fn-ball-basket",
+    "name": "공놀이 바구니",
+    "category": "furniture",
+    "footprint": [
+      1,
+      1
+    ],
+    "anchor": [
+      128,
+      164
+    ],
+    "price": 280,
+    "rarity": "일반",
+    "kind": "pet",
+    "blocksMovement": true,
+    "layer": "object",
+    "interaction": "play",
+    "rotations": [
+      {
+        "degrees": 0,
+        "source": "room/furniture/fn-ball-basket.svg",
+        "sourceKey": "fn-ball-basket-r0",
+        "footprint": [
+          1,
+          1
+        ]
+      },
+      {
+        "degrees": 90,
+        "source": "room/furniture/directions/fn-ball-basket-90.svg",
+        "sourceKey": "fn-ball-basket-r1",
+        "footprint": [
+          1,
+          1
+        ]
+      },
+      {
+        "degrees": 180,
+        "source": "room/furniture/directions/fn-ball-basket-180.svg",
+        "sourceKey": "fn-ball-basket-r2",
+        "footprint": [
+          1,
+          1
+        ]
+      },
+      {
+        "degrees": 270,
+        "source": "room/furniture/directions/fn-ball-basket-270.svg",
+        "sourceKey": "fn-ball-basket-r3",
+        "footprint": [
+          1,
+          1
+        ]
+      }
+    ],
+    "mount": "floor",
+    "path": "room/furniture/fn-ball-basket.svg"
+  },
+  {
+    "id": "fn-hammock-bed",
+    "name": "라벤더 해먹침대",
+    "category": "furniture",
+    "footprint": [
+      2,
+      1
+    ],
+    "anchor": [
+      128,
+      164
+    ],
+    "price": 750,
+    "rarity": "고급",
+    "kind": "pet",
+    "blocksMovement": true,
+    "layer": "object",
+    "interaction": "nap",
+    "rotations": [
+      {
+        "degrees": 0,
+        "source": "room/furniture/fn-hammock-bed.svg",
+        "sourceKey": "fn-hammock-bed-r0",
+        "footprint": [
+          2,
+          1
+        ]
+      },
+      {
+        "degrees": 90,
+        "source": "room/furniture/directions/fn-hammock-bed-90.svg",
+        "sourceKey": "fn-hammock-bed-r1",
+        "footprint": [
+          1,
+          2
+        ]
+      },
+      {
+        "degrees": 180,
+        "source": "room/furniture/directions/fn-hammock-bed-180.svg",
+        "sourceKey": "fn-hammock-bed-r2",
+        "footprint": [
+          2,
+          1
+        ]
+      },
+      {
+        "degrees": 270,
+        "source": "room/furniture/directions/fn-hammock-bed-270.svg",
+        "sourceKey": "fn-hammock-bed-r3",
+        "footprint": [
+          1,
+          2
+        ]
+      }
+    ],
+    "mount": "floor",
+    "path": "room/furniture/fn-hammock-bed.svg"
+  },
+  {
+    "id": "fn-cactus",
+    "name": "작은 선인장",
+    "category": "furniture",
+    "footprint": [
+      1,
+      1
+    ],
+    "anchor": [
+      128,
+      164
+    ],
+    "price": 200,
+    "rarity": "일반",
+    "kind": "plant",
+    "blocksMovement": true,
+    "layer": "object",
+    "interaction": "inspect",
+    "rotations": [
+      {
+        "degrees": 0,
+        "source": "room/furniture/fn-cactus.svg",
+        "sourceKey": "fn-cactus-r0",
+        "footprint": [
+          1,
+          1
+        ]
+      },
+      {
+        "degrees": 90,
+        "source": "room/furniture/directions/fn-cactus-90.svg",
+        "sourceKey": "fn-cactus-r1",
+        "footprint": [
+          1,
+          1
+        ]
+      },
+      {
+        "degrees": 180,
+        "source": "room/furniture/directions/fn-cactus-180.svg",
+        "sourceKey": "fn-cactus-r2",
+        "footprint": [
+          1,
+          1
+        ]
+      },
+      {
+        "degrees": 270,
+        "source": "room/furniture/directions/fn-cactus-270.svg",
+        "sourceKey": "fn-cactus-r3",
+        "footprint": [
+          1,
+          1
+        ]
+      }
+    ],
+    "mount": "floor",
+    "path": "room/furniture/fn-cactus.svg"
+  },
+  {
+    "id": "fn-tree-pot",
+    "name": "둥근 나무 화분",
+    "category": "furniture",
+    "footprint": [
+      1,
+      1
+    ],
+    "anchor": [
+      128,
+      164
+    ],
+    "price": 650,
+    "rarity": "고급",
+    "kind": "plant",
+    "blocksMovement": true,
+    "layer": "object",
+    "interaction": "inspect",
+    "rotations": [
+      {
+        "degrees": 0,
+        "source": "room/furniture/fn-tree-pot.svg",
+        "sourceKey": "fn-tree-pot-r0",
+        "footprint": [
+          1,
+          1
+        ]
+      },
+      {
+        "degrees": 90,
+        "source": "room/furniture/directions/fn-tree-pot-90.svg",
+        "sourceKey": "fn-tree-pot-r1",
+        "footprint": [
+          1,
+          1
+        ]
+      },
+      {
+        "degrees": 180,
+        "source": "room/furniture/directions/fn-tree-pot-180.svg",
+        "sourceKey": "fn-tree-pot-r2",
+        "footprint": [
+          1,
+          1
+        ]
+      },
+      {
+        "degrees": 270,
+        "source": "room/furniture/directions/fn-tree-pot-270.svg",
+        "sourceKey": "fn-tree-pot-r3",
+        "footprint": [
+          1,
+          1
+        ]
+      }
+    ],
+    "mount": "floor",
+    "path": "room/furniture/fn-tree-pot.svg"
+  },
+  {
+    "id": "fn-candle",
+    "name": "꿀빛 캔들",
+    "category": "furniture",
+    "footprint": [
+      1,
+      1
+    ],
+    "anchor": [
+      128,
+      164
+    ],
+    "price": 160,
+    "rarity": "일반",
+    "kind": "light",
+    "blocksMovement": true,
+    "layer": "object",
+    "interaction": null,
+    "rotations": [
+      {
+        "degrees": 0,
+        "source": "room/furniture/fn-candle.svg",
+        "sourceKey": "fn-candle-r0",
+        "footprint": [
+          1,
+          1
+        ]
+      },
+      {
+        "degrees": 90,
+        "source": "room/furniture/directions/fn-candle-90.svg",
+        "sourceKey": "fn-candle-r1",
+        "footprint": [
+          1,
+          1
+        ]
+      },
+      {
+        "degrees": 180,
+        "source": "room/furniture/directions/fn-candle-180.svg",
+        "sourceKey": "fn-candle-r2",
+        "footprint": [
+          1,
+          1
+        ]
+      },
+      {
+        "degrees": 270,
+        "source": "room/furniture/directions/fn-candle-270.svg",
+        "sourceKey": "fn-candle-r3",
+        "footprint": [
+          1,
+          1
+        ]
+      }
+    ],
+    "mount": "floor",
+    "path": "room/furniture/fn-candle.svg"
+  },
+  {
+    "id": "fn-string-lights",
+    "name": "정원 스트링라이트",
+    "category": "furniture",
+    "footprint": [
+      3,
+      1
+    ],
+    "anchor": [
+      128,
+      164
+    ],
+    "price": 800,
+    "rarity": "고급",
+    "kind": "light",
+    "blocksMovement": true,
+    "layer": "object",
+    "interaction": null,
+    "rotations": [
+      {
+        "degrees": 0,
+        "source": "room/furniture/fn-string-lights.svg",
+        "sourceKey": "fn-string-lights-r0",
+        "footprint": [
+          3,
+          1
+        ]
+      },
+      {
+        "degrees": 90,
+        "source": "room/furniture/directions/fn-string-lights-90.svg",
+        "sourceKey": "fn-string-lights-r1",
+        "footprint": [
+          1,
+          3
+        ]
+      },
+      {
+        "degrees": 180,
+        "source": "room/furniture/directions/fn-string-lights-180.svg",
+        "sourceKey": "fn-string-lights-r2",
+        "footprint": [
+          3,
+          1
+        ]
+      },
+      {
+        "degrees": 270,
+        "source": "room/furniture/directions/fn-string-lights-270.svg",
+        "sourceKey": "fn-string-lights-r3",
+        "footprint": [
+          1,
+          3
+        ]
+      }
+    ],
+    "mount": "floor",
+    "path": "room/furniture/fn-string-lights.svg"
+  },
+  {
+    "id": "fn-wall-mirror",
+    "name": "창문 벽거울",
+    "category": "furniture",
+    "footprint": [
+      1,
+      1
+    ],
+    "anchor": [
+      128,
+      164
+    ],
+    "price": 350,
+    "rarity": "일반",
+    "kind": "wall",
+    "blocksMovement": false,
+    "layer": "wall",
+    "interaction": "inspect",
+    "rotations": [
+      {
+        "degrees": 0,
+        "source": "room/furniture/fn-wall-mirror.svg",
+        "sourceKey": "fn-wall-mirror-r0",
+        "footprint": [
+          1,
+          1
+        ]
+      },
+      {
+        "degrees": 90,
+        "source": "room/furniture/directions/fn-wall-mirror-90.svg",
+        "sourceKey": "fn-wall-mirror-r1",
+        "footprint": [
+          1,
+          1
+        ]
+      },
+      {
+        "degrees": 180,
+        "source": "room/furniture/directions/fn-wall-mirror-180.svg",
+        "sourceKey": "fn-wall-mirror-r2",
+        "footprint": [
+          1,
+          1
+        ]
+      },
+      {
+        "degrees": 270,
+        "source": "room/furniture/directions/fn-wall-mirror-270.svg",
+        "sourceKey": "fn-wall-mirror-r3",
+        "footprint": [
+          1,
+          1
+        ]
+      }
+    ],
+    "mount": "wall",
+    "path": "room/furniture/fn-wall-mirror.svg"
+  },
+  {
+    "id": "fn-wall-calendar",
+    "name": "살구 벽달력",
+    "category": "furniture",
+    "footprint": [
+      1,
+      1
+    ],
+    "anchor": [
+      128,
+      164
+    ],
+    "price": 150,
+    "rarity": "일반",
+    "kind": "wall",
+    "blocksMovement": false,
+    "layer": "wall",
+    "interaction": null,
+    "rotations": [
+      {
+        "degrees": 0,
+        "source": "room/furniture/fn-wall-calendar.svg",
+        "sourceKey": "fn-wall-calendar-r0",
+        "footprint": [
+          1,
+          1
+        ]
+      },
+      {
+        "degrees": 90,
+        "source": "room/furniture/directions/fn-wall-calendar-90.svg",
+        "sourceKey": "fn-wall-calendar-r1",
+        "footprint": [
+          1,
+          1
+        ]
+      },
+      {
+        "degrees": 180,
+        "source": "room/furniture/directions/fn-wall-calendar-180.svg",
+        "sourceKey": "fn-wall-calendar-r2",
+        "footprint": [
+          1,
+          1
+        ]
+      },
+      {
+        "degrees": 270,
+        "source": "room/furniture/directions/fn-wall-calendar-270.svg",
+        "sourceKey": "fn-wall-calendar-r3",
+        "footprint": [
+          1,
+          1
+        ]
+      }
+    ],
+    "mount": "wall",
+    "path": "room/furniture/fn-wall-calendar.svg"
+  },
+  {
+    "id": "fn-arc-rug",
+    "name": "궤도 무늬 러그",
+    "category": "furniture",
+    "footprint": [
+      2,
+      2
+    ],
+    "anchor": [
+      128,
+      164
+    ],
+    "price": 250,
+    "rarity": "일반",
+    "kind": "rug",
+    "blocksMovement": false,
+    "layer": "ground",
+    "interaction": null,
+    "rotations": [
+      {
+        "degrees": 0,
+        "source": "room/furniture/fn-arc-rug.svg",
+        "sourceKey": "fn-arc-rug-r0",
+        "footprint": [
+          2,
+          2
+        ]
+      },
+      {
+        "degrees": 90,
+        "source": "room/furniture/directions/fn-arc-rug-90.svg",
+        "sourceKey": "fn-arc-rug-r1",
+        "footprint": [
+          2,
+          2
+        ]
+      },
+      {
+        "degrees": 180,
+        "source": "room/furniture/directions/fn-arc-rug-180.svg",
+        "sourceKey": "fn-arc-rug-r2",
+        "footprint": [
+          2,
+          2
+        ]
+      },
+      {
+        "degrees": 270,
+        "source": "room/furniture/directions/fn-arc-rug-270.svg",
+        "sourceKey": "fn-arc-rug-r3",
+        "footprint": [
+          2,
+          2
+        ]
+      }
+    ],
+    "mount": "floor",
+    "path": "room/furniture/fn-arc-rug.svg"
+  },
+  {
+    "id": "fn-staff-locker",
+    "name": "의국 민트 로커",
+    "category": "furniture",
+    "footprint": [
+      2,
+      1
+    ],
+    "anchor": [
+      128,
+      164
+    ],
+    "price": 1000,
+    "rarity": "고급",
+    "kind": "storage",
+    "blocksMovement": true,
+    "layer": "object",
+    "interaction": null,
+    "rotations": [
+      {
+        "degrees": 0,
+        "source": "room/furniture/fn-staff-locker.svg",
+        "sourceKey": "fn-staff-locker-r0",
+        "footprint": [
+          2,
+          1
+        ]
+      },
+      {
+        "degrees": 90,
+        "source": "room/furniture/directions/fn-staff-locker-90.svg",
+        "sourceKey": "fn-staff-locker-r1",
+        "footprint": [
+          1,
+          2
+        ]
+      },
+      {
+        "degrees": 180,
+        "source": "room/furniture/directions/fn-staff-locker-180.svg",
+        "sourceKey": "fn-staff-locker-r2",
+        "footprint": [
+          2,
+          1
+        ]
+      },
+      {
+        "degrees": 270,
+        "source": "room/furniture/directions/fn-staff-locker-270.svg",
+        "sourceKey": "fn-staff-locker-r3",
+        "footprint": [
+          1,
+          2
+        ]
+      }
+    ],
+    "mount": "floor",
+    "path": "room/furniture/fn-staff-locker.svg"
+  },
+  {
+    "id": "fn-snack-trolley",
+    "name": "당직 간식 트롤리",
+    "category": "furniture",
+    "footprint": [
+      2,
+      1
+    ],
+    "anchor": [
+      128,
+      164
+    ],
+    "price": 850,
+    "rarity": "고급",
+    "kind": "surface",
+    "blocksMovement": true,
+    "layer": "object",
+    "interaction": "inspect",
+    "rotations": [
+      {
+        "degrees": 0,
+        "source": "room/furniture/fn-snack-trolley.svg",
+        "sourceKey": "fn-snack-trolley-r0",
+        "footprint": [
+          2,
+          1
+        ]
+      },
+      {
+        "degrees": 90,
+        "source": "room/furniture/directions/fn-snack-trolley-90.svg",
+        "sourceKey": "fn-snack-trolley-r1",
+        "footprint": [
+          1,
+          2
+        ]
+      },
+      {
+        "degrees": 180,
+        "source": "room/furniture/directions/fn-snack-trolley-180.svg",
+        "sourceKey": "fn-snack-trolley-r2",
+        "footprint": [
+          2,
+          1
+        ]
+      },
+      {
+        "degrees": 270,
+        "source": "room/furniture/directions/fn-snack-trolley-270.svg",
+        "sourceKey": "fn-snack-trolley-r3",
+        "footprint": [
+          1,
+          2
+        ]
+      }
+    ],
+    "mount": "floor",
+    "path": "room/furniture/fn-snack-trolley.svg"
+  }
+]

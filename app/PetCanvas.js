@@ -3,31 +3,47 @@
 // ============================================================
 // 펫을 실제로 움직이는 컴포넌트
 //
-// 디자인 킷의 rig.js / motion.js 를 그대로 쓴다. 이 파일은 그것들을
-// React 생명주기에 얹는 얇은 껍데기다 — 모션 로직을 여기에 새로 쓰지 마라.
+// 디자인 킷의 rig.js / motion.js / equipment.js / actions.js 를 그대로 쓴다.
+// 이 파일은 그것들을 React 생명주기에 얹는 얇은 껍데기다 —
+// 모션 로직이나 부착 좌표를 여기에 새로 쓰지 마라.
 //
-// 흐름: actionPose(동작에 맞는 원본 고르기) → loadSvgSource → svgNode(id 접두사 부여)
-//       → growth(단계 적용) → 매 프레임 animateAction
+// 흐름: 동작에 맞는 원본 고르기 → loadSvgSource → svgNode(id 접두사 부여)
+//       → growth(단계 적용) → equip(착용) → 매 프레임 애니메이션
+//
+// 동작은 두 갈래다.
+//   1차 킷 12종 : actionPose + animateAction
+//   2차 킷  9종 : extraPose  + animateExtra   (roll 은 옆으로 누운 별도 원본)
 // ============================================================
 import { useEffect, useRef, useState } from 'react';
-import { svgNode, growth, expression, wear } from '../lib/pet/rig';
+import { svgNode, growth } from '../lib/pet/rig';
 import { actionPose, animateAction } from '../lib/pet/motion';
-import { loadSvgSource } from '../lib/pet/assets';
+import { equip, syncEquipment, expressionExtra } from '../lib/pet/equipment';
+import { extraActions, extraPose, animateExtra, resetExtra } from '../lib/pet/actions';
+import { loadSvgSource, loadManifest, loadMotionAnchors } from '../lib/pet/assets';
+
+const EXTRA = new Set(extraActions.map((a) => a.id));
+const ONE_SHOT = new Set(['celebrate', 'wave', 'stretch', 'wake', 'perk', 'highfive', 'show', 'sulk']);
+
+// 동작이 스스로 정하는 표정(자고 있다, 기지개를 켠다)은 건드리지 않는다.
+const MOOD_KEEP = new Set(['nap', 'wake', 'stretch', 'eat', 'doze', 'yawn', 'sulk']);
 
 export default function PetCanvas({
   asset,            // manifest 의 펫 asset 객체
   stage = 3,        // 0~4
-  action = 'idle',  // idle walk wave stretch sit nap wake eat play look inspect celebrate
+  action = 'idle',  // 1차 12종 + 2차 9종
   size = 220,
-  onDone,           // celebrate 처럼 한 번만 재생하는 동작이 끝나면 호출
+  onDone,           // 한 번만 재생하는 동작이 끝나면 호출
   embedded = false, // true 면 <g> 안에 중첩 <svg> 로 그린다 (미니룸 씬 안에 넣을 때)
   x = 0, y = 0,     // embedded 일 때 씬 좌표계에서의 위치
   mood = null,      // 'happy' | 'neutral' | null. 친밀도가 쌓이면 표정이 남는다
-  wearPath = null,  // 착용 아이템 SVG 경로. 지금 킷이 지원하는 자리는 목뿐이다
+  wearing = null,   // { slot: itemId } — game_profiles.equipped 그대로
 }) {
   const hostRef = useRef(null);
   const rafRef = useRef(0);
   const [err, setErr] = useState(null);
+
+  // 객체를 그대로 의존성에 넣으면 매 렌더 새 참조라 애니메이션이 끊긴다
+  const wearKey = wearing ? Object.entries(wearing).sort().map((e) => e.join(':')).join(',') : '';
 
   useEffect(() => {
     if (!asset) return;
@@ -39,13 +55,35 @@ export default function PetCanvas({
       && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
     const st = Math.max(0, Math.min(4, stage));
-    const pose = actionPose(asset, st, action);
+    const isExtra = EXTRA.has(action);
 
-    loadSvgSource(pose.source).then((source) => {
+    (async () => {
+      let manifest = null, sources = null;
+      try {
+        manifest = await loadManifest();
+        // roll 은 옆으로 누운 별도 원본이 있다. 나머지는 기본/걷기/휴식 원본을 쓴다
+        const path = isExtra
+          ? extraPose(asset, st, action, manifest.expansionPoses || [])
+          : actionPose(asset, st, action).source;
+
+        const entries = [];
+        if (wearing && manifest.wearables) {
+          for (const id of Object.values(wearing)) {
+            const w = manifest.wearables.find((x) => x.id === id);
+            if (!w) continue;
+            entries.push({ ...w, source: await loadSvgSource(w.path) });
+          }
+        }
+        sources = { path, base: await loadSvgSource(path), entries };
+      } catch (e) {
+        if (!cancelled) setErr('그림을 불러오지 못했어요');
+        return;
+      }
       if (cancelled) return;
+
       let svg;
       try {
-        svg = svgNode(source);          // 인스턴스마다 id 에 접두사를 붙여준다
+        svg = svgNode(sources.base);          // 인스턴스마다 id 에 접두사를 붙여준다
       } catch (e) {
         setErr('그림을 여는 중 문제가 생겼어요'); return;
       }
@@ -66,35 +104,52 @@ export default function PetCanvas({
       }
       svg.dataset.stage = String(st);
       growth(svg, asset, st);
+
+      // 착용. 걷기·휴식 원본에는 부착점이 없어서 사이드카 좌표를 쓴다
+      if (sources.entries.length) {
+        let sidecar = null;
+        try {
+          const all = await loadMotionAnchors();
+          sidecar = all?.[sources.path] || null;
+        } catch { /* 사이드카가 없으면 원본의 앵커를 쓴다 */ }
+        if (cancelled) return;
+        try { equip(svg, sources.entries, sidecar); } catch { /* 한 아이템이 안 붙어도 펫은 나와야 한다 */ }
+      }
+
       host.replaceChildren(svg);
       setErr(null);
 
-      // 착용 아이템. 지금 킷의 rig 는 목 자리(accessory-neck)만 갖고 있다.
-      // 나머지 자리(모자·신발…)는 에셋이 들어오면 여기에 같은 방식으로 붙인다.
-      if (wearPath) {
-        loadSvgSource(wearPath)
-          .then((acc) => { if (!cancelled) { try { wear(svg, acc, asset); } catch { /* 자리가 없는 캐릭터 */ } } })
-          .catch(() => { /* 액세서리 하나 못 불러왔다고 펫이 안 나오면 안 된다 */ });
-      }
-
       // 저감 모션이면 한 프레임만 그리고 멈춘다
-      if (reduced) { animateAction(svg, asset, action, 0, true); applyMood(svg, action, mood); return; }
+      if (reduced) {
+        try {
+          if (isExtra) animateExtra(svg, asset, st, action, 0, true);
+          else animateAction(svg, asset, action, 0, true);
+        } catch { /* 무시 */ }
+        applyMood(svg, action, mood);
+        return;
+      }
 
       const start = performance.now();
       const tick = (now) => {
         if (cancelled) return;
         const t = (now - start) / 1000;
         try {
-          animateAction(svg, asset, action, t, false);
-          // animateAction 은 매 프레임 표정을 되돌린다. 기분은 그 뒤에 덧씌운다
+          if (isExtra) {
+            animateExtra(svg, asset, st, action, t, false);
+          } else {
+            // 2차 킷이 얹은 표정·앞발 순서를 되돌린 뒤 1차 동작을 돌린다
+            resetExtra(svg);
+            animateAction(svg, asset, action, t, false);
+            syncEquipment(svg);   // 등 장식은 몸 변형을 따로 따라가야 한다
+          }
+          // 애니메이션은 매 프레임 표정을 되돌린다. 기분은 그 뒤에 덧씌운다
           applyMood(svg, action, mood);
         } catch { /* 한 프레임 실패는 무시 */ }
-        // 한 번만 재생하는 동작
         if (onDone && ONE_SHOT.has(action) && t > 1.9) { onDone(); return; }
         rafRef.current = requestAnimationFrame(tick);
       };
       rafRef.current = requestAnimationFrame(tick);
-    }).catch(() => { if (!cancelled) setErr('그림을 불러오지 못했어요'); });
+    })();
 
     return () => {
       cancelled = true;
@@ -102,7 +157,7 @@ export default function PetCanvas({
     };
     // onDone 은 의도적으로 뺀다 — 부모가 매 렌더 새 함수를 주면 애니메이션이 끊긴다
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [asset?.id, stage, action, size, embedded, x, y, mood, wearPath]);
+  }, [asset?.id, stage, action, size, embedded, x, y, mood, wearKey]);
 
   if (embedded) {
     // 씬 SVG 안에서는 <g> 가 호스트다. 중첩 <svg> 가 들어간다
@@ -115,12 +170,10 @@ export default function PetCanvas({
   return <div ref={hostRef} style={{ width: size, height: size * 0.95 }} aria-hidden="true" />;
 }
 
-const ONE_SHOT = new Set(['celebrate', 'wave', 'stretch', 'wake']);
-
-// 동작이 스스로 정하는 표정(자고 있다, 기지개를 켠다)은 건드리지 않는다.
-// 그 밖의 평상시 동작에서만 친밀도에 따른 기분이 얼굴에 남는다.
-const MOOD_KEEP = new Set(['nap', 'wake', 'stretch', 'eat']);
 function applyMood(svg, action, mood) {
   if (!mood || mood === 'neutral' || MOOD_KEEP.has(action)) return;
-  try { expression(svg, mood); } catch { /* 이 캐릭터에 그 표정이 없으면 그냥 넘어간다 */ }
+  // 2차 킷의 expressionExtra 는 sparkle·wide 같은 새 표정까지 안다.
+  // 걷기·휴식 원본처럼 새 표정이 없는 그림에서는 알아서 happy·smile 로 내려간다
+  try { expressionExtra(svg, mood === 'happy' ? 'sparkle' : 'open', mood === 'happy' ? 'wide' : 'neutral'); }
+  catch { /* 이 캐릭터에 그 표정이 없으면 그냥 넘어간다 */ }
 }

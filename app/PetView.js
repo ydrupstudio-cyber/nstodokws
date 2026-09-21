@@ -309,8 +309,13 @@ export default function PetView({ currentMember, onClose }) {
             {panel === 'closet' && (
               <ClosetPanel currentMember={currentMember} inventory={inventory} catalog={catalog}
                 shopItems={shopItems} equipped={profile.equipped || {}}
+                wearables={manifest?.wearables || []} species={profile.species}
                 onClose={() => setPanel(null)} bottom={dockH}
-                onChanged={() => refresh()} />
+                onChanged={() => {
+                  // 2차 킷의 'show' 는 갈아입은 걸 자랑하는 동작이다
+                  setGuest({ id: Date.now(), action: 'show', hold: 4400 });
+                  refresh();
+                }} />
             )}
 
             {panel === 'family' && (

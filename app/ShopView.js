@@ -14,7 +14,8 @@ import { WEAR_SLOTS, josa } from '../lib/game';
 
 const KIND_LABEL = {
   seating: '앉는 것', surface: '놓는 것', 'pet-supply': '펫 용품',
-  plant: '식물', light: '조명', 'wall-decor': '벽걸이', misc: '잡화',
+  plant: '식물', light: '조명', 'wall-decor': '벽 장식', misc: '잡화',
+  storage: '수납', pet: '펫 전용', rug: '바닥깔개', wall: '벽걸이',
 };
 const RARITY_COLOR = { 일반: 'var(--text-3)', 고급: '#5b7a99', 희귀: '#7a5b8e', 특별: '#8a6e4b' };
 
@@ -62,27 +63,39 @@ export default function ShopView({ currentMember, manifest, room, balance, onDon
     onDone?.();
   }
 
-  const furniture = shop.filter((s) => s.kind === 'furniture');
+  // 벽걸이(거울·달력)는 벽면 배치 UI 가 생기기 전까지 상점에 올리지 않는다.
+  // 바닥 배치기에 넣으면 좌표계가 어긋난다 — 킷 인계서가 경고한 부분이다
+  const furniture = shop.filter((x) => x.kind === 'furniture')
+    .filter((x) => catalog[x.item_id] && catalog[x.item_id].layer !== 'wall');
   const byKind = {};
-  furniture.forEach((s) => {
-    const k = catalog[s.item_id]?.kind || 'misc';
-    (byKind[k] = byKind[k] || []).push(s);
+  furniture.forEach((x) => {
+    const k = catalog[x.item_id]?.kind || 'misc';
+    (byKind[k] = byKind[k] || []).push(x);
   });
+  Object.values(byKind).forEach((list) => list.sort((a, b) => a.price - b.price));
 
   const wallpapers = manifest.wallpaperCollections || [];
   const owned = room?.owned_wallpapers || ['plain'];
   const rooms = shop.filter((s) => s.kind === 'room').sort((a, b) => a.level - b.level);
 
   // 간식 — 가격이 비쌀수록 친밀도가 많이 오른다 (친밀도 값은 food_items 가 갖고 있다)
+  const foodIcon = {};
+  (manifest.foods || []).forEach((f) => { foodIcon[f.id] = f.path; });
   const snacks = shop.filter((x) => x.kind === 'food')
     .map((x) => ({ ...x, food: foods.find((f) => f.food_id === x.item_id) }))
     .filter((x) => x.food)
     .sort((a, b) => a.price - b.price);
 
-  // 꾸미기 — 착용 아이템을 자리별로 묶는다
-  const wearables = shop.filter((x) => x.kind === 'wearable');
+  // 꾸미기 — 파는 것은 shop_items 가, 생김새·자리는 manifest.wearables 가 정답이다.
+  // (착용 아이템은 에셋 카탈로그가 아니라 별도 목록에 있다)
+  const wearMeta = {};
+  (manifest.wearables || []).forEach((w) => { wearMeta[w.id] = w; });
+  const wearables = shop.filter((x) => x.kind === 'wearable')
+    .map((x) => ({ ...x, meta: wearMeta[x.item_id] }))
+    .filter((x) => x.meta);
   const bySlot = {};
-  wearables.forEach((x) => { (bySlot[x.slot || 'neck'] = bySlot[x.slot || 'neck'] || []).push(x); });
+  wearables.forEach((x) => { (bySlot[x.meta.slot] = bySlot[x.meta.slot] || []).push(x); });
+  Object.values(bySlot).forEach((list) => list.sort((a, b) => a.price - b.price));
 
   return (
     <div className="modal-overlay" onClick={onClose} style={{ zIndex: 60 }}>
@@ -146,10 +159,13 @@ export default function ShopView({ currentMember, manifest, room, balance, onDon
                 const full = have >= 20;
                 return (
                   <div key={item.item_id} style={s.card}>
-                    <div style={s.snackTop}>
-                      <span style={s.snackName}>{item.food.name}</span>
+                    <div style={s.thumb}>
+                      {foodIcon[item.item_id]
+                        ? <img src={ASSET_BASE + foodIcon[item.item_id]} alt="" style={s.wearImg} />
+                        : <span style={s.noImg}>{item.food.name}</span>}
                       {have > 0 && <span style={s.haveTag}>{have}</span>}
                     </div>
+                    <div style={s.cardName}>{item.food.name}</div>
                     <div style={s.snackKind}>
                       {item.food.kind === 'kibble' ? '사료' : '간식'} · 친밀도 +{item.food.affection}
                     </div>
@@ -177,16 +193,19 @@ export default function ShopView({ currentMember, manifest, room, balance, onDon
                 <div style={s.sectionHead}>{w.label}</div>
                 <div style={s.grid}>
                   {bySlot[w.slot].map((item) => {
-                    const a = catalog[item.item_id];
+                    const meta = item.meta;
                     const have = (inv[item.item_id] || 0) > 0;
                     const poor = (balance || 0) < item.price;
+                    const limited = Array.isArray(meta.available);
                     return (
                       <div key={item.item_id} style={s.card}>
                         <div style={s.thumb}>
-                          {a ? <img src={ASSET_BASE + a.path} alt="" style={s.thumbImg} />
-                             : <span style={s.noImg}>준비 중</span>}
+                          <img src={ASSET_BASE + meta.path} alt="" style={s.wearImg} />
                         </div>
-                        <div style={s.cardName}>{item.name}</div>
+                        <div style={s.cardName}>{meta.name}</div>
+                        <div style={{ ...s.rarity, color: RARITY_COLOR[meta.rarity] }}>
+                          {meta.rarity}{limited && ' · 동물만'}
+                        </div>
                         {have ? <span style={s.ownedTag}>소장중</span> : (
                           <button onClick={() => buy(item)} disabled={busy || poor}
                             style={{ ...s.buy, ...(poor ? s.buyOff : {}) }}>{item.price}점</button>
@@ -307,6 +326,7 @@ const s = {
   roomNow: { background: 'var(--surface-2)', borderColor: 'var(--text-3)' },
   none: { textAlign: 'center', padding: '30px 0', color: 'var(--text-3)', fontSize: 13, lineHeight: 1.7 },
   noImg: { fontSize: 11, color: 'var(--text-3)' },
+  wearImg: { width: 62, height: 54, objectFit: 'contain' },
   snackTop: { position: 'relative', paddingTop: 6, minHeight: 34, display: 'grid', placeItems: 'center' },
   snackName: { fontSize: 13, fontWeight: 600, wordBreak: 'keep-all', lineHeight: 1.3 },
   snackKind: { fontSize: 10, color: 'var(--text-3)', marginBottom: 5 },

@@ -11,7 +11,7 @@
 4) SUPABASE_SQL_V10_SHOP.sql   가구 상점 · 보관함
 5) SUPABASE_SQL_V11_ADOPT_FIX.sql  해부 친구 입양 오류
 6) SUPABASE_SQL_V12_BOND.sql   친밀도 성장 · 가방 · 착용 · 독립시키기
-7) SUPABASE_SQL_V13_WEAR.sql   꾸미기 아이템을 상점에 올린다
+7) SUPABASE_SQL_V13_WEAR.sql   2차 확장팩(착용 72 · 가구 16 · 벽지 8)을 상점에
 ```
 
 순서를 바꾸면 실패합니다. 모든 파일이 여러 번 실행해도 안전합니다.
@@ -22,13 +22,18 @@
 ## 구조
 
 ```
-public/game/            에셋 339개 (SVG). manifest.json 이 모든 경로의 정답
-  pet/  room/  gacha/
+public/game/            에셋 589개 (SVG). manifest.json 이 모든 경로의 정답
+  pet/       리그 70(부착점 포함) · 걷기/휴식 140 · 옆으로 누운 자세 70
+  wearable/  착용 아이템 72 (자리별 폴더)
+  food/      간식 10 · 반응 6 · 친밀도 배지 5
+  room/  ui/  gacha/
 lib/pet/rig.js          부위별 SVG 조작 (디자인 킷 원본, 수정 금지)
 lib/pet/motion.js       12가지 동작 (디자인 킷 원본, 수정 금지)
 lib/pet/assets.js       manifest 로더 + SVG 캐시
 lib/pet/room-engine.js  격자·충돌·경로 (디자인 킷 원본, 수정 금지)
 lib/pet/room.js         씬 좌표·벽·깊이 정렬 보조
+lib/pet/equipment.js    부착점에 아이템 붙이기 (2차 킷 원본, 수정 금지)
+lib/pet/actions.js      2차 킷 동작 9종 (수정 금지)
 lib/game.js             서버 RPC 래퍼. 점수 계산을 여기서 하지 마라
 app/PetCanvas.js        rig+motion 을 React 에 얹는 껍데기
 app/PetView.js          방이 곧 화면인 껍데기. HUD · 친밀도 바 · 하단 바 · 서랍
@@ -92,6 +97,42 @@ width 속성을 덮어써서 방 안에서 펫만 거대해진다. 실제로 겪
 - 멤버 PIN (지금은 남의 계정으로 점수 요청이 가능하다. 활동 피드+신고로 막는 중)
 
 
+## 착용 (2차 확장팩)
+
+아이템은 캐릭터마다 다시 그리지 않는다. **캐릭터가 부착점을 선언**하고
+아이템은 80×80 로 한 번만 그린다. `equipment.js` 가 그 둘을 붙인다.
+
+```
+리그 SVG 안   <g id="anchors"> 의 data-local-point / data-local-scale / data-parent
+아이템 SVG    viewBox 0 0 80 80, 기준점 (40,40), data-slot
+자리 8개      head face ear neck body back hand foot
+```
+
+`ear` `hand` `foot` 는 **오른쪽 하나만** 그려져 있고 코드가 왼쪽을 반전한다.
+그래서 발 하나를 신기면 `[data-equipment]` 노드가 2개 생긴다 — 정상이다.
+
+**뇌·척추에는 `anchor-ear` 가 없다.** `equip()` 가 귀걸이를 거절한다.
+빈 `ear-l/r` 그룹이 있다고 해서 착용 가능으로 판단하지 마라.
+
+**걷기·휴식 원본에는 부착점이 없다.** 2차 킷이 그 140개 자세의 좌표를
+`pet/motion-anchors.json` 으로 따로 줬다. PetCanvas 가 원본 경로로 조회해 넘긴다.
+
+**벽걸이 가구 2종(`layer: 'wall'`)은 상점에 올리지 않았다.** 바닥 배치기에 넣으면
+좌표계가 어긋난다. 벽면 선택·충돌 처리를 만든 뒤에 올린다.
+
+## 동작
+
+```
+1차 12종  idle look walk wave stretch sit nap wake eat play inspect celebrate
+          → actionPose + animateAction
+2차  9종  groom yawn roll perk sulk show focus doze highfive
+          → extraPose + animateExtra   (roll 만 옆으로 누운 별도 원본)
+```
+
+두 갈래를 섞어 쓸 때는 순서가 있다. 1차 동작을 돌리기 전에 `resetExtra()` 로
+2차가 얹은 표정·앞발 순서를 되돌리고, 돌린 뒤 `syncEquipment()` 로 등 장식을 맞춘다.
+PetCanvas 가 이미 그렇게 한다.
+
 ## 교감 (RoomView)
 
 ```
@@ -133,6 +174,12 @@ UI 아이콘이 필요하면 인라인 SVG 로 그리거나 에셋을 먼저 받
 투명한 `<rect>` 를 덮어 두는데, 처음엔 펫 상자 전체를 덮었더니 그 뒤의 침대를
 누를 수가 없었다. 지금은 킷 규약(x=100 중심, 바닥선 y=176)에 맞춰 아랫도리만 덮고,
 펫이 서 있는 칸을 누르는 것도 쓰다듬기로 친다.
+
+**성장 기준을 바꿀 때 기존 사용자가 퇴행한다.** 누적 점수에서 친밀도로 바꾸면서
+친밀도 0 인 '어른' 을 다시 계산하면 아기가 된다. V12 §11 은 예전 규칙으로 계산한
+단계에 해당하는 친밀도를 채워 넣어 막는다 — 하한 컬럼을 따로 두지 않는 이유는
+단계 판정이 친밀도 한 곳에만 남아야 두 값이 어긋나지 않기 때문이다.
+실제 PostgreSQL 에 예전 데이터를 넣고 단계가 그대로인지 확인했다.
 
 **Supabase SQL 에디터는 붙여넣은 전체를 한 트랜잭션으로 돌린다.**
 맨 끝 검증문이 실패하면 앞의 함수 수정까지 통째로 롤백된다. 실제로 한 번 날아갔다.

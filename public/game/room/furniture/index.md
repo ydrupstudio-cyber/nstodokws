@@ -28,3 +28,29 @@
 | `fn-board.svg` | 작은 할일 보드 스탠드 | 2×1 | 고급 | 900 | wall-decor |
 | `fn-rug.svg` | 선셋 러그 | 2×2 | 일반 | 350 | misc |
 | `fn-cushion-pile.svg` | 쿠션 더미 | 1×1 | 고급 | 900 | misc |
+
+
+# 2차 추가 — 18종 / 합계 42종
+
+| id | 표시명 | 점수 | 면적 | 설치 | 반응 |
+|---|---|---:|---|---|---|
+| fn-rocking-chair | 민트 흔들의자 | 650 | [1, 1] | floor | sit |
+| fn-floor-pillow | 살구 좌식방석 | 180 | [1, 1] | floor | sit |
+| fn-hammock | 정원 해먹 | 1100 | [3, 1] | floor | nap |
+| fn-round-table | 우드 원형테이블 | 700 | [2, 2] | floor | — |
+| fn-storage-chest | 낮은 수납함 | 450 | [2, 1] | floor | — |
+| fn-sideboard | 오트밀 사이드보드 | 900 | [2, 1] | floor | — |
+| fn-pet-tunnel | 민트 터널 | 650 | [2, 1] | floor | inspect |
+| fn-ball-basket | 공놀이 바구니 | 280 | [1, 1] | floor | play |
+| fn-hammock-bed | 라벤더 해먹침대 | 750 | [2, 1] | floor | nap |
+| fn-cactus | 작은 선인장 | 200 | [1, 1] | floor | inspect |
+| fn-tree-pot | 둥근 나무 화분 | 650 | [1, 1] | floor | inspect |
+| fn-candle | 꿀빛 캔들 | 160 | [1, 1] | floor | — |
+| fn-string-lights | 정원 스트링라이트 | 800 | [3, 1] | floor | — |
+| fn-wall-mirror | 창문 벽거울 | 350 | [1, 1] | wall | inspect |
+| fn-wall-calendar | 살구 벽달력 | 150 | [1, 1] | wall | — |
+| fn-arc-rug | 궤도 무늬 러그 | 250 | [2, 2] | floor | — |
+| fn-staff-locker | 의국 민트 로커 | 1000 | [2, 1] | floor | — |
+| fn-snack-trolley | 당직 간식 트롤리 | 850 | [2, 1] | floor | inspect |
+
+벽거울·달력은 진짜 벽면 부착물입니다. `mount=wall`, 위치는 wallId+u+height로 저장하고 바닥 점유와 분리하세요. floor 전용 엔진에 바로 등록하지 마세요. 0/270 뷰는 앞면, 90/180 뷰는 뒷면입니다. 스트링라이트는 바닥 지지대형입니다. 캔들은 장식 광원이며 화재 규칙이 없습니다. 좌석 interaction은 동작 연결 제안으로, 가구별 승하차 위치는 앱에서 연결해야 합니다.
