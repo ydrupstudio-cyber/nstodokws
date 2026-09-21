@@ -1,0 +1,4804 @@
+{
+  "title": "NS PET CLUB",
+  "version": "3.0.0",
+  "viewBox": [
+    0,
+    0,
+    200,
+    190
+  ],
+  "baseline": 176,
+  "stages": [
+    {
+      "id": 0,
+      "name": "아기",
+      "pose": "baby",
+      "behavior": "꼬물꼬물 쉬기",
+      "scale": 0.94,
+      "headScale": 1,
+      "eyeScale": 1.15,
+      "accessory": null
+    },
+    {
+      "id": 1,
+      "name": "꼬마",
+      "pose": "cub",
+      "behavior": "앞발로 톡톡",
+      "scale": 0.98,
+      "headScale": 1,
+      "eyeScale": 1.1,
+      "accessory": null
+    },
+    {
+      "id": 2,
+      "name": "청소년",
+      "pose": "teen",
+      "behavior": "고개를 돌려 탐색",
+      "scale": 1,
+      "headScale": 1,
+      "eyeScale": 1,
+      "accessory": null
+    },
+    {
+      "id": 3,
+      "name": "어른",
+      "pose": "adult",
+      "behavior": "편안하게 기지개",
+      "scale": 1,
+      "headScale": 1,
+      "eyeScale": 1,
+      "accessory": null
+    },
+    {
+      "id": 4,
+      "name": "단짝",
+      "pose": "companion",
+      "behavior": "반가운 인사",
+      "scale": 1,
+      "headScale": 1,
+      "eyeScale": 1,
+      "accessory": null
+    }
+  ],
+  "coats": [
+    {
+      "id": "peach-milk",
+      "name": "복숭아 우유",
+      "palette": {
+        "body": "#EAB0B5",
+        "belly": "#FFE4DD",
+        "shade": "#C98398",
+        "outline": "#443C4E",
+        "nose": "#B7687E"
+      },
+      "breeds": [
+        "korean-shorthair",
+        "siamese",
+        "ragdoll",
+        "russian-blue",
+        "british-shorthair",
+        "persian",
+        "maltese",
+        "toy-poodle",
+        "shiba-inu",
+        "pomeranian",
+        "welsh-corgi",
+        "golden-retriever"
+      ]
+    },
+    {
+      "id": "mint-soda",
+      "name": "민트 소다",
+      "palette": {
+        "body": "#8ACDBE",
+        "belly": "#D9F2DF",
+        "shade": "#57A99D",
+        "outline": "#443C4E",
+        "nose": "#BB7D88"
+      },
+      "breeds": [
+        "korean-shorthair",
+        "siamese",
+        "ragdoll",
+        "russian-blue",
+        "british-shorthair",
+        "persian",
+        "maltese",
+        "toy-poodle",
+        "shiba-inu",
+        "pomeranian",
+        "welsh-corgi",
+        "golden-retriever"
+      ]
+    },
+    {
+      "id": "blueberry",
+      "name": "블루베리 밀크",
+      "palette": {
+        "body": "#A1A6D4",
+        "belly": "#E1E3F8",
+        "shade": "#777CB3",
+        "outline": "#443C4E",
+        "nose": "#B07C9E"
+      },
+      "breeds": [
+        "korean-shorthair",
+        "siamese",
+        "ragdoll",
+        "russian-blue",
+        "british-shorthair",
+        "persian",
+        "maltese",
+        "toy-poodle",
+        "shiba-inu",
+        "pomeranian",
+        "welsh-corgi",
+        "golden-retriever"
+      ]
+    },
+    {
+      "id": "butter",
+      "name": "버터크림",
+      "palette": {
+        "body": "#E7C775",
+        "belly": "#FFF0BC",
+        "shade": "#BF9B55",
+        "outline": "#443C4E",
+        "nose": "#C98B7C"
+      },
+      "breeds": [
+        "korean-shorthair",
+        "siamese",
+        "ragdoll",
+        "russian-blue",
+        "british-shorthair",
+        "persian",
+        "maltese",
+        "toy-poodle",
+        "shiba-inu",
+        "pomeranian",
+        "welsh-corgi",
+        "golden-retriever"
+      ]
+    },
+    {
+      "id": "cocoa",
+      "name": "코코아",
+      "palette": {
+        "body": "#A87D6A",
+        "belly": "#E6C6A7",
+        "shade": "#77564F",
+        "outline": "#443C4E",
+        "nose": "#C1878D"
+      },
+      "breeds": [
+        "korean-shorthair",
+        "siamese",
+        "ragdoll",
+        "russian-blue",
+        "british-shorthair",
+        "persian",
+        "maltese",
+        "toy-poodle",
+        "shiba-inu",
+        "pomeranian",
+        "welsh-corgi",
+        "golden-retriever"
+      ]
+    },
+    {
+      "id": "lavender",
+      "name": "라벤더",
+      "palette": {
+        "body": "#C5A5CD",
+        "belly": "#F1DAEA",
+        "shade": "#9B79AD",
+        "outline": "#443C4E",
+        "nose": "#BB83A5"
+      },
+      "breeds": [
+        "korean-shorthair",
+        "siamese",
+        "ragdoll",
+        "russian-blue",
+        "british-shorthair",
+        "persian",
+        "maltese",
+        "toy-poodle",
+        "shiba-inu",
+        "pomeranian",
+        "welsh-corgi",
+        "golden-retriever"
+      ]
+    }
+  ],
+  "assets": [
+    {
+      "id": "pet-cat-korean-shorthair",
+      "path": "pet/cat/pet-cat-korean-shorthair.svg",
+      "category": "pet",
+      "name": "코리안 숏헤어",
+      "en": "Ginger tabby",
+      "species": "cat",
+      "breed": "korean-shorthair",
+      "palette": {
+        "body": "#E8A45B",
+        "belly": "#FFE7BD",
+        "shade": "#C57940",
+        "outline": "#443C4E",
+        "nose": "#BB727E"
+      },
+      "headPivot": [
+        104,
+        108
+      ],
+      "features": [
+        "삼각 귀",
+        "이마 태비"
+      ],
+      "stages": [
+        {
+          "id": 0,
+          "name": "아기",
+          "pose": "baby",
+          "behavior": "꼬물꼬물 쉬기",
+          "scale": 0.94,
+          "headScale": 1,
+          "eyeScale": 1.15,
+          "accessory": null,
+          "scarfOffset": [
+            -16,
+            34
+          ],
+          "scarfScale": 0.82,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-cat-korean-shorthair-baby.svg",
+          "sourceKey": "pet-cat-korean-shorthair-baby",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-cat-korean-shorthair-baby-walk.svg",
+              "sourceKey": "pet-cat-korean-shorthair-baby-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-cat-korean-shorthair-baby-rest.svg",
+              "sourceKey": "pet-cat-korean-shorthair-baby-rest"
+            }
+          }
+        },
+        {
+          "id": 1,
+          "name": "꼬마",
+          "pose": "cub",
+          "behavior": "앞발로 톡톡",
+          "scale": 0.98,
+          "headScale": 1,
+          "eyeScale": 1.1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            13
+          ],
+          "scarfScale": 1,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-cat-korean-shorthair-cub.svg",
+          "sourceKey": "pet-cat-korean-shorthair-cub",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-cat-korean-shorthair-cub-walk.svg",
+              "sourceKey": "pet-cat-korean-shorthair-cub-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-cat-korean-shorthair-cub-rest.svg",
+              "sourceKey": "pet-cat-korean-shorthair-cub-rest"
+            }
+          }
+        },
+        {
+          "id": 2,
+          "name": "청소년",
+          "pose": "teen",
+          "behavior": "고개를 돌려 탐색",
+          "scale": 1,
+          "headScale": 1,
+          "eyeScale": 1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            -5
+          ],
+          "scarfScale": 0.93,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-cat-korean-shorthair-teen.svg",
+          "sourceKey": "pet-cat-korean-shorthair-teen",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-cat-korean-shorthair-teen-walk.svg",
+              "sourceKey": "pet-cat-korean-shorthair-teen-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-cat-korean-shorthair-teen-rest.svg",
+              "sourceKey": "pet-cat-korean-shorthair-teen-rest"
+            }
+          }
+        },
+        {
+          "id": 3,
+          "name": "어른",
+          "pose": "adult",
+          "behavior": "편안하게 기지개",
+          "scale": 1,
+          "headScale": 1,
+          "eyeScale": 1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            0
+          ],
+          "scarfScale": 1,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/cat/pet-cat-korean-shorthair.svg",
+          "sourceKey": "pet-cat-korean-shorthair-adult",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-cat-korean-shorthair-adult-walk.svg",
+              "sourceKey": "pet-cat-korean-shorthair-adult-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-cat-korean-shorthair-adult-rest.svg",
+              "sourceKey": "pet-cat-korean-shorthair-adult-rest"
+            }
+          }
+        },
+        {
+          "id": 4,
+          "name": "단짝",
+          "pose": "companion",
+          "behavior": "반가운 인사",
+          "scale": 1,
+          "headScale": 1,
+          "eyeScale": 1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            0
+          ],
+          "scarfScale": 1,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-cat-korean-shorthair-companion.svg",
+          "sourceKey": "pet-cat-korean-shorthair-companion",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-cat-korean-shorthair-companion-walk.svg",
+              "sourceKey": "pet-cat-korean-shorthair-companion-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-cat-korean-shorthair-companion-rest.svg",
+              "sourceKey": "pet-cat-korean-shorthair-companion-rest"
+            }
+          }
+        }
+      ],
+      "scarfOffset": [
+        0,
+        0
+      ],
+      "scarfScale": 1
+    },
+    {
+      "id": "pet-cat-siamese",
+      "path": "pet/cat/pet-cat-siamese.svg",
+      "category": "pet",
+      "name": "샴",
+      "en": "Siamese",
+      "species": "cat",
+      "breed": "siamese",
+      "palette": {
+        "body": "#ECD6AF",
+        "belly": "#FFF0D2",
+        "shade": "#7C6465",
+        "outline": "#443C4E",
+        "nose": "#A9717F"
+      },
+      "headPivot": [
+        104,
+        108
+      ],
+      "features": [
+        "큰 귀",
+        "포인트 마스크"
+      ],
+      "stages": [
+        {
+          "id": 0,
+          "name": "아기",
+          "pose": "baby",
+          "behavior": "꼬물꼬물 쉬기",
+          "scale": 0.94,
+          "headScale": 1,
+          "eyeScale": 1.15,
+          "accessory": null,
+          "scarfOffset": [
+            -16,
+            34
+          ],
+          "scarfScale": 0.82,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-cat-siamese-baby.svg",
+          "sourceKey": "pet-cat-siamese-baby",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-cat-siamese-baby-walk.svg",
+              "sourceKey": "pet-cat-siamese-baby-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-cat-siamese-baby-rest.svg",
+              "sourceKey": "pet-cat-siamese-baby-rest"
+            }
+          }
+        },
+        {
+          "id": 1,
+          "name": "꼬마",
+          "pose": "cub",
+          "behavior": "앞발로 톡톡",
+          "scale": 0.98,
+          "headScale": 1,
+          "eyeScale": 1.1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            13
+          ],
+          "scarfScale": 1,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-cat-siamese-cub.svg",
+          "sourceKey": "pet-cat-siamese-cub",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-cat-siamese-cub-walk.svg",
+              "sourceKey": "pet-cat-siamese-cub-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-cat-siamese-cub-rest.svg",
+              "sourceKey": "pet-cat-siamese-cub-rest"
+            }
+          }
+        },
+        {
+          "id": 2,
+          "name": "청소년",
+          "pose": "teen",
+          "behavior": "고개를 돌려 탐색",
+          "scale": 1,
+          "headScale": 1,
+          "eyeScale": 1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            -5
+          ],
+          "scarfScale": 0.93,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-cat-siamese-teen.svg",
+          "sourceKey": "pet-cat-siamese-teen",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-cat-siamese-teen-walk.svg",
+              "sourceKey": "pet-cat-siamese-teen-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-cat-siamese-teen-rest.svg",
+              "sourceKey": "pet-cat-siamese-teen-rest"
+            }
+          }
+        },
+        {
+          "id": 3,
+          "name": "어른",
+          "pose": "adult",
+          "behavior": "편안하게 기지개",
+          "scale": 1,
+          "headScale": 1,
+          "eyeScale": 1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            0
+          ],
+          "scarfScale": 1,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/cat/pet-cat-siamese.svg",
+          "sourceKey": "pet-cat-siamese-adult",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-cat-siamese-adult-walk.svg",
+              "sourceKey": "pet-cat-siamese-adult-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-cat-siamese-adult-rest.svg",
+              "sourceKey": "pet-cat-siamese-adult-rest"
+            }
+          }
+        },
+        {
+          "id": 4,
+          "name": "단짝",
+          "pose": "companion",
+          "behavior": "반가운 인사",
+          "scale": 1,
+          "headScale": 1,
+          "eyeScale": 1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            0
+          ],
+          "scarfScale": 1,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-cat-siamese-companion.svg",
+          "sourceKey": "pet-cat-siamese-companion",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-cat-siamese-companion-walk.svg",
+              "sourceKey": "pet-cat-siamese-companion-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-cat-siamese-companion-rest.svg",
+              "sourceKey": "pet-cat-siamese-companion-rest"
+            }
+          }
+        }
+      ],
+      "scarfOffset": [
+        0,
+        0
+      ],
+      "scarfScale": 1
+    },
+    {
+      "id": "pet-cat-ragdoll",
+      "path": "pet/cat/pet-cat-ragdoll.svg",
+      "category": "pet",
+      "name": "랙돌",
+      "en": "Ragdoll",
+      "species": "cat",
+      "breed": "ragdoll",
+      "palette": {
+        "body": "#D7C3B3",
+        "belly": "#FFF4DE",
+        "shade": "#9D858A",
+        "outline": "#443C4E",
+        "nose": "#BB727E"
+      },
+      "headPivot": [
+        104,
+        108
+      ],
+      "features": [
+        "장모 가슴털",
+        "바이컬러 얼굴"
+      ],
+      "stages": [
+        {
+          "id": 0,
+          "name": "아기",
+          "pose": "baby",
+          "behavior": "꼬물꼬물 쉬기",
+          "scale": 0.94,
+          "headScale": 1,
+          "eyeScale": 1.15,
+          "accessory": null,
+          "scarfOffset": [
+            -16,
+            34
+          ],
+          "scarfScale": 0.82,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-cat-ragdoll-baby.svg",
+          "sourceKey": "pet-cat-ragdoll-baby",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-cat-ragdoll-baby-walk.svg",
+              "sourceKey": "pet-cat-ragdoll-baby-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-cat-ragdoll-baby-rest.svg",
+              "sourceKey": "pet-cat-ragdoll-baby-rest"
+            }
+          }
+        },
+        {
+          "id": 1,
+          "name": "꼬마",
+          "pose": "cub",
+          "behavior": "앞발로 톡톡",
+          "scale": 0.98,
+          "headScale": 1,
+          "eyeScale": 1.1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            13
+          ],
+          "scarfScale": 1,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-cat-ragdoll-cub.svg",
+          "sourceKey": "pet-cat-ragdoll-cub",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-cat-ragdoll-cub-walk.svg",
+              "sourceKey": "pet-cat-ragdoll-cub-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-cat-ragdoll-cub-rest.svg",
+              "sourceKey": "pet-cat-ragdoll-cub-rest"
+            }
+          }
+        },
+        {
+          "id": 2,
+          "name": "청소년",
+          "pose": "teen",
+          "behavior": "고개를 돌려 탐색",
+          "scale": 1,
+          "headScale": 1,
+          "eyeScale": 1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            -5
+          ],
+          "scarfScale": 0.93,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-cat-ragdoll-teen.svg",
+          "sourceKey": "pet-cat-ragdoll-teen",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-cat-ragdoll-teen-walk.svg",
+              "sourceKey": "pet-cat-ragdoll-teen-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-cat-ragdoll-teen-rest.svg",
+              "sourceKey": "pet-cat-ragdoll-teen-rest"
+            }
+          }
+        },
+        {
+          "id": 3,
+          "name": "어른",
+          "pose": "adult",
+          "behavior": "편안하게 기지개",
+          "scale": 1,
+          "headScale": 1,
+          "eyeScale": 1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            0
+          ],
+          "scarfScale": 1,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/cat/pet-cat-ragdoll.svg",
+          "sourceKey": "pet-cat-ragdoll-adult",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-cat-ragdoll-adult-walk.svg",
+              "sourceKey": "pet-cat-ragdoll-adult-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-cat-ragdoll-adult-rest.svg",
+              "sourceKey": "pet-cat-ragdoll-adult-rest"
+            }
+          }
+        },
+        {
+          "id": 4,
+          "name": "단짝",
+          "pose": "companion",
+          "behavior": "반가운 인사",
+          "scale": 1,
+          "headScale": 1,
+          "eyeScale": 1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            0
+          ],
+          "scarfScale": 1,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-cat-ragdoll-companion.svg",
+          "sourceKey": "pet-cat-ragdoll-companion",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-cat-ragdoll-companion-walk.svg",
+              "sourceKey": "pet-cat-ragdoll-companion-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-cat-ragdoll-companion-rest.svg",
+              "sourceKey": "pet-cat-ragdoll-companion-rest"
+            }
+          }
+        }
+      ],
+      "scarfOffset": [
+        0,
+        0
+      ],
+      "scarfScale": 1
+    },
+    {
+      "id": "pet-cat-russian-blue",
+      "path": "pet/cat/pet-cat-russian-blue.svg",
+      "category": "pet",
+      "name": "러시안 블루",
+      "en": "Russian blue",
+      "species": "cat",
+      "breed": "russian-blue",
+      "palette": {
+        "body": "#8DABC3",
+        "belly": "#C6D8E2",
+        "shade": "#637F9C",
+        "outline": "#443C4E",
+        "nose": "#BB727E"
+      },
+      "headPivot": [
+        104,
+        108
+      ],
+      "features": [
+        "날렵한 얼굴",
+        "회청색 단모"
+      ],
+      "stages": [
+        {
+          "id": 0,
+          "name": "아기",
+          "pose": "baby",
+          "behavior": "꼬물꼬물 쉬기",
+          "scale": 0.94,
+          "headScale": 1,
+          "eyeScale": 1.15,
+          "accessory": null,
+          "scarfOffset": [
+            -16,
+            34
+          ],
+          "scarfScale": 0.82,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-cat-russian-blue-baby.svg",
+          "sourceKey": "pet-cat-russian-blue-baby",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-cat-russian-blue-baby-walk.svg",
+              "sourceKey": "pet-cat-russian-blue-baby-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-cat-russian-blue-baby-rest.svg",
+              "sourceKey": "pet-cat-russian-blue-baby-rest"
+            }
+          }
+        },
+        {
+          "id": 1,
+          "name": "꼬마",
+          "pose": "cub",
+          "behavior": "앞발로 톡톡",
+          "scale": 0.98,
+          "headScale": 1,
+          "eyeScale": 1.1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            13
+          ],
+          "scarfScale": 1,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-cat-russian-blue-cub.svg",
+          "sourceKey": "pet-cat-russian-blue-cub",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-cat-russian-blue-cub-walk.svg",
+              "sourceKey": "pet-cat-russian-blue-cub-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-cat-russian-blue-cub-rest.svg",
+              "sourceKey": "pet-cat-russian-blue-cub-rest"
+            }
+          }
+        },
+        {
+          "id": 2,
+          "name": "청소년",
+          "pose": "teen",
+          "behavior": "고개를 돌려 탐색",
+          "scale": 1,
+          "headScale": 1,
+          "eyeScale": 1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            -5
+          ],
+          "scarfScale": 0.93,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-cat-russian-blue-teen.svg",
+          "sourceKey": "pet-cat-russian-blue-teen",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-cat-russian-blue-teen-walk.svg",
+              "sourceKey": "pet-cat-russian-blue-teen-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-cat-russian-blue-teen-rest.svg",
+              "sourceKey": "pet-cat-russian-blue-teen-rest"
+            }
+          }
+        },
+        {
+          "id": 3,
+          "name": "어른",
+          "pose": "adult",
+          "behavior": "편안하게 기지개",
+          "scale": 1,
+          "headScale": 1,
+          "eyeScale": 1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            0
+          ],
+          "scarfScale": 1,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/cat/pet-cat-russian-blue.svg",
+          "sourceKey": "pet-cat-russian-blue-adult",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-cat-russian-blue-adult-walk.svg",
+              "sourceKey": "pet-cat-russian-blue-adult-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-cat-russian-blue-adult-rest.svg",
+              "sourceKey": "pet-cat-russian-blue-adult-rest"
+            }
+          }
+        },
+        {
+          "id": 4,
+          "name": "단짝",
+          "pose": "companion",
+          "behavior": "반가운 인사",
+          "scale": 1,
+          "headScale": 1,
+          "eyeScale": 1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            0
+          ],
+          "scarfScale": 1,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-cat-russian-blue-companion.svg",
+          "sourceKey": "pet-cat-russian-blue-companion",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-cat-russian-blue-companion-walk.svg",
+              "sourceKey": "pet-cat-russian-blue-companion-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-cat-russian-blue-companion-rest.svg",
+              "sourceKey": "pet-cat-russian-blue-companion-rest"
+            }
+          }
+        }
+      ],
+      "scarfOffset": [
+        0,
+        0
+      ],
+      "scarfScale": 1
+    },
+    {
+      "id": "pet-cat-british-shorthair",
+      "path": "pet/cat/pet-cat-british-shorthair.svg",
+      "category": "pet",
+      "name": "브리티시 숏헤어",
+      "en": "British shorthair",
+      "species": "cat",
+      "breed": "british-shorthair",
+      "palette": {
+        "body": "#A6A7C9",
+        "belly": "#DADAF0",
+        "shade": "#777C9F",
+        "outline": "#443C4E",
+        "nose": "#BB727E"
+      },
+      "headPivot": [
+        104,
+        108
+      ],
+      "features": [
+        "둥근 볼",
+        "작은 귀"
+      ],
+      "stages": [
+        {
+          "id": 0,
+          "name": "아기",
+          "pose": "baby",
+          "behavior": "꼬물꼬물 쉬기",
+          "scale": 0.94,
+          "headScale": 1,
+          "eyeScale": 1.15,
+          "accessory": null,
+          "scarfOffset": [
+            -16,
+            34
+          ],
+          "scarfScale": 0.82,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-cat-british-shorthair-baby.svg",
+          "sourceKey": "pet-cat-british-shorthair-baby",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-cat-british-shorthair-baby-walk.svg",
+              "sourceKey": "pet-cat-british-shorthair-baby-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-cat-british-shorthair-baby-rest.svg",
+              "sourceKey": "pet-cat-british-shorthair-baby-rest"
+            }
+          }
+        },
+        {
+          "id": 1,
+          "name": "꼬마",
+          "pose": "cub",
+          "behavior": "앞발로 톡톡",
+          "scale": 0.98,
+          "headScale": 1,
+          "eyeScale": 1.1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            13
+          ],
+          "scarfScale": 1,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-cat-british-shorthair-cub.svg",
+          "sourceKey": "pet-cat-british-shorthair-cub",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-cat-british-shorthair-cub-walk.svg",
+              "sourceKey": "pet-cat-british-shorthair-cub-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-cat-british-shorthair-cub-rest.svg",
+              "sourceKey": "pet-cat-british-shorthair-cub-rest"
+            }
+          }
+        },
+        {
+          "id": 2,
+          "name": "청소년",
+          "pose": "teen",
+          "behavior": "고개를 돌려 탐색",
+          "scale": 1,
+          "headScale": 1,
+          "eyeScale": 1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            -5
+          ],
+          "scarfScale": 0.93,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-cat-british-shorthair-teen.svg",
+          "sourceKey": "pet-cat-british-shorthair-teen",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-cat-british-shorthair-teen-walk.svg",
+              "sourceKey": "pet-cat-british-shorthair-teen-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-cat-british-shorthair-teen-rest.svg",
+              "sourceKey": "pet-cat-british-shorthair-teen-rest"
+            }
+          }
+        },
+        {
+          "id": 3,
+          "name": "어른",
+          "pose": "adult",
+          "behavior": "편안하게 기지개",
+          "scale": 1,
+          "headScale": 1,
+          "eyeScale": 1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            0
+          ],
+          "scarfScale": 1,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/cat/pet-cat-british-shorthair.svg",
+          "sourceKey": "pet-cat-british-shorthair-adult",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-cat-british-shorthair-adult-walk.svg",
+              "sourceKey": "pet-cat-british-shorthair-adult-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-cat-british-shorthair-adult-rest.svg",
+              "sourceKey": "pet-cat-british-shorthair-adult-rest"
+            }
+          }
+        },
+        {
+          "id": 4,
+          "name": "단짝",
+          "pose": "companion",
+          "behavior": "반가운 인사",
+          "scale": 1,
+          "headScale": 1,
+          "eyeScale": 1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            0
+          ],
+          "scarfScale": 1,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-cat-british-shorthair-companion.svg",
+          "sourceKey": "pet-cat-british-shorthair-companion",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-cat-british-shorthair-companion-walk.svg",
+              "sourceKey": "pet-cat-british-shorthair-companion-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-cat-british-shorthair-companion-rest.svg",
+              "sourceKey": "pet-cat-british-shorthair-companion-rest"
+            }
+          }
+        }
+      ],
+      "scarfOffset": [
+        0,
+        0
+      ],
+      "scarfScale": 1
+    },
+    {
+      "id": "pet-cat-persian",
+      "path": "pet/cat/pet-cat-persian.svg",
+      "category": "pet",
+      "name": "페르시안",
+      "en": "Persian",
+      "species": "cat",
+      "breed": "persian",
+      "palette": {
+        "body": "#F0D6C9",
+        "belly": "#FFF3E8",
+        "shade": "#CD9F99",
+        "outline": "#443C4E",
+        "nose": "#BB727E"
+      },
+      "headPivot": [
+        104,
+        108
+      ],
+      "features": [
+        "풍성한 볼털",
+        "작은 귀"
+      ],
+      "stages": [
+        {
+          "id": 0,
+          "name": "아기",
+          "pose": "baby",
+          "behavior": "꼬물꼬물 쉬기",
+          "scale": 0.94,
+          "headScale": 1,
+          "eyeScale": 1.15,
+          "accessory": null,
+          "scarfOffset": [
+            -16,
+            34
+          ],
+          "scarfScale": 0.82,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-cat-persian-baby.svg",
+          "sourceKey": "pet-cat-persian-baby",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-cat-persian-baby-walk.svg",
+              "sourceKey": "pet-cat-persian-baby-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-cat-persian-baby-rest.svg",
+              "sourceKey": "pet-cat-persian-baby-rest"
+            }
+          }
+        },
+        {
+          "id": 1,
+          "name": "꼬마",
+          "pose": "cub",
+          "behavior": "앞발로 톡톡",
+          "scale": 0.98,
+          "headScale": 1,
+          "eyeScale": 1.1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            13
+          ],
+          "scarfScale": 1,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-cat-persian-cub.svg",
+          "sourceKey": "pet-cat-persian-cub",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-cat-persian-cub-walk.svg",
+              "sourceKey": "pet-cat-persian-cub-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-cat-persian-cub-rest.svg",
+              "sourceKey": "pet-cat-persian-cub-rest"
+            }
+          }
+        },
+        {
+          "id": 2,
+          "name": "청소년",
+          "pose": "teen",
+          "behavior": "고개를 돌려 탐색",
+          "scale": 1,
+          "headScale": 1,
+          "eyeScale": 1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            -5
+          ],
+          "scarfScale": 0.93,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-cat-persian-teen.svg",
+          "sourceKey": "pet-cat-persian-teen",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-cat-persian-teen-walk.svg",
+              "sourceKey": "pet-cat-persian-teen-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-cat-persian-teen-rest.svg",
+              "sourceKey": "pet-cat-persian-teen-rest"
+            }
+          }
+        },
+        {
+          "id": 3,
+          "name": "어른",
+          "pose": "adult",
+          "behavior": "편안하게 기지개",
+          "scale": 1,
+          "headScale": 1,
+          "eyeScale": 1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            0
+          ],
+          "scarfScale": 1,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/cat/pet-cat-persian.svg",
+          "sourceKey": "pet-cat-persian-adult",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-cat-persian-adult-walk.svg",
+              "sourceKey": "pet-cat-persian-adult-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-cat-persian-adult-rest.svg",
+              "sourceKey": "pet-cat-persian-adult-rest"
+            }
+          }
+        },
+        {
+          "id": 4,
+          "name": "단짝",
+          "pose": "companion",
+          "behavior": "반가운 인사",
+          "scale": 1,
+          "headScale": 1,
+          "eyeScale": 1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            0
+          ],
+          "scarfScale": 1,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-cat-persian-companion.svg",
+          "sourceKey": "pet-cat-persian-companion",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-cat-persian-companion-walk.svg",
+              "sourceKey": "pet-cat-persian-companion-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-cat-persian-companion-rest.svg",
+              "sourceKey": "pet-cat-persian-companion-rest"
+            }
+          }
+        }
+      ],
+      "scarfOffset": [
+        0,
+        0
+      ],
+      "scarfScale": 1
+    },
+    {
+      "id": "pet-dog-maltese",
+      "path": "pet/dog/pet-dog-maltese.svg",
+      "category": "pet",
+      "name": "말티즈",
+      "en": "Maltese",
+      "species": "dog",
+      "breed": "maltese",
+      "palette": {
+        "body": "#FFF3DF",
+        "belly": "#FFFFFF",
+        "shade": "#E7D2C5",
+        "outline": "#443C4E",
+        "nose": "#625360"
+      },
+      "headPivot": [
+        104,
+        108
+      ],
+      "features": [
+        "흐르는 귀털",
+        "크림색 단모컷"
+      ],
+      "stages": [
+        {
+          "id": 0,
+          "name": "아기",
+          "pose": "baby",
+          "behavior": "꼬물꼬물 쉬기",
+          "scale": 0.94,
+          "headScale": 1,
+          "eyeScale": 1.15,
+          "accessory": null,
+          "scarfOffset": [
+            -16,
+            34
+          ],
+          "scarfScale": 0.82,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-dog-maltese-baby.svg",
+          "sourceKey": "pet-dog-maltese-baby",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-dog-maltese-baby-walk.svg",
+              "sourceKey": "pet-dog-maltese-baby-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-dog-maltese-baby-rest.svg",
+              "sourceKey": "pet-dog-maltese-baby-rest"
+            }
+          }
+        },
+        {
+          "id": 1,
+          "name": "꼬마",
+          "pose": "cub",
+          "behavior": "앞발로 톡톡",
+          "scale": 0.98,
+          "headScale": 1,
+          "eyeScale": 1.1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            13
+          ],
+          "scarfScale": 1,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-dog-maltese-cub.svg",
+          "sourceKey": "pet-dog-maltese-cub",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-dog-maltese-cub-walk.svg",
+              "sourceKey": "pet-dog-maltese-cub-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-dog-maltese-cub-rest.svg",
+              "sourceKey": "pet-dog-maltese-cub-rest"
+            }
+          }
+        },
+        {
+          "id": 2,
+          "name": "청소년",
+          "pose": "teen",
+          "behavior": "고개를 돌려 탐색",
+          "scale": 1,
+          "headScale": 1,
+          "eyeScale": 1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            -5
+          ],
+          "scarfScale": 0.93,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-dog-maltese-teen.svg",
+          "sourceKey": "pet-dog-maltese-teen",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-dog-maltese-teen-walk.svg",
+              "sourceKey": "pet-dog-maltese-teen-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-dog-maltese-teen-rest.svg",
+              "sourceKey": "pet-dog-maltese-teen-rest"
+            }
+          }
+        },
+        {
+          "id": 3,
+          "name": "어른",
+          "pose": "adult",
+          "behavior": "편안하게 기지개",
+          "scale": 1,
+          "headScale": 1,
+          "eyeScale": 1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            0
+          ],
+          "scarfScale": 1,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/dog/pet-dog-maltese.svg",
+          "sourceKey": "pet-dog-maltese-adult",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-dog-maltese-adult-walk.svg",
+              "sourceKey": "pet-dog-maltese-adult-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-dog-maltese-adult-rest.svg",
+              "sourceKey": "pet-dog-maltese-adult-rest"
+            }
+          }
+        },
+        {
+          "id": 4,
+          "name": "단짝",
+          "pose": "companion",
+          "behavior": "반가운 인사",
+          "scale": 1,
+          "headScale": 1,
+          "eyeScale": 1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            0
+          ],
+          "scarfScale": 1,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-dog-maltese-companion.svg",
+          "sourceKey": "pet-dog-maltese-companion",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-dog-maltese-companion-walk.svg",
+              "sourceKey": "pet-dog-maltese-companion-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-dog-maltese-companion-rest.svg",
+              "sourceKey": "pet-dog-maltese-companion-rest"
+            }
+          }
+        }
+      ],
+      "scarfOffset": [
+        0,
+        0
+      ],
+      "scarfScale": 1
+    },
+    {
+      "id": "pet-dog-toy-poodle",
+      "path": "pet/dog/pet-dog-toy-poodle.svg",
+      "category": "pet",
+      "name": "토이푸들",
+      "en": "Toy poodle",
+      "species": "dog",
+      "breed": "toy-poodle",
+      "palette": {
+        "body": "#C78962",
+        "belly": "#EAC2A0",
+        "shade": "#99684F",
+        "outline": "#443C4E",
+        "nose": "#62505B"
+      },
+      "headPivot": [
+        104,
+        108
+      ],
+      "features": [
+        "곱슬머리",
+        "둥근 귀털"
+      ],
+      "stages": [
+        {
+          "id": 0,
+          "name": "아기",
+          "pose": "baby",
+          "behavior": "꼬물꼬물 쉬기",
+          "scale": 0.94,
+          "headScale": 1,
+          "eyeScale": 1.15,
+          "accessory": null,
+          "scarfOffset": [
+            -16,
+            34
+          ],
+          "scarfScale": 0.82,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-dog-toy-poodle-baby.svg",
+          "sourceKey": "pet-dog-toy-poodle-baby",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-dog-toy-poodle-baby-walk.svg",
+              "sourceKey": "pet-dog-toy-poodle-baby-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-dog-toy-poodle-baby-rest.svg",
+              "sourceKey": "pet-dog-toy-poodle-baby-rest"
+            }
+          }
+        },
+        {
+          "id": 1,
+          "name": "꼬마",
+          "pose": "cub",
+          "behavior": "앞발로 톡톡",
+          "scale": 0.98,
+          "headScale": 1,
+          "eyeScale": 1.1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            13
+          ],
+          "scarfScale": 1,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-dog-toy-poodle-cub.svg",
+          "sourceKey": "pet-dog-toy-poodle-cub",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-dog-toy-poodle-cub-walk.svg",
+              "sourceKey": "pet-dog-toy-poodle-cub-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-dog-toy-poodle-cub-rest.svg",
+              "sourceKey": "pet-dog-toy-poodle-cub-rest"
+            }
+          }
+        },
+        {
+          "id": 2,
+          "name": "청소년",
+          "pose": "teen",
+          "behavior": "고개를 돌려 탐색",
+          "scale": 1,
+          "headScale": 1,
+          "eyeScale": 1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            -5
+          ],
+          "scarfScale": 0.93,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-dog-toy-poodle-teen.svg",
+          "sourceKey": "pet-dog-toy-poodle-teen",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-dog-toy-poodle-teen-walk.svg",
+              "sourceKey": "pet-dog-toy-poodle-teen-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-dog-toy-poodle-teen-rest.svg",
+              "sourceKey": "pet-dog-toy-poodle-teen-rest"
+            }
+          }
+        },
+        {
+          "id": 3,
+          "name": "어른",
+          "pose": "adult",
+          "behavior": "편안하게 기지개",
+          "scale": 1,
+          "headScale": 1,
+          "eyeScale": 1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            0
+          ],
+          "scarfScale": 1,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/dog/pet-dog-toy-poodle.svg",
+          "sourceKey": "pet-dog-toy-poodle-adult",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-dog-toy-poodle-adult-walk.svg",
+              "sourceKey": "pet-dog-toy-poodle-adult-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-dog-toy-poodle-adult-rest.svg",
+              "sourceKey": "pet-dog-toy-poodle-adult-rest"
+            }
+          }
+        },
+        {
+          "id": 4,
+          "name": "단짝",
+          "pose": "companion",
+          "behavior": "반가운 인사",
+          "scale": 1,
+          "headScale": 1,
+          "eyeScale": 1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            0
+          ],
+          "scarfScale": 1,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-dog-toy-poodle-companion.svg",
+          "sourceKey": "pet-dog-toy-poodle-companion",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-dog-toy-poodle-companion-walk.svg",
+              "sourceKey": "pet-dog-toy-poodle-companion-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-dog-toy-poodle-companion-rest.svg",
+              "sourceKey": "pet-dog-toy-poodle-companion-rest"
+            }
+          }
+        }
+      ],
+      "scarfOffset": [
+        0,
+        0
+      ],
+      "scarfScale": 1
+    },
+    {
+      "id": "pet-dog-shiba-inu",
+      "path": "pet/dog/pet-dog-shiba-inu.svg",
+      "category": "pet",
+      "name": "시바",
+      "en": "Shiba inu",
+      "species": "dog",
+      "breed": "shiba-inu",
+      "palette": {
+        "body": "#E8A25D",
+        "belly": "#FFF0CC",
+        "shade": "#C47746",
+        "outline": "#443C4E",
+        "nose": "#66535B"
+      },
+      "headPivot": [
+        104,
+        108
+      ],
+      "features": [
+        "삼각 귀",
+        "말린 꼬리"
+      ],
+      "stages": [
+        {
+          "id": 0,
+          "name": "아기",
+          "pose": "baby",
+          "behavior": "꼬물꼬물 쉬기",
+          "scale": 0.94,
+          "headScale": 1,
+          "eyeScale": 1.15,
+          "accessory": null,
+          "scarfOffset": [
+            -16,
+            34
+          ],
+          "scarfScale": 0.82,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-dog-shiba-inu-baby.svg",
+          "sourceKey": "pet-dog-shiba-inu-baby",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-dog-shiba-inu-baby-walk.svg",
+              "sourceKey": "pet-dog-shiba-inu-baby-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-dog-shiba-inu-baby-rest.svg",
+              "sourceKey": "pet-dog-shiba-inu-baby-rest"
+            }
+          }
+        },
+        {
+          "id": 1,
+          "name": "꼬마",
+          "pose": "cub",
+          "behavior": "앞발로 톡톡",
+          "scale": 0.98,
+          "headScale": 1,
+          "eyeScale": 1.1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            13
+          ],
+          "scarfScale": 1,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-dog-shiba-inu-cub.svg",
+          "sourceKey": "pet-dog-shiba-inu-cub",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-dog-shiba-inu-cub-walk.svg",
+              "sourceKey": "pet-dog-shiba-inu-cub-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-dog-shiba-inu-cub-rest.svg",
+              "sourceKey": "pet-dog-shiba-inu-cub-rest"
+            }
+          }
+        },
+        {
+          "id": 2,
+          "name": "청소년",
+          "pose": "teen",
+          "behavior": "고개를 돌려 탐색",
+          "scale": 1,
+          "headScale": 1,
+          "eyeScale": 1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            -5
+          ],
+          "scarfScale": 0.93,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-dog-shiba-inu-teen.svg",
+          "sourceKey": "pet-dog-shiba-inu-teen",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-dog-shiba-inu-teen-walk.svg",
+              "sourceKey": "pet-dog-shiba-inu-teen-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-dog-shiba-inu-teen-rest.svg",
+              "sourceKey": "pet-dog-shiba-inu-teen-rest"
+            }
+          }
+        },
+        {
+          "id": 3,
+          "name": "어른",
+          "pose": "adult",
+          "behavior": "편안하게 기지개",
+          "scale": 1,
+          "headScale": 1,
+          "eyeScale": 1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            0
+          ],
+          "scarfScale": 1,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/dog/pet-dog-shiba-inu.svg",
+          "sourceKey": "pet-dog-shiba-inu-adult",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-dog-shiba-inu-adult-walk.svg",
+              "sourceKey": "pet-dog-shiba-inu-adult-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-dog-shiba-inu-adult-rest.svg",
+              "sourceKey": "pet-dog-shiba-inu-adult-rest"
+            }
+          }
+        },
+        {
+          "id": 4,
+          "name": "단짝",
+          "pose": "companion",
+          "behavior": "반가운 인사",
+          "scale": 1,
+          "headScale": 1,
+          "eyeScale": 1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            0
+          ],
+          "scarfScale": 1,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-dog-shiba-inu-companion.svg",
+          "sourceKey": "pet-dog-shiba-inu-companion",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-dog-shiba-inu-companion-walk.svg",
+              "sourceKey": "pet-dog-shiba-inu-companion-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-dog-shiba-inu-companion-rest.svg",
+              "sourceKey": "pet-dog-shiba-inu-companion-rest"
+            }
+          }
+        }
+      ],
+      "scarfOffset": [
+        0,
+        0
+      ],
+      "scarfScale": 1
+    },
+    {
+      "id": "pet-dog-pomeranian",
+      "path": "pet/dog/pet-dog-pomeranian.svg",
+      "category": "pet",
+      "name": "포메라니안",
+      "en": "Pomeranian",
+      "species": "dog",
+      "breed": "pomeranian",
+      "palette": {
+        "body": "#EBC084",
+        "belly": "#FFF0D4",
+        "shade": "#D89C59",
+        "outline": "#443C4E",
+        "nose": "#62505B"
+      },
+      "headPivot": [
+        104,
+        108
+      ],
+      "features": [
+        "가슴 갈기",
+        "풍성한 꼬리"
+      ],
+      "stages": [
+        {
+          "id": 0,
+          "name": "아기",
+          "pose": "baby",
+          "behavior": "꼬물꼬물 쉬기",
+          "scale": 0.94,
+          "headScale": 1,
+          "eyeScale": 1.15,
+          "accessory": null,
+          "scarfOffset": [
+            -16,
+            34
+          ],
+          "scarfScale": 0.82,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-dog-pomeranian-baby.svg",
+          "sourceKey": "pet-dog-pomeranian-baby",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-dog-pomeranian-baby-walk.svg",
+              "sourceKey": "pet-dog-pomeranian-baby-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-dog-pomeranian-baby-rest.svg",
+              "sourceKey": "pet-dog-pomeranian-baby-rest"
+            }
+          }
+        },
+        {
+          "id": 1,
+          "name": "꼬마",
+          "pose": "cub",
+          "behavior": "앞발로 톡톡",
+          "scale": 0.98,
+          "headScale": 1,
+          "eyeScale": 1.1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            13
+          ],
+          "scarfScale": 1,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-dog-pomeranian-cub.svg",
+          "sourceKey": "pet-dog-pomeranian-cub",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-dog-pomeranian-cub-walk.svg",
+              "sourceKey": "pet-dog-pomeranian-cub-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-dog-pomeranian-cub-rest.svg",
+              "sourceKey": "pet-dog-pomeranian-cub-rest"
+            }
+          }
+        },
+        {
+          "id": 2,
+          "name": "청소년",
+          "pose": "teen",
+          "behavior": "고개를 돌려 탐색",
+          "scale": 1,
+          "headScale": 1,
+          "eyeScale": 1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            -5
+          ],
+          "scarfScale": 0.93,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-dog-pomeranian-teen.svg",
+          "sourceKey": "pet-dog-pomeranian-teen",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-dog-pomeranian-teen-walk.svg",
+              "sourceKey": "pet-dog-pomeranian-teen-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-dog-pomeranian-teen-rest.svg",
+              "sourceKey": "pet-dog-pomeranian-teen-rest"
+            }
+          }
+        },
+        {
+          "id": 3,
+          "name": "어른",
+          "pose": "adult",
+          "behavior": "편안하게 기지개",
+          "scale": 1,
+          "headScale": 1,
+          "eyeScale": 1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            0
+          ],
+          "scarfScale": 1,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/dog/pet-dog-pomeranian.svg",
+          "sourceKey": "pet-dog-pomeranian-adult",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-dog-pomeranian-adult-walk.svg",
+              "sourceKey": "pet-dog-pomeranian-adult-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-dog-pomeranian-adult-rest.svg",
+              "sourceKey": "pet-dog-pomeranian-adult-rest"
+            }
+          }
+        },
+        {
+          "id": 4,
+          "name": "단짝",
+          "pose": "companion",
+          "behavior": "반가운 인사",
+          "scale": 1,
+          "headScale": 1,
+          "eyeScale": 1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            0
+          ],
+          "scarfScale": 1,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-dog-pomeranian-companion.svg",
+          "sourceKey": "pet-dog-pomeranian-companion",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-dog-pomeranian-companion-walk.svg",
+              "sourceKey": "pet-dog-pomeranian-companion-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-dog-pomeranian-companion-rest.svg",
+              "sourceKey": "pet-dog-pomeranian-companion-rest"
+            }
+          }
+        }
+      ],
+      "scarfOffset": [
+        0,
+        0
+      ],
+      "scarfScale": 1
+    },
+    {
+      "id": "pet-dog-welsh-corgi",
+      "path": "pet/dog/pet-dog-welsh-corgi.svg",
+      "category": "pet",
+      "name": "웰시코기",
+      "en": "Welsh corgi",
+      "species": "dog",
+      "breed": "welsh-corgi",
+      "palette": {
+        "body": "#D99661",
+        "belly": "#FFF2D9",
+        "shade": "#B36F47",
+        "outline": "#443C4E",
+        "nose": "#62505B"
+      },
+      "headPivot": [
+        104,
+        108
+      ],
+      "features": [
+        "큰 귀",
+        "낮고 넓은 몸"
+      ],
+      "stages": [
+        {
+          "id": 0,
+          "name": "아기",
+          "pose": "baby",
+          "behavior": "꼬물꼬물 쉬기",
+          "scale": 0.94,
+          "headScale": 1,
+          "eyeScale": 1.15,
+          "accessory": null,
+          "scarfOffset": [
+            -16,
+            34
+          ],
+          "scarfScale": 0.82,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-dog-welsh-corgi-baby.svg",
+          "sourceKey": "pet-dog-welsh-corgi-baby",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-dog-welsh-corgi-baby-walk.svg",
+              "sourceKey": "pet-dog-welsh-corgi-baby-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-dog-welsh-corgi-baby-rest.svg",
+              "sourceKey": "pet-dog-welsh-corgi-baby-rest"
+            }
+          }
+        },
+        {
+          "id": 1,
+          "name": "꼬마",
+          "pose": "cub",
+          "behavior": "앞발로 톡톡",
+          "scale": 0.98,
+          "headScale": 1,
+          "eyeScale": 1.1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            13
+          ],
+          "scarfScale": 1,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-dog-welsh-corgi-cub.svg",
+          "sourceKey": "pet-dog-welsh-corgi-cub",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-dog-welsh-corgi-cub-walk.svg",
+              "sourceKey": "pet-dog-welsh-corgi-cub-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-dog-welsh-corgi-cub-rest.svg",
+              "sourceKey": "pet-dog-welsh-corgi-cub-rest"
+            }
+          }
+        },
+        {
+          "id": 2,
+          "name": "청소년",
+          "pose": "teen",
+          "behavior": "고개를 돌려 탐색",
+          "scale": 1,
+          "headScale": 1,
+          "eyeScale": 1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            -5
+          ],
+          "scarfScale": 0.93,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-dog-welsh-corgi-teen.svg",
+          "sourceKey": "pet-dog-welsh-corgi-teen",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-dog-welsh-corgi-teen-walk.svg",
+              "sourceKey": "pet-dog-welsh-corgi-teen-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-dog-welsh-corgi-teen-rest.svg",
+              "sourceKey": "pet-dog-welsh-corgi-teen-rest"
+            }
+          }
+        },
+        {
+          "id": 3,
+          "name": "어른",
+          "pose": "adult",
+          "behavior": "편안하게 기지개",
+          "scale": 1,
+          "headScale": 1,
+          "eyeScale": 1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            0
+          ],
+          "scarfScale": 1,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/dog/pet-dog-welsh-corgi.svg",
+          "sourceKey": "pet-dog-welsh-corgi-adult",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-dog-welsh-corgi-adult-walk.svg",
+              "sourceKey": "pet-dog-welsh-corgi-adult-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-dog-welsh-corgi-adult-rest.svg",
+              "sourceKey": "pet-dog-welsh-corgi-adult-rest"
+            }
+          }
+        },
+        {
+          "id": 4,
+          "name": "단짝",
+          "pose": "companion",
+          "behavior": "반가운 인사",
+          "scale": 1,
+          "headScale": 1,
+          "eyeScale": 1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            0
+          ],
+          "scarfScale": 1,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-dog-welsh-corgi-companion.svg",
+          "sourceKey": "pet-dog-welsh-corgi-companion",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-dog-welsh-corgi-companion-walk.svg",
+              "sourceKey": "pet-dog-welsh-corgi-companion-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-dog-welsh-corgi-companion-rest.svg",
+              "sourceKey": "pet-dog-welsh-corgi-companion-rest"
+            }
+          }
+        }
+      ],
+      "scarfOffset": [
+        0,
+        0
+      ],
+      "scarfScale": 1
+    },
+    {
+      "id": "pet-dog-golden-retriever",
+      "path": "pet/dog/pet-dog-golden-retriever.svg",
+      "category": "pet",
+      "name": "골든리트리버",
+      "en": "Golden retriever",
+      "species": "dog",
+      "breed": "golden-retriever",
+      "palette": {
+        "body": "#E6B863",
+        "belly": "#FFE5A5",
+        "shade": "#C99042",
+        "outline": "#443C4E",
+        "nose": "#65515A"
+      },
+      "headPivot": [
+        104,
+        108
+      ],
+      "features": [
+        "늘어진 귀",
+        "넓은 주둥이"
+      ],
+      "stages": [
+        {
+          "id": 0,
+          "name": "아기",
+          "pose": "baby",
+          "behavior": "꼬물꼬물 쉬기",
+          "scale": 0.94,
+          "headScale": 1,
+          "eyeScale": 1.15,
+          "accessory": null,
+          "scarfOffset": [
+            -16,
+            34
+          ],
+          "scarfScale": 0.82,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-dog-golden-retriever-baby.svg",
+          "sourceKey": "pet-dog-golden-retriever-baby",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-dog-golden-retriever-baby-walk.svg",
+              "sourceKey": "pet-dog-golden-retriever-baby-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-dog-golden-retriever-baby-rest.svg",
+              "sourceKey": "pet-dog-golden-retriever-baby-rest"
+            }
+          }
+        },
+        {
+          "id": 1,
+          "name": "꼬마",
+          "pose": "cub",
+          "behavior": "앞발로 톡톡",
+          "scale": 0.98,
+          "headScale": 1,
+          "eyeScale": 1.1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            13
+          ],
+          "scarfScale": 1,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-dog-golden-retriever-cub.svg",
+          "sourceKey": "pet-dog-golden-retriever-cub",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-dog-golden-retriever-cub-walk.svg",
+              "sourceKey": "pet-dog-golden-retriever-cub-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-dog-golden-retriever-cub-rest.svg",
+              "sourceKey": "pet-dog-golden-retriever-cub-rest"
+            }
+          }
+        },
+        {
+          "id": 2,
+          "name": "청소년",
+          "pose": "teen",
+          "behavior": "고개를 돌려 탐색",
+          "scale": 1,
+          "headScale": 1,
+          "eyeScale": 1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            -5
+          ],
+          "scarfScale": 0.93,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-dog-golden-retriever-teen.svg",
+          "sourceKey": "pet-dog-golden-retriever-teen",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-dog-golden-retriever-teen-walk.svg",
+              "sourceKey": "pet-dog-golden-retriever-teen-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-dog-golden-retriever-teen-rest.svg",
+              "sourceKey": "pet-dog-golden-retriever-teen-rest"
+            }
+          }
+        },
+        {
+          "id": 3,
+          "name": "어른",
+          "pose": "adult",
+          "behavior": "편안하게 기지개",
+          "scale": 1,
+          "headScale": 1,
+          "eyeScale": 1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            0
+          ],
+          "scarfScale": 1,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/dog/pet-dog-golden-retriever.svg",
+          "sourceKey": "pet-dog-golden-retriever-adult",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-dog-golden-retriever-adult-walk.svg",
+              "sourceKey": "pet-dog-golden-retriever-adult-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-dog-golden-retriever-adult-rest.svg",
+              "sourceKey": "pet-dog-golden-retriever-adult-rest"
+            }
+          }
+        },
+        {
+          "id": 4,
+          "name": "단짝",
+          "pose": "companion",
+          "behavior": "반가운 인사",
+          "scale": 1,
+          "headScale": 1,
+          "eyeScale": 1,
+          "accessory": null,
+          "scarfOffset": [
+            0,
+            0
+          ],
+          "scarfScale": 1,
+          "headPivot": [
+            104,
+            108
+          ],
+          "source": "pet/growth/pet-dog-golden-retriever-companion.svg",
+          "sourceKey": "pet-dog-golden-retriever-companion",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-dog-golden-retriever-companion-walk.svg",
+              "sourceKey": "pet-dog-golden-retriever-companion-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-dog-golden-retriever-companion-rest.svg",
+              "sourceKey": "pet-dog-golden-retriever-companion-rest"
+            }
+          }
+        }
+      ],
+      "scarfOffset": [
+        0,
+        0
+      ],
+      "scarfScale": 1
+    },
+    {
+      "id": "pet-brain",
+      "path": "pet/special/pet-brain.svg",
+      "category": "pet",
+      "name": "브레니 · 뇌",
+      "en": "Breni / brain",
+      "species": "special",
+      "breed": "brain",
+      "palette": {
+        "body": "#E992A0",
+        "belly": "#F5C5C8",
+        "shade": "#C97185",
+        "outline": "#443C4E",
+        "nose": "#B96279"
+      },
+      "headPivot": [
+        104,
+        136
+      ],
+      "features": [
+        "분리된 대뇌반구와 깊은 고랑",
+        "소뇌와 뇌간"
+      ],
+      "stages": [
+        {
+          "id": 0,
+          "name": "아기",
+          "pose": "baby",
+          "behavior": "꼬물꼬물 쉬기",
+          "scale": 0.94,
+          "headScale": 1,
+          "eyeScale": 1.15,
+          "accessory": null,
+          "headPivot": [
+            104,
+            139
+          ],
+          "scarfOffset": [
+            -4,
+            25
+          ],
+          "scarfScale": 0.62,
+          "source": "pet/growth/pet-brain-baby.svg",
+          "sourceKey": "pet-brain-baby",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-brain-baby-walk.svg",
+              "sourceKey": "pet-brain-baby-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-brain-baby-rest.svg",
+              "sourceKey": "pet-brain-baby-rest"
+            }
+          }
+        },
+        {
+          "id": 1,
+          "name": "꼬마",
+          "pose": "cub",
+          "behavior": "앞발로 톡톡",
+          "scale": 0.98,
+          "headScale": 1,
+          "eyeScale": 1.1,
+          "accessory": null,
+          "headPivot": [
+            104,
+            136
+          ],
+          "scarfOffset": [
+            -4,
+            25
+          ],
+          "scarfScale": 0.62,
+          "source": "pet/growth/pet-brain-cub.svg",
+          "sourceKey": "pet-brain-cub",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-brain-cub-walk.svg",
+              "sourceKey": "pet-brain-cub-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-brain-cub-rest.svg",
+              "sourceKey": "pet-brain-cub-rest"
+            }
+          }
+        },
+        {
+          "id": 2,
+          "name": "청소년",
+          "pose": "teen",
+          "behavior": "고개를 돌려 탐색",
+          "scale": 1,
+          "headScale": 1,
+          "eyeScale": 1,
+          "accessory": null,
+          "headPivot": [
+            104,
+            136
+          ],
+          "scarfOffset": [
+            -4,
+            25
+          ],
+          "scarfScale": 0.62,
+          "source": "pet/growth/pet-brain-teen.svg",
+          "sourceKey": "pet-brain-teen",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-brain-teen-walk.svg",
+              "sourceKey": "pet-brain-teen-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-brain-teen-rest.svg",
+              "sourceKey": "pet-brain-teen-rest"
+            }
+          }
+        },
+        {
+          "id": 3,
+          "name": "어른",
+          "pose": "adult",
+          "behavior": "편안하게 기지개",
+          "scale": 1,
+          "headScale": 1,
+          "eyeScale": 1,
+          "accessory": null,
+          "headPivot": [
+            104,
+            136
+          ],
+          "scarfOffset": [
+            -4,
+            25
+          ],
+          "scarfScale": 0.62,
+          "source": "pet/special/pet-brain.svg",
+          "sourceKey": "pet-brain-adult",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-brain-adult-walk.svg",
+              "sourceKey": "pet-brain-adult-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-brain-adult-rest.svg",
+              "sourceKey": "pet-brain-adult-rest"
+            }
+          }
+        },
+        {
+          "id": 4,
+          "name": "단짝",
+          "pose": "companion",
+          "behavior": "반가운 인사",
+          "scale": 1,
+          "headScale": 1,
+          "eyeScale": 1,
+          "accessory": null,
+          "headPivot": [
+            104,
+            136
+          ],
+          "scarfOffset": [
+            -4,
+            25
+          ],
+          "scarfScale": 0.62,
+          "source": "pet/growth/pet-brain-companion.svg",
+          "sourceKey": "pet-brain-companion",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-brain-companion-walk.svg",
+              "sourceKey": "pet-brain-companion-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-brain-companion-rest.svg",
+              "sourceKey": "pet-brain-companion-rest"
+            }
+          }
+        }
+      ],
+      "scarfOffset": [
+        -4,
+        25
+      ],
+      "scarfScale": 0.62,
+      "anatomyNote": "대뇌·소뇌·뇌간을 구분한 게임용 의인화 실루엣"
+    },
+    {
+      "id": "pet-spine",
+      "path": "pet/special/pet-spine.svg",
+      "category": "pet",
+      "name": "스파이니 · 척추",
+      "en": "Spini / spine",
+      "species": "special",
+      "breed": "spine",
+      "palette": {
+        "body": "#F0E2BA",
+        "belly": "#FFF6DB",
+        "shade": "#CFB889",
+        "outline": "#443C4E",
+        "nose": "#8ABCB6"
+      },
+      "headPivot": [
+        106,
+        126
+      ],
+      "features": [
+        "요추 L1~L5 다섯 마디",
+        "청록색 디스크와 천추"
+      ],
+      "stages": [
+        {
+          "id": 0,
+          "name": "아기",
+          "pose": "baby",
+          "behavior": "꼬물꼬물 쉬기",
+          "scale": 0.94,
+          "headScale": 1,
+          "eyeScale": 1.15,
+          "accessory": null,
+          "headPivot": [
+            109,
+            140
+          ],
+          "scarfOffset": [
+            12,
+            29
+          ],
+          "scarfScale": 0.45,
+          "source": "pet/growth/pet-spine-baby.svg",
+          "sourceKey": "pet-spine-baby",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-spine-baby-walk.svg",
+              "sourceKey": "pet-spine-baby-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-spine-baby-rest.svg",
+              "sourceKey": "pet-spine-baby-rest"
+            }
+          }
+        },
+        {
+          "id": 1,
+          "name": "꼬마",
+          "pose": "cub",
+          "behavior": "앞발로 톡톡",
+          "scale": 0.98,
+          "headScale": 1,
+          "eyeScale": 1.1,
+          "accessory": null,
+          "headPivot": [
+            109,
+            134
+          ],
+          "scarfOffset": [
+            4,
+            29
+          ],
+          "scarfScale": 0.45,
+          "source": "pet/growth/pet-spine-cub.svg",
+          "sourceKey": "pet-spine-cub",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-spine-cub-walk.svg",
+              "sourceKey": "pet-spine-cub-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-spine-cub-rest.svg",
+              "sourceKey": "pet-spine-cub-rest"
+            }
+          }
+        },
+        {
+          "id": 2,
+          "name": "청소년",
+          "pose": "teen",
+          "behavior": "고개를 돌려 탐색",
+          "scale": 1,
+          "headScale": 1,
+          "eyeScale": 1,
+          "accessory": null,
+          "headPivot": [
+            108,
+            130
+          ],
+          "scarfOffset": [
+            0,
+            29
+          ],
+          "scarfScale": 0.45,
+          "source": "pet/growth/pet-spine-teen.svg",
+          "sourceKey": "pet-spine-teen",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-spine-teen-walk.svg",
+              "sourceKey": "pet-spine-teen-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-spine-teen-rest.svg",
+              "sourceKey": "pet-spine-teen-rest"
+            }
+          }
+        },
+        {
+          "id": 3,
+          "name": "어른",
+          "pose": "adult",
+          "behavior": "편안하게 기지개",
+          "scale": 1,
+          "headScale": 1,
+          "eyeScale": 1,
+          "accessory": null,
+          "headPivot": [
+            106,
+            126
+          ],
+          "scarfOffset": [
+            -2,
+            29
+          ],
+          "scarfScale": 0.45,
+          "source": "pet/special/pet-spine.svg",
+          "sourceKey": "pet-spine-adult",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-spine-adult-walk.svg",
+              "sourceKey": "pet-spine-adult-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-spine-adult-rest.svg",
+              "sourceKey": "pet-spine-adult-rest"
+            }
+          }
+        },
+        {
+          "id": 4,
+          "name": "단짝",
+          "pose": "companion",
+          "behavior": "반가운 인사",
+          "scale": 1,
+          "headScale": 1,
+          "eyeScale": 1,
+          "accessory": null,
+          "headPivot": [
+            106,
+            126
+          ],
+          "scarfOffset": [
+            -2,
+            29
+          ],
+          "scarfScale": 0.45,
+          "source": "pet/growth/pet-spine-companion.svg",
+          "sourceKey": "pet-spine-companion",
+          "motionSources": {
+            "walk": {
+              "source": "pet/motion/pet-spine-companion-walk.svg",
+              "sourceKey": "pet-spine-companion-walk"
+            },
+            "rest": {
+              "source": "pet/motion/pet-spine-companion-rest.svg",
+              "sourceKey": "pet-spine-companion-rest"
+            }
+          }
+        }
+      ],
+      "scarfOffset": [
+        -2,
+        29
+      ],
+      "scarfScale": 0.45,
+      "lumbarCount": 5,
+      "anatomyNote": "요추 L1~L5 다섯 마디와 아래 천골로 구성한 짧고 통통한 게임용 캐릭터."
+    },
+    {
+      "id": "floor-wood",
+      "path": "room/floor/floor-wood.svg",
+      "category": "floor",
+      "name": "허니 오크",
+      "en": "Honey oak",
+      "footprint": [
+        1,
+        1
+      ],
+      "anchor": [
+        32,
+        16
+      ]
+    },
+    {
+      "id": "floor-carpet",
+      "path": "room/floor/floor-carpet.svg",
+      "category": "floor",
+      "name": "라일락 카펫",
+      "en": "Lilac carpet",
+      "footprint": [
+        1,
+        1
+      ],
+      "anchor": [
+        32,
+        16
+      ]
+    },
+    {
+      "id": "floor-tile",
+      "path": "room/floor/floor-tile.svg",
+      "category": "floor",
+      "name": "크림 타일",
+      "en": "Cream tile",
+      "footprint": [
+        1,
+        1
+      ],
+      "anchor": [
+        32,
+        16
+      ]
+    },
+    {
+      "id": "floor-grass",
+      "path": "room/floor/floor-grass.svg",
+      "category": "floor",
+      "name": "클로버 잔디",
+      "en": "Clover lawn",
+      "footprint": [
+        1,
+        1
+      ],
+      "anchor": [
+        32,
+        16
+      ]
+    },
+    {
+      "id": "floor-stone",
+      "path": "room/floor/floor-stone.svg",
+      "category": "floor",
+      "name": "블루 스톤",
+      "en": "Blue stone",
+      "footprint": [
+        1,
+        1
+      ],
+      "anchor": [
+        32,
+        16
+      ]
+    },
+    {
+      "id": "floor-rug-sunrise",
+      "path": "room/floor/floor-rug-sunrise.svg",
+      "category": "floor",
+      "name": "선셋 러그",
+      "en": "Sunset weave",
+      "footprint": [
+        1,
+        1
+      ],
+      "anchor": [
+        32,
+        16
+      ]
+    },
+    {
+      "id": "floor-rug-cloud",
+      "path": "room/floor/floor-rug-cloud.svg",
+      "category": "floor",
+      "name": "구름 러그",
+      "en": "Cloud weave",
+      "footprint": [
+        1,
+        1
+      ],
+      "anchor": [
+        32,
+        16
+      ]
+    },
+    {
+      "id": "floor-linoleum",
+      "path": "room/floor/floor-linoleum.svg",
+      "category": "floor",
+      "name": "민트 리놀륨",
+      "en": "Mint linoleum",
+      "footprint": [
+        1,
+        1
+      ],
+      "anchor": [
+        32,
+        16
+      ]
+    },
+    {
+      "id": "wall-plain",
+      "path": "room/wall/wall-plain.svg",
+      "category": "wall",
+      "name": "크림 벽",
+      "en": "Cream walls",
+      "wallHeight": 96
+    },
+    {
+      "id": "wall-stripe",
+      "path": "room/wall/wall-stripe.svg",
+      "category": "wall",
+      "name": "라일락 스트라이프",
+      "en": "Lilac stripe",
+      "wallHeight": 96
+    },
+    {
+      "id": "wall-brick",
+      "path": "room/wall/wall-brick.svg",
+      "category": "wall",
+      "name": "피치 벽돌",
+      "en": "Peach brick",
+      "wallHeight": 96
+    },
+    {
+      "id": "wall-wood",
+      "path": "room/wall/wall-wood.svg",
+      "category": "wall",
+      "name": "오크 패널",
+      "en": "Oak panel",
+      "wallHeight": 96
+    },
+    {
+      "id": "wall-bookshelf",
+      "path": "room/wall/wall-bookshelf.svg",
+      "category": "wall",
+      "name": "작은 서가",
+      "en": "Library wall",
+      "wallHeight": 96
+    },
+    {
+      "id": "wall-window",
+      "path": "room/wall/wall-window.svg",
+      "category": "wall",
+      "name": "햇빛 창가",
+      "en": "Sunlit window",
+      "wallHeight": 96
+    },
+    {
+      "id": "wall-poster",
+      "path": "room/wall/wall-poster.svg",
+      "category": "wall",
+      "name": "의국 갤러리",
+      "en": "Clinic gallery",
+      "wallHeight": 96
+    },
+    {
+      "id": "wall-curtain",
+      "path": "room/wall/wall-curtain.svg",
+      "category": "wall",
+      "name": "하늘 커튼",
+      "en": "Sky curtains",
+      "wallHeight": 96
+    },
+    {
+      "id": "fn-sofa",
+      "path": "room/furniture/fn-sofa.svg",
+      "category": "furniture",
+      "name": "민트 소파",
+      "en": "Mint sofa",
+      "footprint": [
+        2,
+        1
+      ],
+      "anchor": [
+        128,
+        164
+      ],
+      "rarity": "고급",
+      "kind": "seating",
+      "price": 900,
+      "rotations": [
+        {
+          "degrees": 0,
+          "source": "room/furniture/fn-sofa.svg",
+          "sourceKey": "fn-sofa-r0",
+          "footprint": [
+            2,
+            1
+          ]
+        },
+        {
+          "degrees": 90,
+          "source": "room/furniture/directions/fn-sofa-90.svg",
+          "sourceKey": "fn-sofa-r1",
+          "footprint": [
+            1,
+            2
+          ]
+        },
+        {
+          "degrees": 180,
+          "source": "room/furniture/directions/fn-sofa-180.svg",
+          "sourceKey": "fn-sofa-r2",
+          "footprint": [
+            2,
+            1
+          ]
+        },
+        {
+          "degrees": 270,
+          "source": "room/furniture/directions/fn-sofa-270.svg",
+          "sourceKey": "fn-sofa-r3",
+          "footprint": [
+            1,
+            2
+          ]
+        }
+      ],
+      "blocksMovement": true,
+      "layer": "object",
+      "interaction": "sit"
+    },
+    {
+      "id": "fn-beanbag",
+      "path": "room/furniture/fn-beanbag.svg",
+      "category": "furniture",
+      "name": "피치 빈백",
+      "en": "Peach beanbag",
+      "footprint": [
+        1,
+        1
+      ],
+      "anchor": [
+        128,
+        164
+      ],
+      "rarity": "일반",
+      "kind": "seating",
+      "price": 350,
+      "rotations": [
+        {
+          "degrees": 0,
+          "source": "room/furniture/fn-beanbag.svg",
+          "sourceKey": "fn-beanbag-r0",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 90,
+          "source": "room/furniture/directions/fn-beanbag-90.svg",
+          "sourceKey": "fn-beanbag-r1",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 180,
+          "source": "room/furniture/directions/fn-beanbag-180.svg",
+          "sourceKey": "fn-beanbag-r2",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 270,
+          "source": "room/furniture/directions/fn-beanbag-270.svg",
+          "sourceKey": "fn-beanbag-r3",
+          "footprint": [
+            1,
+            1
+          ]
+        }
+      ],
+      "blocksMovement": true,
+      "layer": "object",
+      "interaction": null
+    },
+    {
+      "id": "fn-chair",
+      "path": "room/furniture/fn-chair.svg",
+      "category": "furniture",
+      "name": "작업 의자",
+      "en": "Desk chair",
+      "footprint": [
+        1,
+        1
+      ],
+      "anchor": [
+        128,
+        164
+      ],
+      "rarity": "일반",
+      "kind": "seating",
+      "price": 350,
+      "rotations": [
+        {
+          "degrees": 0,
+          "source": "room/furniture/fn-chair.svg",
+          "sourceKey": "fn-chair-r0",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 90,
+          "source": "room/furniture/directions/fn-chair-90.svg",
+          "sourceKey": "fn-chair-r1",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 180,
+          "source": "room/furniture/directions/fn-chair-180.svg",
+          "sourceKey": "fn-chair-r2",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 270,
+          "source": "room/furniture/directions/fn-chair-270.svg",
+          "sourceKey": "fn-chair-r3",
+          "footprint": [
+            1,
+            1
+          ]
+        }
+      ],
+      "blocksMovement": true,
+      "layer": "object",
+      "interaction": null
+    },
+    {
+      "id": "fn-cushion",
+      "path": "room/furniture/fn-cushion.svg",
+      "category": "furniture",
+      "name": "라일락 방석",
+      "en": "Lilac cushion",
+      "footprint": [
+        1,
+        1
+      ],
+      "anchor": [
+        128,
+        164
+      ],
+      "rarity": "일반",
+      "kind": "seating",
+      "price": 350,
+      "rotations": [
+        {
+          "degrees": 0,
+          "source": "room/furniture/fn-cushion.svg",
+          "sourceKey": "fn-cushion-r0",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 90,
+          "source": "room/furniture/directions/fn-cushion-90.svg",
+          "sourceKey": "fn-cushion-r1",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 180,
+          "source": "room/furniture/directions/fn-cushion-180.svg",
+          "sourceKey": "fn-cushion-r2",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 270,
+          "source": "room/furniture/directions/fn-cushion-270.svg",
+          "sourceKey": "fn-cushion-r3",
+          "footprint": [
+            1,
+            1
+          ]
+        }
+      ],
+      "blocksMovement": false,
+      "layer": "object",
+      "interaction": null
+    },
+    {
+      "id": "fn-desk",
+      "path": "room/furniture/fn-desk.svg",
+      "category": "furniture",
+      "name": "오크 책상",
+      "en": "Oak desk",
+      "footprint": [
+        2,
+        1
+      ],
+      "anchor": [
+        128,
+        164
+      ],
+      "rarity": "고급",
+      "kind": "surface",
+      "price": 900,
+      "rotations": [
+        {
+          "degrees": 0,
+          "source": "room/furniture/fn-desk.svg",
+          "sourceKey": "fn-desk-r0",
+          "footprint": [
+            2,
+            1
+          ]
+        },
+        {
+          "degrees": 90,
+          "source": "room/furniture/directions/fn-desk-90.svg",
+          "sourceKey": "fn-desk-r1",
+          "footprint": [
+            1,
+            2
+          ]
+        },
+        {
+          "degrees": 180,
+          "source": "room/furniture/directions/fn-desk-180.svg",
+          "sourceKey": "fn-desk-r2",
+          "footprint": [
+            2,
+            1
+          ]
+        },
+        {
+          "degrees": 270,
+          "source": "room/furniture/directions/fn-desk-270.svg",
+          "sourceKey": "fn-desk-r3",
+          "footprint": [
+            1,
+            2
+          ]
+        }
+      ],
+      "blocksMovement": true,
+      "layer": "object",
+      "interaction": null
+    },
+    {
+      "id": "fn-table",
+      "path": "room/furniture/fn-table.svg",
+      "category": "furniture",
+      "name": "작은 테이블",
+      "en": "Tea table",
+      "footprint": [
+        2,
+        1
+      ],
+      "anchor": [
+        128,
+        164
+      ],
+      "rarity": "일반",
+      "kind": "surface",
+      "price": 350,
+      "rotations": [
+        {
+          "degrees": 0,
+          "source": "room/furniture/fn-table.svg",
+          "sourceKey": "fn-table-r0",
+          "footprint": [
+            2,
+            1
+          ]
+        },
+        {
+          "degrees": 90,
+          "source": "room/furniture/directions/fn-table-90.svg",
+          "sourceKey": "fn-table-r1",
+          "footprint": [
+            1,
+            2
+          ]
+        },
+        {
+          "degrees": 180,
+          "source": "room/furniture/directions/fn-table-180.svg",
+          "sourceKey": "fn-table-r2",
+          "footprint": [
+            2,
+            1
+          ]
+        },
+        {
+          "degrees": 270,
+          "source": "room/furniture/directions/fn-table-270.svg",
+          "sourceKey": "fn-table-r3",
+          "footprint": [
+            1,
+            2
+          ]
+        }
+      ],
+      "blocksMovement": true,
+      "layer": "object",
+      "interaction": null
+    },
+    {
+      "id": "fn-shelf",
+      "path": "room/furniture/fn-shelf.svg",
+      "category": "furniture",
+      "name": "색색 책장",
+      "en": "Book shelf",
+      "footprint": [
+        2,
+        1
+      ],
+      "anchor": [
+        128,
+        164
+      ],
+      "rarity": "희귀",
+      "kind": "surface",
+      "price": 1800,
+      "rotations": [
+        {
+          "degrees": 0,
+          "source": "room/furniture/fn-shelf.svg",
+          "sourceKey": "fn-shelf-r0",
+          "footprint": [
+            2,
+            1
+          ]
+        },
+        {
+          "degrees": 90,
+          "source": "room/furniture/directions/fn-shelf-90.svg",
+          "sourceKey": "fn-shelf-r1",
+          "footprint": [
+            1,
+            2
+          ]
+        },
+        {
+          "degrees": 180,
+          "source": "room/furniture/directions/fn-shelf-180.svg",
+          "sourceKey": "fn-shelf-r2",
+          "footprint": [
+            2,
+            1
+          ]
+        },
+        {
+          "degrees": 270,
+          "source": "room/furniture/directions/fn-shelf-270.svg",
+          "sourceKey": "fn-shelf-r3",
+          "footprint": [
+            1,
+            2
+          ]
+        }
+      ],
+      "blocksMovement": true,
+      "layer": "object",
+      "interaction": "inspect"
+    },
+    {
+      "id": "fn-nightstand",
+      "path": "room/furniture/fn-nightstand.svg",
+      "category": "furniture",
+      "name": "침대 옆 협탁",
+      "en": "Bedside table",
+      "footprint": [
+        1,
+        1
+      ],
+      "anchor": [
+        128,
+        164
+      ],
+      "rarity": "일반",
+      "kind": "surface",
+      "price": 350,
+      "rotations": [
+        {
+          "degrees": 0,
+          "source": "room/furniture/fn-nightstand.svg",
+          "sourceKey": "fn-nightstand-r0",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 90,
+          "source": "room/furniture/directions/fn-nightstand-90.svg",
+          "sourceKey": "fn-nightstand-r1",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 180,
+          "source": "room/furniture/directions/fn-nightstand-180.svg",
+          "sourceKey": "fn-nightstand-r2",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 270,
+          "source": "room/furniture/directions/fn-nightstand-270.svg",
+          "sourceKey": "fn-nightstand-r3",
+          "footprint": [
+            1,
+            1
+          ]
+        }
+      ],
+      "blocksMovement": true,
+      "layer": "object",
+      "interaction": null
+    },
+    {
+      "id": "fn-cat-tree",
+      "path": "room/furniture/fn-cat-tree.svg",
+      "category": "furniture",
+      "name": "구름 캣타워",
+      "en": "Cloud cat tree",
+      "footprint": [
+        2,
+        2
+      ],
+      "anchor": [
+        128,
+        164
+      ],
+      "rarity": "희귀",
+      "kind": "pet-supply",
+      "price": 1800,
+      "rotations": [
+        {
+          "degrees": 0,
+          "source": "room/furniture/fn-cat-tree.svg",
+          "sourceKey": "fn-cat-tree-r0",
+          "footprint": [
+            2,
+            2
+          ]
+        },
+        {
+          "degrees": 90,
+          "source": "room/furniture/directions/fn-cat-tree-90.svg",
+          "sourceKey": "fn-cat-tree-r1",
+          "footprint": [
+            2,
+            2
+          ]
+        },
+        {
+          "degrees": 180,
+          "source": "room/furniture/directions/fn-cat-tree-180.svg",
+          "sourceKey": "fn-cat-tree-r2",
+          "footprint": [
+            2,
+            2
+          ]
+        },
+        {
+          "degrees": 270,
+          "source": "room/furniture/directions/fn-cat-tree-270.svg",
+          "sourceKey": "fn-cat-tree-r3",
+          "footprint": [
+            2,
+            2
+          ]
+        }
+      ],
+      "blocksMovement": true,
+      "layer": "object",
+      "interaction": "play"
+    },
+    {
+      "id": "fn-pet-bed",
+      "path": "room/furniture/fn-pet-bed.svg",
+      "category": "furniture",
+      "name": "포근한 펫 침대",
+      "en": "Nest bed",
+      "footprint": [
+        1,
+        1
+      ],
+      "anchor": [
+        128,
+        164
+      ],
+      "rarity": "고급",
+      "kind": "pet-supply",
+      "price": 900,
+      "rotations": [
+        {
+          "degrees": 0,
+          "source": "room/furniture/fn-pet-bed.svg",
+          "sourceKey": "fn-pet-bed-r0",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 90,
+          "source": "room/furniture/directions/fn-pet-bed-90.svg",
+          "sourceKey": "fn-pet-bed-r1",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 180,
+          "source": "room/furniture/directions/fn-pet-bed-180.svg",
+          "sourceKey": "fn-pet-bed-r2",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 270,
+          "source": "room/furniture/directions/fn-pet-bed-270.svg",
+          "sourceKey": "fn-pet-bed-r3",
+          "footprint": [
+            1,
+            1
+          ]
+        }
+      ],
+      "blocksMovement": false,
+      "layer": "object",
+      "interaction": "nap"
+    },
+    {
+      "id": "fn-bowl",
+      "path": "room/furniture/fn-bowl.svg",
+      "category": "furniture",
+      "name": "두 그릇 세트",
+      "en": "Dinner for two",
+      "footprint": [
+        1,
+        1
+      ],
+      "anchor": [
+        128,
+        164
+      ],
+      "rarity": "일반",
+      "kind": "pet-supply",
+      "price": 350,
+      "rotations": [
+        {
+          "degrees": 0,
+          "source": "room/furniture/fn-bowl.svg",
+          "sourceKey": "fn-bowl-r0",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 90,
+          "source": "room/furniture/directions/fn-bowl-90.svg",
+          "sourceKey": "fn-bowl-r1",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 180,
+          "source": "room/furniture/directions/fn-bowl-180.svg",
+          "sourceKey": "fn-bowl-r2",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 270,
+          "source": "room/furniture/directions/fn-bowl-270.svg",
+          "sourceKey": "fn-bowl-r3",
+          "footprint": [
+            1,
+            1
+          ]
+        }
+      ],
+      "blocksMovement": true,
+      "layer": "object",
+      "interaction": "eat"
+    },
+    {
+      "id": "fn-scratcher",
+      "path": "room/furniture/fn-scratcher.svg",
+      "category": "furniture",
+      "name": "오크 스크래처",
+      "en": "Oak scratcher",
+      "footprint": [
+        1,
+        1
+      ],
+      "anchor": [
+        128,
+        164
+      ],
+      "rarity": "일반",
+      "kind": "pet-supply",
+      "price": 350,
+      "rotations": [
+        {
+          "degrees": 0,
+          "source": "room/furniture/fn-scratcher.svg",
+          "sourceKey": "fn-scratcher-r0",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 90,
+          "source": "room/furniture/directions/fn-scratcher-90.svg",
+          "sourceKey": "fn-scratcher-r1",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 180,
+          "source": "room/furniture/directions/fn-scratcher-180.svg",
+          "sourceKey": "fn-scratcher-r2",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 270,
+          "source": "room/furniture/directions/fn-scratcher-270.svg",
+          "sourceKey": "fn-scratcher-r3",
+          "footprint": [
+            1,
+            1
+          ]
+        }
+      ],
+      "blocksMovement": true,
+      "layer": "object",
+      "interaction": "play"
+    },
+    {
+      "id": "fn-dog-house",
+      "path": "room/furniture/fn-dog-house.svg",
+      "category": "furniture",
+      "name": "작은 강아지집",
+      "en": "Little dog house",
+      "footprint": [
+        2,
+        2
+      ],
+      "anchor": [
+        128,
+        164
+      ],
+      "rarity": "희귀",
+      "kind": "pet-supply",
+      "price": 1800,
+      "rotations": [
+        {
+          "degrees": 0,
+          "source": "room/furniture/fn-dog-house.svg",
+          "sourceKey": "fn-dog-house-r0",
+          "footprint": [
+            2,
+            2
+          ]
+        },
+        {
+          "degrees": 90,
+          "source": "room/furniture/directions/fn-dog-house-90.svg",
+          "sourceKey": "fn-dog-house-r1",
+          "footprint": [
+            2,
+            2
+          ]
+        },
+        {
+          "degrees": 180,
+          "source": "room/furniture/directions/fn-dog-house-180.svg",
+          "sourceKey": "fn-dog-house-r2",
+          "footprint": [
+            2,
+            2
+          ]
+        },
+        {
+          "degrees": 270,
+          "source": "room/furniture/directions/fn-dog-house-270.svg",
+          "sourceKey": "fn-dog-house-r3",
+          "footprint": [
+            2,
+            2
+          ]
+        }
+      ],
+      "blocksMovement": true,
+      "layer": "object",
+      "interaction": null
+    },
+    {
+      "id": "fn-plant-large",
+      "path": "room/furniture/fn-plant-large.svg",
+      "category": "furniture",
+      "name": "큰 몬스테라",
+      "en": "Monstera",
+      "footprint": [
+        1,
+        1
+      ],
+      "anchor": [
+        128,
+        164
+      ],
+      "rarity": "고급",
+      "kind": "plant",
+      "price": 900,
+      "rotations": [
+        {
+          "degrees": 0,
+          "source": "room/furniture/fn-plant-large.svg",
+          "sourceKey": "fn-plant-large-r0",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 90,
+          "source": "room/furniture/directions/fn-plant-large-90.svg",
+          "sourceKey": "fn-plant-large-r1",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 180,
+          "source": "room/furniture/directions/fn-plant-large-180.svg",
+          "sourceKey": "fn-plant-large-r2",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 270,
+          "source": "room/furniture/directions/fn-plant-large-270.svg",
+          "sourceKey": "fn-plant-large-r3",
+          "footprint": [
+            1,
+            1
+          ]
+        }
+      ],
+      "blocksMovement": true,
+      "layer": "object",
+      "interaction": "inspect"
+    },
+    {
+      "id": "fn-plant-small",
+      "path": "room/furniture/fn-plant-small.svg",
+      "category": "furniture",
+      "name": "작은 새싹",
+      "en": "Little sprout",
+      "footprint": [
+        1,
+        1
+      ],
+      "anchor": [
+        128,
+        164
+      ],
+      "rarity": "일반",
+      "kind": "plant",
+      "price": 350,
+      "rotations": [
+        {
+          "degrees": 0,
+          "source": "room/furniture/fn-plant-small.svg",
+          "sourceKey": "fn-plant-small-r0",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 90,
+          "source": "room/furniture/directions/fn-plant-small-90.svg",
+          "sourceKey": "fn-plant-small-r1",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 180,
+          "source": "room/furniture/directions/fn-plant-small-180.svg",
+          "sourceKey": "fn-plant-small-r2",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 270,
+          "source": "room/furniture/directions/fn-plant-small-270.svg",
+          "sourceKey": "fn-plant-small-r3",
+          "footprint": [
+            1,
+            1
+          ]
+        }
+      ],
+      "blocksMovement": true,
+      "layer": "object",
+      "interaction": null
+    },
+    {
+      "id": "fn-plant-hanging",
+      "path": "room/furniture/fn-plant-hanging.svg",
+      "category": "furniture",
+      "name": "행잉 플랜트",
+      "en": "Hanging plant",
+      "footprint": [
+        1,
+        1
+      ],
+      "anchor": [
+        128,
+        164
+      ],
+      "rarity": "고급",
+      "kind": "plant",
+      "price": 900,
+      "rotations": [
+        {
+          "degrees": 0,
+          "source": "room/furniture/fn-plant-hanging.svg",
+          "sourceKey": "fn-plant-hanging-r0",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 90,
+          "source": "room/furniture/directions/fn-plant-hanging-90.svg",
+          "sourceKey": "fn-plant-hanging-r1",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 180,
+          "source": "room/furniture/directions/fn-plant-hanging-180.svg",
+          "sourceKey": "fn-plant-hanging-r2",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 270,
+          "source": "room/furniture/directions/fn-plant-hanging-270.svg",
+          "sourceKey": "fn-plant-hanging-r3",
+          "footprint": [
+            1,
+            1
+          ]
+        }
+      ],
+      "blocksMovement": true,
+      "layer": "object",
+      "interaction": null
+    },
+    {
+      "id": "fn-floor-lamp",
+      "path": "room/furniture/fn-floor-lamp.svg",
+      "category": "furniture",
+      "name": "머시룸 플로어램프",
+      "en": "Mushroom lamp",
+      "footprint": [
+        1,
+        1
+      ],
+      "anchor": [
+        128,
+        164
+      ],
+      "rarity": "고급",
+      "kind": "light",
+      "price": 900,
+      "rotations": [
+        {
+          "degrees": 0,
+          "source": "room/furniture/fn-floor-lamp.svg",
+          "sourceKey": "fn-floor-lamp-r0",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 90,
+          "source": "room/furniture/directions/fn-floor-lamp-90.svg",
+          "sourceKey": "fn-floor-lamp-r1",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 180,
+          "source": "room/furniture/directions/fn-floor-lamp-180.svg",
+          "sourceKey": "fn-floor-lamp-r2",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 270,
+          "source": "room/furniture/directions/fn-floor-lamp-270.svg",
+          "sourceKey": "fn-floor-lamp-r3",
+          "footprint": [
+            1,
+            1
+          ]
+        }
+      ],
+      "blocksMovement": true,
+      "layer": "object",
+      "interaction": null
+    },
+    {
+      "id": "fn-table-lamp",
+      "path": "room/furniture/fn-table-lamp.svg",
+      "category": "furniture",
+      "name": "작은 테이블램프",
+      "en": "Reading lamp",
+      "footprint": [
+        1,
+        1
+      ],
+      "anchor": [
+        128,
+        164
+      ],
+      "rarity": "일반",
+      "kind": "light",
+      "price": 350,
+      "rotations": [
+        {
+          "degrees": 0,
+          "source": "room/furniture/fn-table-lamp.svg",
+          "sourceKey": "fn-table-lamp-r0",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 90,
+          "source": "room/furniture/directions/fn-table-lamp-90.svg",
+          "sourceKey": "fn-table-lamp-r1",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 180,
+          "source": "room/furniture/directions/fn-table-lamp-180.svg",
+          "sourceKey": "fn-table-lamp-r2",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 270,
+          "source": "room/furniture/directions/fn-table-lamp-270.svg",
+          "sourceKey": "fn-table-lamp-r3",
+          "footprint": [
+            1,
+            1
+          ]
+        }
+      ],
+      "blocksMovement": true,
+      "layer": "object",
+      "interaction": null
+    },
+    {
+      "id": "fn-mood-lamp",
+      "path": "room/furniture/fn-mood-lamp.svg",
+      "category": "furniture",
+      "name": "뇌 무드등",
+      "en": "Brain glow",
+      "footprint": [
+        1,
+        1
+      ],
+      "anchor": [
+        128,
+        164
+      ],
+      "rarity": "특별",
+      "kind": "light",
+      "price": 2600,
+      "rotations": [
+        {
+          "degrees": 0,
+          "source": "room/furniture/fn-mood-lamp.svg",
+          "sourceKey": "fn-mood-lamp-r0",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 90,
+          "source": "room/furniture/directions/fn-mood-lamp-90.svg",
+          "sourceKey": "fn-mood-lamp-r1",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 180,
+          "source": "room/furniture/directions/fn-mood-lamp-180.svg",
+          "sourceKey": "fn-mood-lamp-r2",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 270,
+          "source": "room/furniture/directions/fn-mood-lamp-270.svg",
+          "sourceKey": "fn-mood-lamp-r3",
+          "footprint": [
+            1,
+            1
+          ]
+        }
+      ],
+      "blocksMovement": true,
+      "layer": "object",
+      "interaction": "look"
+    },
+    {
+      "id": "fn-frame",
+      "path": "room/furniture/fn-frame.svg",
+      "category": "furniture",
+      "name": "뇌 그림 액자 스탠드",
+      "en": "Brain print",
+      "footprint": [
+        1,
+        1
+      ],
+      "anchor": [
+        128,
+        164
+      ],
+      "rarity": "고급",
+      "kind": "wall-decor",
+      "price": 900,
+      "mount": "floor",
+      "rotations": [
+        {
+          "degrees": 0,
+          "source": "room/furniture/fn-frame.svg",
+          "sourceKey": "fn-frame-r0",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 90,
+          "source": "room/furniture/directions/fn-frame-90.svg",
+          "sourceKey": "fn-frame-r1",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 180,
+          "source": "room/furniture/directions/fn-frame-180.svg",
+          "sourceKey": "fn-frame-r2",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 270,
+          "source": "room/furniture/directions/fn-frame-270.svg",
+          "sourceKey": "fn-frame-r3",
+          "footprint": [
+            1,
+            1
+          ]
+        }
+      ],
+      "blocksMovement": true,
+      "layer": "object",
+      "interaction": null
+    },
+    {
+      "id": "fn-clock",
+      "path": "room/furniture/fn-clock.svg",
+      "category": "furniture",
+      "name": "데이지 시계 스탠드",
+      "en": "Daisy clock",
+      "footprint": [
+        1,
+        1
+      ],
+      "anchor": [
+        128,
+        164
+      ],
+      "rarity": "일반",
+      "kind": "wall-decor",
+      "price": 350,
+      "mount": "floor",
+      "rotations": [
+        {
+          "degrees": 0,
+          "source": "room/furniture/fn-clock.svg",
+          "sourceKey": "fn-clock-r0",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 90,
+          "source": "room/furniture/directions/fn-clock-90.svg",
+          "sourceKey": "fn-clock-r1",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 180,
+          "source": "room/furniture/directions/fn-clock-180.svg",
+          "sourceKey": "fn-clock-r2",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 270,
+          "source": "room/furniture/directions/fn-clock-270.svg",
+          "sourceKey": "fn-clock-r3",
+          "footprint": [
+            1,
+            1
+          ]
+        }
+      ],
+      "blocksMovement": true,
+      "layer": "object",
+      "interaction": null
+    },
+    {
+      "id": "fn-board",
+      "path": "room/furniture/fn-board.svg",
+      "category": "furniture",
+      "name": "작은 할일 보드 스탠드",
+      "en": "Tiny task board",
+      "footprint": [
+        2,
+        1
+      ],
+      "anchor": [
+        128,
+        164
+      ],
+      "rarity": "고급",
+      "kind": "wall-decor",
+      "price": 900,
+      "mount": "floor",
+      "rotations": [
+        {
+          "degrees": 0,
+          "source": "room/furniture/fn-board.svg",
+          "sourceKey": "fn-board-r0",
+          "footprint": [
+            2,
+            1
+          ]
+        },
+        {
+          "degrees": 90,
+          "source": "room/furniture/directions/fn-board-90.svg",
+          "sourceKey": "fn-board-r1",
+          "footprint": [
+            1,
+            2
+          ]
+        },
+        {
+          "degrees": 180,
+          "source": "room/furniture/directions/fn-board-180.svg",
+          "sourceKey": "fn-board-r2",
+          "footprint": [
+            2,
+            1
+          ]
+        },
+        {
+          "degrees": 270,
+          "source": "room/furniture/directions/fn-board-270.svg",
+          "sourceKey": "fn-board-r3",
+          "footprint": [
+            1,
+            2
+          ]
+        }
+      ],
+      "blocksMovement": true,
+      "layer": "object",
+      "interaction": null
+    },
+    {
+      "id": "fn-rug",
+      "path": "room/furniture/fn-rug.svg",
+      "category": "furniture",
+      "name": "선셋 러그",
+      "en": "Sunset rug",
+      "footprint": [
+        2,
+        2
+      ],
+      "anchor": [
+        128,
+        164
+      ],
+      "rarity": "일반",
+      "kind": "misc",
+      "price": 350,
+      "rotations": [
+        {
+          "degrees": 0,
+          "source": "room/furniture/fn-rug.svg",
+          "sourceKey": "fn-rug-r0",
+          "footprint": [
+            2,
+            2
+          ]
+        },
+        {
+          "degrees": 90,
+          "source": "room/furniture/directions/fn-rug-90.svg",
+          "sourceKey": "fn-rug-r1",
+          "footprint": [
+            2,
+            2
+          ]
+        },
+        {
+          "degrees": 180,
+          "source": "room/furniture/directions/fn-rug-180.svg",
+          "sourceKey": "fn-rug-r2",
+          "footprint": [
+            2,
+            2
+          ]
+        },
+        {
+          "degrees": 270,
+          "source": "room/furniture/directions/fn-rug-270.svg",
+          "sourceKey": "fn-rug-r3",
+          "footprint": [
+            2,
+            2
+          ]
+        }
+      ],
+      "blocksMovement": false,
+      "layer": "floor",
+      "interaction": null
+    },
+    {
+      "id": "fn-cushion-pile",
+      "path": "room/furniture/fn-cushion-pile.svg",
+      "category": "furniture",
+      "name": "쿠션 더미",
+      "en": "Pillow pile",
+      "footprint": [
+        1,
+        1
+      ],
+      "anchor": [
+        128,
+        164
+      ],
+      "rarity": "고급",
+      "kind": "misc",
+      "price": 900,
+      "rotations": [
+        {
+          "degrees": 0,
+          "source": "room/furniture/fn-cushion-pile.svg",
+          "sourceKey": "fn-cushion-pile-r0",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 90,
+          "source": "room/furniture/directions/fn-cushion-pile-90.svg",
+          "sourceKey": "fn-cushion-pile-r1",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 180,
+          "source": "room/furniture/directions/fn-cushion-pile-180.svg",
+          "sourceKey": "fn-cushion-pile-r2",
+          "footprint": [
+            1,
+            1
+          ]
+        },
+        {
+          "degrees": 270,
+          "source": "room/furniture/directions/fn-cushion-pile-270.svg",
+          "sourceKey": "fn-cushion-pile-r3",
+          "footprint": [
+            1,
+            1
+          ]
+        }
+      ],
+      "blocksMovement": true,
+      "layer": "object",
+      "interaction": null
+    },
+    {
+      "id": "box-normal",
+      "path": "gacha/box-normal.svg",
+      "category": "gacha",
+      "name": "일반 보상 상자",
+      "en": "Daily parcel",
+      "states": [
+        "closed",
+        "opening",
+        "open"
+      ]
+    },
+    {
+      "id": "box-rare",
+      "path": "gacha/box-rare.svg",
+      "category": "gacha",
+      "name": "고급 보상 상자",
+      "en": "Garden parcel",
+      "states": [
+        "closed",
+        "opening",
+        "open"
+      ]
+    },
+    {
+      "id": "box-epic",
+      "path": "gacha/box-epic.svg",
+      "category": "gacha",
+      "name": "희귀 보상 상자",
+      "en": "Twilight parcel",
+      "states": [
+        "closed",
+        "opening",
+        "open"
+      ]
+    },
+    {
+      "id": "accessory-scarf-mint",
+      "path": "pet/accessories/accessory-scarf-mint.svg",
+      "category": "accessory",
+      "name": "민트 목도리",
+      "en": "Mint scarf",
+      "anchor": [
+        104,
+        124
+      ]
+    },
+    {
+      "id": "accessory-scarf-coral",
+      "path": "pet/accessories/accessory-scarf-coral.svg",
+      "category": "accessory",
+      "name": "코랄 목도리",
+      "en": "Coral scarf",
+      "anchor": [
+        104,
+        124
+      ]
+    },
+    {
+      "id": "accessory-scarf-lilac",
+      "path": "pet/accessories/accessory-scarf-lilac.svg",
+      "category": "accessory",
+      "name": "라일락 목도리",
+      "en": "Lilac scarf",
+      "anchor": [
+        104,
+        124
+      ]
+    },
+    {
+      "id": "accessory-bow",
+      "path": "pet/accessories/accessory-bow.svg",
+      "category": "accessory",
+      "name": "버터 리본",
+      "en": "Butter bow",
+      "anchor": [
+        104,
+        124
+      ]
+    },
+    {
+      "id": "accessory-bandana",
+      "path": "pet/accessories/accessory-bandana.svg",
+      "category": "accessory",
+      "name": "블루 반다나",
+      "en": "Blue bandana",
+      "anchor": [
+        104,
+        124
+      ]
+    },
+    {
+      "id": "accessory-badge",
+      "path": "pet/accessories/accessory-badge.svg",
+      "category": "accessory",
+      "name": "새싹 배지",
+      "en": "Sprout badge",
+      "anchor": [
+        104,
+        124
+      ]
+    },
+    {
+      "id": "icon-coin",
+      "path": "ui/icon-coin.svg",
+      "category": "ui",
+      "name": "성장 포인트",
+      "en": "Growth point"
+    },
+    {
+      "id": "icon-task",
+      "path": "ui/icon-task.svg",
+      "category": "ui",
+      "name": "완료한 할일",
+      "en": "Task complete"
+    },
+    {
+      "id": "icon-heart",
+      "path": "ui/icon-heart.svg",
+      "category": "ui",
+      "name": "함께한 시간",
+      "en": "Time together"
+    },
+    {
+      "id": "icon-food",
+      "path": "ui/icon-food.svg",
+      "category": "ui",
+      "name": "간식",
+      "en": "Treat"
+    },
+    {
+      "id": "icon-star",
+      "path": "ui/icon-star.svg",
+      "category": "ui",
+      "name": "특별한 발견",
+      "en": "Special find"
+    },
+    {
+      "id": "icon-sleep",
+      "path": "ui/icon-sleep.svg",
+      "category": "ui",
+      "name": "휴식",
+      "en": "Rest"
+    },
+    {
+      "id": "icon-leaf",
+      "path": "ui/icon-leaf.svg",
+      "category": "ui",
+      "name": "성장",
+      "en": "Growth"
+    },
+    {
+      "id": "icon-room",
+      "path": "ui/icon-room.svg",
+      "category": "ui",
+      "name": "내 방",
+      "en": "My room"
+    },
+    {
+      "id": "wall-mori",
+      "path": "room/wall/wall-mori.svg",
+      "category": "wall",
+      "name": "모리 · 잎의 정원",
+      "en": "MORI / Quiet botanicals",
+      "price": 800,
+      "wallHeight": 96,
+      "premium": true,
+      "collection": "mori"
+    },
+    {
+      "id": "wall-nuit",
+      "path": "room/wall/wall-nuit.svg",
+      "category": "wall",
+      "name": "뉘 · 밤의 선",
+      "en": "NUIT / Tailored geometry",
+      "price": 1100,
+      "wallHeight": 96,
+      "premium": true,
+      "collection": "nuit"
+    },
+    {
+      "id": "wall-route",
+      "path": "room/wall/wall-route.svg",
+      "category": "wall",
+      "name": "루트 · 느린 여행",
+      "en": "ROUTE / Wandering terraces",
+      "price": 1400,
+      "wallHeight": 96,
+      "premium": true,
+      "collection": "route"
+    },
+    {
+      "id": "wall-sola",
+      "path": "room/wall/wall-sola.svg",
+      "category": "wall",
+      "name": "솔라 · 살구빛 실크",
+      "en": "SOLA / Apricot light",
+      "price": 1700,
+      "wallHeight": 96,
+      "premium": true,
+      "collection": "sola"
+    }
+  ],
+  "petSourceMode": "stage-specific-svg",
+  "roomCamera": {
+    "petWidth": 180,
+    "previousPetWidth": 92,
+    "focusViewBox": [
+      24,
+      38,
+      464,
+      340
+    ],
+    "overviewViewBox": [
+      -12,
+      0,
+      536,
+      405
+    ]
+  },
+  "counts": {
+    "characters": 14,
+    "petForms": 70,
+    "motionPoseFiles": 140,
+    "furnitureViews": 96,
+    "roomAssets": 44,
+    "otherAssets": 17,
+    "svgFiles": 347
+  },
+  "wallpaperCollections": [
+    {
+      "id": "mori",
+      "name": "모리 · 잎의 정원",
+      "en": "MORI / Quiet botanicals",
+      "price": 800,
+      "base": "#DFE8D8",
+      "side": "#CDDCC9",
+      "ink": "#648276",
+      "accent": "#DBB394",
+      "story": "안개 낀 정원의 비대칭 잎과 씨앗",
+      "patternSource": "room/wall/pattern-mori.svg",
+      "patternKey": "pattern-mori"
+    },
+    {
+      "id": "nuit",
+      "name": "뉘 · 밤의 선",
+      "en": "NUIT / Tailored geometry",
+      "price": 1100,
+      "base": "#344652",
+      "side": "#293B48",
+      "ink": "#AABAB9",
+      "accent": "#CBB27C",
+      "story": "짙은 블루그레이와 끊어진 가는 선",
+      "patternSource": "room/wall/pattern-nuit.svg",
+      "patternKey": "pattern-nuit"
+    },
+    {
+      "id": "route",
+      "name": "루트 · 느린 여행",
+      "en": "ROUTE / Wandering terraces",
+      "price": 1400,
+      "base": "#EADFC9",
+      "side": "#DCCEB3",
+      "ink": "#B78B70",
+      "accent": "#849A92",
+      "story": "산책길에서 얻은 등고선과 열린 아치",
+      "patternSource": "room/wall/pattern-route.svg",
+      "patternKey": "pattern-route"
+    },
+    {
+      "id": "sola",
+      "name": "솔라 · 살구빛 실크",
+      "en": "SOLA / Apricot light",
+      "price": 1700,
+      "base": "#E7BFA0",
+      "side": "#D4A884",
+      "ink": "#AE795F",
+      "accent": "#F6E2BD",
+      "story": "햇살의 타원과 여백이 있는 직조 무늬",
+      "patternSource": "room/wall/pattern-sola.svg",
+      "patternKey": "pattern-sola"
+    }
+  ],
+  "actions": [
+    {
+      "id": "idle",
+      "name": "숨쉬기",
+      "duration": 6,
+      "pose": "base"
+    },
+    {
+      "id": "look",
+      "name": "두리번",
+      "duration": 3,
+      "pose": "base"
+    },
+    {
+      "id": "walk",
+      "name": "걷기",
+      "duration": 0,
+      "pose": "walk"
+    },
+    {
+      "id": "wave",
+      "name": "인사",
+      "duration": 2.2,
+      "pose": "base"
+    },
+    {
+      "id": "stretch",
+      "name": "기지개",
+      "duration": 3,
+      "pose": "walk"
+    },
+    {
+      "id": "sit",
+      "name": "앉기",
+      "duration": 4,
+      "pose": "rest"
+    },
+    {
+      "id": "nap",
+      "name": "낮잠",
+      "duration": 8,
+      "pose": "rest"
+    },
+    {
+      "id": "wake",
+      "name": "깨어나기",
+      "duration": 2.4,
+      "pose": "rest"
+    },
+    {
+      "id": "eat",
+      "name": "먹기",
+      "duration": 4,
+      "pose": "rest"
+    },
+    {
+      "id": "play",
+      "name": "통통 놀이",
+      "duration": 4,
+      "pose": "walk"
+    },
+    {
+      "id": "inspect",
+      "name": "가구 살펴보기",
+      "duration": 3,
+      "pose": "base"
+    },
+    {
+      "id": "celebrate",
+      "name": "기쁨",
+      "duration": 1.8,
+      "pose": "base"
+    }
+  ],
+  "roomLevels": [
+    {
+      "id": 0,
+      "name": "작은 방",
+      "size": 8,
+      "price": 0
+    },
+    {
+      "id": 1,
+      "name": "넓은 방",
+      "size": 10,
+      "price": 1600
+    },
+    {
+      "id": 2,
+      "name": "스튜디오",
+      "size": 12,
+      "price": 2800
+    }
+  ],
+  "companionRule": "단짝은 나이가 아니라 친밀도 단계. 기본 장식 없이 밝은 자세와 더 잦은 인사로 표현."
+}

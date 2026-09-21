@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '../lib/supabase';
+import { award } from '../lib/game';
 import { relativeTime, compressPhoto } from '../lib/utils';
 
 // ── 간단 마크다운 렌더러 ──
@@ -138,13 +139,18 @@ export default function WikiView({ currentMember, onClose, onPhotoClick }) {
         updated_by: currentMember?.name || '익명',
         updated_at: new Date().toISOString(),
       }).eq('id', editing.id);
+      // 보강은 100자 이상 바뀌었을 때만 인정한다 (오타 하나로 40점은 과하다)
+      if (currentMember?.id && (editing.content || '').length >= 100) {
+        award(currentMember.id, 'wiki_edit', `wikiedit:${editing.id}`, t);
+      }
     } else {
-      await supabase.from('wiki_documents').insert([{
+      const { data: doc } = await supabase.from('wiki_documents').insert([{
         title: t, content: editing.content,
         category_id: editing.category_id,
         parent_id: editing.parent_id || null,
         created_by: currentMember?.name || '익명',
-      }]);
+      }]).select('id').single();
+      if (doc && currentMember?.id) award(currentMember.id, 'wiki_new', `wikinew:${doc.id}`, t);
     }
     setEditing(null);
     load();

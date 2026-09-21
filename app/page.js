@@ -25,6 +25,8 @@ import UpcomingSection from './UpcomingSection';
 import TemplatesPicker from './TemplatesPicker';
 import WikiView from './WikiView';
 import EditTaskModal from './EditTaskModal';
+import PetView from './PetView';
+import { award, attend, POINT_EVENT } from '../lib/game';
 
 const VISIBLE_DAYS = 180;
 
@@ -61,6 +63,8 @@ export default function Home() {
   const [showWiki, setShowWiki] = useState(false);
   const [showBoards, setShowBoards] = useState(false);
   const [showNotices, setShowNotices] = useState(false);
+  const [showPet, setShowPet] = useState(false);
+  const [pointToast, setPointToast] = useState(null);
   const [photoViewer, setPhotoViewer] = useState(null);
   const [activeTag, setActiveTag] = useState(null);
   const [onlineCount, setOnlineCount] = useState(1);
@@ -165,6 +169,35 @@ export default function Home() {
   }, [currentMember]);
 
   // 공지 카운트
+  // ── 펫 점수: 출석 체크와 획득 알림 ──────────────────────────
+  // 구간(06-09/09-12/12-14/14-16) 판정과 중복 차단은 전부 서버가 한다.
+  // 여기서는 "왔다"고 알리기만 하면 되고, 그 밖 시간대면 서버가 조용히 무시한다.
+  useEffect(() => {
+    if (!currentMember?.id) return;
+    attend(currentMember.id);
+    const onFocus = () => attend(currentMember.id);
+    window.addEventListener('focus', onFocus);
+    return () => window.removeEventListener('focus', onFocus);
+  }, [currentMember?.id]);
+
+  useEffect(() => {
+    const onPoints = (e) => {
+      const d = e.detail || {};
+      const gained = d.gained ?? d.points ?? 0;
+      if (!gained) return;
+      const label = (d.events && d.events.length) ? d.events.join(' · ') : (d.label || '점수 획득');
+      setPointToast({ gained, label, at: Date.now() });
+    };
+    window.addEventListener(POINT_EVENT, onPoints);
+    return () => window.removeEventListener(POINT_EVENT, onPoints);
+  }, []);
+
+  useEffect(() => {
+    if (!pointToast) return;
+    const t = setTimeout(() => setPointToast(null), 3200);
+    return () => clearTimeout(t);
+  }, [pointToast]);
+
   const loadNoticeCount = useCallback(async () => {
     const { count } = await supabase.from('notices').select('*', { count: 'exact', head: true });
     setNoticeCount(count || 0);
@@ -335,6 +368,11 @@ export default function Home() {
       });
     }
 
+    // 사진을 붙여 올렸으면 기록 품질 점수
+    if (inserted && newPhotos.length > 0 && currentMember?.id) {
+      award(currentMember.id, 'photo', `photo:${inserted.id}`, text);
+    }
+
     // 입력 리셋
     setNewTask(''); setNewMemo(''); setNewUrgent(false);
     setNewYearLevel(DEFAULT_ASSIGNEE);
@@ -352,6 +390,19 @@ export default function Home() {
       completed_at: newDone ? new Date().toISOString() : null,
       completed_by: newDone ? currentMember.name : null,
     }).eq('id', task.id);
+
+    if (newDone && currentMember?.id) {
+      // 완료한 사람에게. 내가 올린 걸 내가 끝낸 건 점수가 낮다
+      const mine = task.created_by === currentMember.name;
+      award(currentMember.id, mine ? 'todo_done_own' : 'todo_done', `done:${task.id}`, task.text);
+
+      // 등록 점수는 '완료된 지금' 등록한 사람에게 소급 지급한다.
+      // 올렸다 지우는 farming 을 막는 유일한 방법이다.
+      // 자동등록분은 사람이 한 일이 아니라 서버가 알아서 걸러낸다.
+      const creator = members.find((m) => m.name === task.created_by);
+      if (creator) award(creator.id, 'todo_create', `create:${task.id}`, task.text);
+    }
+
     loadTasks(currentDate);
   };
 
@@ -468,6 +519,7 @@ export default function Home() {
               </button>
               <button onClick={() => setShowStats(true)} style={styles.iconBtn} title="통계">📊</button>
               <button onClick={() => setShowWiki(true)} style={styles.iconBtn} title="의국 노트">📖</button>
+              <button onClick={() => setShowPet(true)} style={styles.iconBtn} title="내 펫">🐾</button>
             </div>
             <div style={styles.titleWrap}>
               <h1 style={styles.title} className="display-font">NS_To-Do</h1>
@@ -725,7 +777,15 @@ export default function Home() {
       {showWiki && <WikiView currentMember={currentMember} onClose={() => setShowWiki(false)} onPhotoClick={(url, urls) => setPhotoViewer({ url, urls })} />}
       {showBoards && <ScheduleBoardsView currentMember={currentMember} onClose={() => setShowBoards(false)} onPhotoClick={(url, urls) => setPhotoViewer({ url, urls })} />}
       {showNotices && <NoticesModal currentMember={currentMember} onClose={() => setShowNotices(false)} />}
-      {showTemplates && <TemplatesPicker onClose={() => setShowTemplates(false)} onSelect={(text) => {
+      {showPet && <PetView currentMember={currentMember} onClose={() => setShowPet(false)} />}
+
+      {pointToast && (
+        <div style={styles.pointToast} onClick={() => setShowPet(true)}>
+          <span style={styles.pointToastPts}>+{pointToast.gained}</span>
+          <span style={styles.pointToastLabel}>{pointToast.label}</span>
+        </div>
+      )}
+      {showTemplates && <TemplatesPicker currentMember={currentMember} onClose={() => setShowTemplates(false)} onSelect={(text) => {
         setNewTask(newTask ? `${newTask} ${text}` : text);
         setShowTemplates(false);
       }} />}
@@ -779,6 +839,15 @@ const styles = {
   wardRow: { display: 'flex', alignItems: 'center', gap: 4, marginTop: 6, flexWrap: 'wrap' },
   wardChip: { padding: '4px 9px', fontSize: 12, border: '1px solid var(--border)', borderRadius: 6 },
   photoPreview: { display: 'flex', gap: 6, marginTop: 8, flexWrap: 'wrap' },
+  pointToast: {
+    position: 'fixed', left: '50%', bottom: 26, transform: 'translateX(-50%)',
+    display: 'flex', alignItems: 'center', gap: 8, zIndex: 300, cursor: 'pointer',
+    padding: '10px 16px', borderRadius: 22, background: 'var(--text)', color: 'var(--bg)',
+    boxShadow: '0 6px 20px rgba(0,0,0,.18)', animation: 'ns-toast-in .28s ease-out',
+    maxWidth: 'calc(100vw - 32px)',
+  },
+  pointToastPts: { fontWeight: 700, fontSize: 15, flexShrink: 0 },
+  pointToastLabel: { fontSize: 13, opacity: .85, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
   photoPreviewItem: { position: 'relative', width: 56, height: 56 },
   photoPreviewImg: { width: '100%', height: '100%', objectFit: 'cover', borderRadius: 6, border: '1px solid var(--border)' },
   photoRemove: { position: 'absolute', top: -6, right: -6, width: 18, height: 18, fontSize: 12, background: 'var(--text)', color: 'var(--bg)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', lineHeight: 1 },

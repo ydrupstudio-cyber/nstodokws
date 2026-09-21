@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../lib/supabase';
+import { award } from '../lib/game';
 import { YEAR_LEVELS, ASSIGNEE_ORDER, WARD_CHIPS } from '../lib/config';
 import { compressPhoto, formatTimeLabel, parseProfessorBracket } from '../lib/utils';
 
@@ -94,6 +95,15 @@ export default function EditTaskModal({ task, professors = [], currentMember, on
       if (error) {
         alert('저장 실패: ' + error.message);
         return;
+      }
+      // 비어 있던 메모를 채운 경우에만 점수. 이미 있던 메모 손보는 건 안 준다
+      const wasEmpty = !(task.memo || '').trim();
+      if (wasEmpty && memo.trim().length >= 5 && currentMember?.id) {
+        award(currentMember.id, 'memo_fill', `memo:${task.id}`, text.trim());
+      }
+      // 사진을 새로 붙인 경우
+      if (photos.length > (task.photo_urls || []).length && currentMember?.id) {
+        award(currentMember.id, 'photo', `photo:${task.id}`, text.trim());
       }
       onSaved?.();
       onClose();

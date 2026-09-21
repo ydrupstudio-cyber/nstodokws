@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '../lib/supabase';
+import { award } from '../lib/game';
 import { relativeTime, compressPhoto } from '../lib/utils';
 
 export default function ScheduleBoardsView({ currentMember, onClose, onPhotoClick }) {
@@ -70,13 +71,19 @@ export default function ScheduleBoardsView({ currentMember, onClose, onPhotoClic
         updated_by: currentMember?.name || '익명',
         updated_at: new Date().toISOString(),
       }).eq('id', editing.id);
+      if (currentMember?.id) {
+        // 같은 보드를 하루에 여러 번 고쳐도 한 번만 준다
+        const day = new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 10);
+        award(currentMember.id, 'board', `board:${editing.id}:${day}`, t);
+      }
     } else {
-      await supabase.from('schedule_boards').insert([{
+      const { data: b } = await supabase.from('schedule_boards').insert([{
         title: t, content: editing.content?.trim() || null,
         photo_urls: editing.photo_urls || [],
         display_order: boards.length + 1,
         created_by: currentMember?.name || '익명',
-      }]);
+      }]).select('id').single();
+      if (b && currentMember?.id) award(currentMember.id, 'board', `board:${b.id}:new`, t);
     }
     setEditing(null);
     load();

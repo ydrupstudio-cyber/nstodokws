@@ -125,3 +125,33 @@ textarea { resize: none; font-family: inherit; }
 .pulse { animation: pulse 2s ease-in-out infinite; }
 
 .fade-in { animation: fadeIn 0.2s ease; }
+
+/* ── 펫 애니메이션 ───────────────────────────────────────────
+   숨쉬기 · 꼬리 흔들기 · 눈 깜빡임. transform 만 건드리므로
+   레이아웃을 다시 계산하지 않는다 (저사양 기기에서도 안 버벅인다). */
+@keyframes ns-pet-breathe {
+  0%, 100% { transform: scaleY(1)     translateY(0); }
+  50%      { transform: scaleY(1.018) translateY(-1.5px); }
+}
+@keyframes ns-pet-tail {
+  0%, 100% { transform: rotate(0deg); }
+  50%      { transform: rotate(-7deg); }
+}
+@keyframes ns-pet-blink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  95%           { transform: scaleY(0.1); }
+}
+@keyframes ns-toast-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.ns-pet-live .ns-pet-breathe { animation: ns-pet-breathe 3.4s ease-in-out infinite; transform-origin: 100px 176px; }
+.ns-pet-live .ns-pet-tail    { animation: ns-pet-tail    2.6s ease-in-out infinite; transform-origin: 140px 140px; }
+.ns-pet-live .ns-pet-eyes    { animation: ns-pet-blink   6.5s ease-in-out infinite; transform-origin: center 78px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ns-pet-live .ns-pet-breathe,
+  .ns-pet-live .ns-pet-tail,
+  .ns-pet-live .ns-pet-eyes { animation: none; }
+}

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../lib/supabase';
+import { award } from '../lib/game';
 import { YEAR_LEVELS, ASSIGNEE_ORDER } from '../lib/config';
 import { formatTimeLabel, relativeTime, parseProfessorBracket, formatShortDateLabel } from '../lib/utils';
 
@@ -100,13 +101,15 @@ export default function TaskRow({
   const addComment = async () => {
     const content = newComment.trim();
     if (!content) return;
-    await supabase.from('comments').insert([{
+    const { data: ins } = await supabase.from('comments').insert([{
       todo_id: task.id,
       content,
       created_by: currentMember?.name || '익명',
-    }]);
+    }]).select('id').single();
     setNewComment('');
     setCommentCount(c => c + 1);
+    // 점수는 할일당 첫 댓글만 (ref 에 todo_id 를 쓰므로 두 번째부터는 서버가 걸러낸다)
+    if (ins && currentMember?.id) award(currentMember.id, 'comment', `comment:${ins.id}`, task.text);
   };
 
   const deleteComment = async (id) => {

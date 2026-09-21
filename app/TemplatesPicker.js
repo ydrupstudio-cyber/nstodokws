@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
+import { award } from '../lib/game';
 
-export default function TemplatesPicker({ onClose, onSelect }) {
+export default function TemplatesPicker({ onClose, onSelect, currentMember }) {
   const [templates, setTemplates] = useState([]);
   const [loading, setLoading] = useState(true);
   const [adding, setAdding] = useState(false);
@@ -28,7 +29,8 @@ export default function TemplatesPicker({ onClose, onSelect }) {
   const addTemplate = async () => {
     const t = newText.trim();
     if (!t) return;
-    await supabase.from('task_templates').insert([{ text: t }]);
+    const { data: tpl } = await supabase.from('task_templates').insert([{ text: t }]).select('id').single();
+    if (tpl && currentMember?.id) award(currentMember.id, 'template', `template:${tpl.id}`, t);
     setNewText('');
     setAdding(false);
   };
