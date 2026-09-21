@@ -48,6 +48,37 @@
   --overlay: rgba(0, 0, 0, 0.6);
 }
 
+/*
+  브라우저에게 '이 페이지는 어두운 테마를 진짜로 갖고 있다' 를 CSS 로 보여준다.
+  color-scheme 만으로는 부족했다 — 안드로이드 브라우저는 스타일시트에
+  prefers-color-scheme 규칙이 있는지까지 보고 '웹페이지 어둡게' 를 걸지 말지 정한다.
+  선언만 있고 규칙이 없으면 페이지가 어두운 테마를 지원하지 않는다고 보고 덮어쓴다.
+
+  동작은 그대로다. 실제 테마는 layout 의 인라인 스크립트가 data-theme 으로 정하고,
+  여기 규칙은 '사용자가 밝은 테마를 고르지 않은 상태 + 기기가 어두움' 일 때만 걸린다.
+  즉 data-theme 이 붙기 전 첫 화면에서도 깜빡임 없이 어둡게 시작한다.
+*/
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1a1a18;
+    --surface: #25241f;
+    --surface-2: #2e2d27;
+    --surface-3: #383631;
+    --border: #3a3833;
+    --border-strong: #4a4842;
+    --text: #ebe9e2;
+    --text-2: #a8a59c;
+    --text-3: #6b6962;
+    --accent: #b8b3a9;
+    --danger: #e07868;
+    --danger-bg: #3d2520;
+    --danger-border: #5c352e;
+    --success: #8db870;
+    --info: #8aa8c2;
+    --overlay: rgba(0, 0, 0, 0.6);
+  }
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
