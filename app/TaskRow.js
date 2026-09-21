@@ -45,11 +45,11 @@ export default function TaskRow({
   const bgColor = !isDone && showAsUrgent ? 'var(--danger-bg)' : 'var(--surface)';
   const borderColor = !isDone && showAsUrgent ? 'var(--danger-border)' : isCarried ? '#E8963E' : 'var(--border)';
 
-  // 메모가 한 줄을 넘는지 확인한다. 펼친 상태에서는 재지 않는다
+  // 메모가 한 줄에 다 들어가는지 확인한다. 펼친 상태에서는 재지 않는다
   useEffect(() => {
     if (memoOpen) return;
     const el = memoRef.current;
-    if (el) setMemoClamped(el.scrollHeight > el.clientHeight + 1);
+    if (el) setMemoClamped(el.scrollWidth > el.clientWidth + 1);
   }, [displayMemo, memoOpen]);
 
   // 댓글 수 가져오기
@@ -185,16 +185,22 @@ export default function TaskRow({
               textDecoration: isDone ? 'line-through' : 'none',
               color: isDone ? 'var(--text-3)' : 'var(--text-2)',
             }}>
-              <div ref={memoRef} style={memoOpen ? styles.memoBodyOpen : styles.memoBodyClamped}>
-                {displayMemo}
-              </div>
-              {(memoClamped || memoOpen) && (
-                <button
-                  onClick={() => setMemoOpen(!memoOpen)}
-                  style={styles.memoToggle}
-                >
-                  {memoOpen ? '접기' : '… 더보기'}
-                </button>
+              {memoOpen ? (
+                <div style={styles.memoBodyOpen}>
+                  {displayMemo}{' '}
+                  <button onClick={() => setMemoOpen(false)} style={styles.memoToggle}>
+                    접기
+                  </button>
+                </div>
+              ) : (
+                <div style={styles.memoRow}>
+                  <span ref={memoRef} style={styles.memoBodyClamped}>{displayMemo}</span>
+                  {memoClamped && (
+                    <button onClick={() => setMemoOpen(true)} style={styles.memoToggle}>
+                      더보기
+                    </button>
+                  )}
+                </div>
               )}
             </div>
           )}
@@ -356,14 +362,15 @@ const styles = {
     padding: '2px 8px', borderRadius: 100,
   },
   memo: { fontSize: 13, marginTop: 4, lineHeight: 1.5 },
+  memoRow: { display: 'flex', alignItems: 'baseline', gap: 4 },
   memoBodyClamped: {
-    display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical',
-    overflow: 'hidden', wordBreak: 'break-word', whiteSpace: 'pre-wrap',
+    flex: 1, minWidth: 0,
+    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
   },
   memoBodyOpen: { wordBreak: 'break-word', whiteSpace: 'pre-wrap' },
   memoToggle: {
-    background: 'none', border: 'none', padding: 0, marginTop: 2,
-    fontSize: 12, color: 'var(--text-3)', cursor: 'pointer',
+    flexShrink: 0, background: 'none', border: 'none', padding: 0,
+    fontSize: 12, color: 'var(--text-3)', cursor: 'pointer', whiteSpace: 'nowrap',
   },
   photoIcon: {
     display: 'inline-flex', alignItems: 'center', gap: 4,
