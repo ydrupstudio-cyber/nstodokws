@@ -4,8 +4,8 @@
   "description": "신경외과 의국용 할일 공유 앱",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#fafaf7",
-  "theme_color": "#1f2937",
+  "background_color": "#1a1a18",
+  "theme_color": "#1a1a18",
   "icons": [
     {
       "src": "/icon-192.png",

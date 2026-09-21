@@ -30,6 +30,14 @@ export default function RootLayout({ children }) {
           href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=IBM+Plex+Sans+KR:wght@300;400;500;600&display=swap"
           rel="stylesheet"
         />
+        {/*
+          홈화면에 설치해 쓰는 경우, 안드로이드는 이 앱이 밝은 앱인지 어두운 앱인지를
+          매니페스트와 이 메타로 판단한다. 밝은 앱으로 등록되면 기기가 어두울 때
+          시스템이 화면을 강제로 어둡게 만든다 — 페이지 CSS 로는 못 막는다.
+          그래서 둘 다 어두운 값을 알려 준다.
+        */}
+        <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fafaf7" />
+        <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1a1a18" />
         <link rel="icon" href="/icon-192.png" />
         <link rel="apple-touch-icon" href="/icon-192.png" />
         <script
