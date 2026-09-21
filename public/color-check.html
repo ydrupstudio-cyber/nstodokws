@@ -1,117 +1,100 @@
-<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>NS 화면 색 진단</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>NS 방 색 진단 2</title>
 <style>
-  /* 앱과 같은 조건으로 둔다 — 이 선언이 있어도 브라우저가 덮는지 보는 게 목적 */
-  :root {
-    color-scheme: light dark;
-    --ground: #14151a;
-    --panel:  #1e2028;
-    --line:   #2c2f3a;
-    --ink:    #e8eaf0;
-    --ink-2:  #8b90a0;
-    --probe:  #e4bb88;   /* 앱 바닥 타일과 같은 색 */
-    --ok:     #4ec9a0;
-  }
-  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --ground:#14151a; } }
-  :root[data-theme="dark"] { --ground:#14151a; }
+  :root { color-scheme: light dark; --ground:#14151a; --panel:#1e2028; --line:#2c2f3a; --ink:#e8eaf0; --ink-2:#8b90a0; --ok:#4ec9a0; }
+  body { background:var(--ground); color:var(--ink); font:400 15px/1.6 system-ui,-apple-system,'Malgun Gothic',sans-serif; margin:0; padding:24px 16px 40px; }
+  main { max-width:560px; margin-inline:auto; display:flex; flex-direction:column; gap:20px; }
+  h1 { font-size:20px; font-weight:700; margin:0; }
+  .lede { color:var(--ink-2); font-size:14px; margin:6px 0 0; }
+  .band { border:1px solid var(--line); border-radius:10px; overflow:hidden; background:var(--panel); }
+  .band > .strip { display:block; width:100%; height:96px; }
+  .band > .cap { padding:8px 12px 10px; font-size:14px; font-weight:600; }
+  .band > .cap span { font-weight:400; color:var(--ink-2); font-size:12.5px; }
+  .chips { display:flex; }
+  .chips div { flex:1; height:54px; }
+  .how { border-left:3px solid var(--ok); padding-left:12px; font-size:14px; }
+  dl { display:grid; grid-template-columns:auto 1fr; gap:5px 12px; border:1px solid var(--line);
+       border-radius:10px; padding:12px; background:var(--panel); font:12px/1.5 ui-monospace,monospace; margin:0; }
+  dt { color:var(--ink-2); } dd { margin:0; word-break:break-all; }
+</style></head><body><main>
 
-  body {
-    background: var(--ground);
-    color: var(--ink);
-    font: 400 15px/1.6 'IBM Plex Sans KR', system-ui, sans-serif;
-    padding-block: 28px 40px;
-    padding-inline: 16px;
-  }
-  main { max-width: 560px; margin-inline: auto; display: flex; flex-direction: column; gap: 22px; }
-  h1 { font-size: 21px; font-weight: 700; letter-spacing: -0.01em; text-wrap: balance; }
-  .lede { color: var(--ink-2); font-size: 14px; }
-  .tests { display: flex; flex-direction: column; gap: 14px; }
-  .test { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--panel); }
-  .swatch { height: 76px; display: block; width: 100%; }
-  .meta { display: flex; align-items: baseline; justify-content: space-between;
-          gap: 10px; padding: 9px 12px 11px; }
-  .who { font-weight: 600; font-size: 14px; }
-  .hex { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; color: var(--ink-2); }
-  .note { font-size: 13px; color: var(--ink-2); }
-  dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px;
-       border: 1px solid var(--line); border-radius: 10px; padding: 14px 14px; background: var(--panel);
-       font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; }
-  dt { color: var(--ink-2); }
-  dd { word-break: break-all; }
-  .how { border-left: 3px solid var(--ok); padding-left: 12px; font-size: 14px; }
-</style>
-</head>
-<body>
+<div>
+  <h1>위 두 줄이 같은 색으로 보이나요?</h1>
+  <p class="lede">같은 바닥·같은 소파를 <b>그리는 방법만</b> 다르게 그린 겁니다.
+    1번은 고치기 전 방식, 2번은 지금 앱이 쓰는 방식입니다. 화면을 찍어서 보내주세요.</p>
+</div>
 
-<main>
-  <div>
-    <h1>이 다섯 칸이 같은 색으로 보이나요?</h1>
-    <p class="lede">전부 <b style="color:var(--probe)">#E4BB88</b> 한 가지 색인데, 그리는 방법만 다릅니다.
-      브라우저가 화면을 건드리면 어떤 칸은 색이 달라집니다. 화면을 찍어서 보내주세요.</p>
+<div class="band">
+  <svg class="strip" id="s1" viewBox="0 0 384 96" preserveAspectRatio="none" aria-label="이전 방식"></svg>
+  <div class="cap">1 · 이전 방식 <span>그림 그대로 (&lt;image&gt;)</span></div>
+</div>
+
+<div class="band">
+  <canvas class="strip" id="s2" width="768" height="192" aria-label="지금 방식"></canvas>
+  <div class="cap">2 · 지금 방식 <span>캔버스에 구워서</span></div>
+</div>
+
+<div class="band">
+  <div class="chips">
+    <div style="background:#E4BB88"></div><div style="background:#CC9C68"></div><div style="background:#AE855F"></div>
   </div>
+  <div class="cap">3 · 색표 <span>#E4BB88 · #CC9C68 · #AE855F — 원래 색</span></div>
+</div>
 
-  <div class="tests">
-    <div class="test">
-      <div class="swatch" style="background:#e4bb88"></div>
-      <div class="meta"><span class="who">1 · CSS 배경색</span><span class="hex">background</span></div>
-    </div>
+<p class="how"><b>1번은 칙칙한데 2번이 3번 색표와 맞으면</b> — 고친 게 먹히는 겁니다.<br>
+<b>1번과 2번이 똑같이 칙칙하면</b> — 캔버스도 브라우저가 건드리는 겁니다. 다음 수를 씁니다.<br>
+<b>2번이 비어 있으면</b> — 이 폰에서 캔버스가 안 그려지는 겁니다.</p>
 
-    <div class="test">
-      <svg class="swatch" viewBox="0 0 100 20" preserveAspectRatio="none" role="img" aria-label="인라인 SVG 견본">
-        <rect x="0" y="0" width="100" height="20" fill="#e4bb88"></rect>
-      </svg>
-      <div class="meta"><span class="who">2 · 안에 그린 SVG</span><span class="hex">&lt;svg&gt;&lt;rect&gt;</span></div>
-    </div>
-
-    <div class="test">
-      <svg class="swatch" viewBox="0 0 100 20" preserveAspectRatio="none" role="img" aria-label="외부 SVG 견본">
-        <image href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMjAiPjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMjAiIGZpbGw9IiNlNGJiODgiLz48L3N2Zz4=" x="0" y="0" width="100" height="20" preserveAspectRatio="none"></image>
-      </svg>
-      <div class="meta"><span class="who">3 · 불러온 그림 (앱의 가구·바닥이 이 방식)</span><span class="hex">&lt;image href&gt;</span></div>
-    </div>
-
-    <div class="test">
-      <img class="swatch" alt="이미지 태그 견본" style="object-fit:fill"
-           src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMjAiPjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMjAiIGZpbGw9IiNlNGJiODgiLz48L3N2Zz4=">
-      <div class="meta"><span class="who">4 · 사진처럼 넣은 그림</span><span class="hex">&lt;img&gt;</span></div>
-    </div>
-
-    <div class="test">
-      <canvas class="swatch" id="cv" width="300" height="76"></canvas>
-      <div class="meta"><span class="who">5 · 캔버스에 칠한 색</span><span class="hex">&lt;canvas&gt;</span></div>
-    </div>
-  </div>
-
-  <p class="how"><b>1~4번은 다른데 5번만 제 색이면</b> — 방을 캔버스로 그리면 해결됩니다.
-    <b>다섯 칸이 전부 같으면</b> — 브라우저가 아니라 다른 원인입니다.</p>
-
-  <dl>
-    <dt>기기 어두움</dt><dd id="d1">–</dd>
-    <dt>color-scheme</dt><dd id="d2">–</dd>
-    <dt>캔버스 읽은 값</dt><dd id="d3">–</dd>
-    <dt>브라우저</dt><dd id="d4">–</dd>
-    <dt>이 페이지</dt><dd>nstodokws.vercel.app/color-check.html</dd>
-  </dl>
+<dl>
+  <dt>페이지</dt><dd>color-check v2</dd>
+  <dt>기기 어두움</dt><dd id="d1">–</dd>
+  <dt>color-scheme</dt><dd id="d2">–</dd>
+  <dt>캔버스 상태</dt><dd id="d3">–</dd>
+  <dt>브라우저</dt><dd id="d4">–</dd>
+</dl>
 </main>
 
 <script>
-  (function () {
-    var c = document.getElementById('cv');
-    var g = c.getContext('2d');
-    g.fillStyle = '#e4bb88';
-    g.fillRect(0, 0, c.width, c.height);
-    var px = g.getImageData(4, 4, 1, 1).data;
-    var hex = '#' + [px[0], px[1], px[2]].map(function (n) {
-      return ('0' + n.toString(16)).slice(-2);
-    }).join('');
-    document.getElementById('d1').textContent =
-      matchMedia('(prefers-color-scheme: dark)').matches ? 'yes' : 'no';
-    document.getElementById('d2').textContent =
-      getComputedStyle(document.documentElement).colorScheme || '(없음)';
-    document.getElementById('d3').textContent = hex + '  (기대 #e4bb88)';
-    document.getElementById('d4').textContent = navigator.userAgent.slice(0, 120);
-  })();
-</script>
+(function () {
+  var TILE = '/game/room/floor/floor-wood.svg';
+  var SOFA = '/game/room/furniture/fn-sofa.svg';
+  var log = function (t) { document.getElementById('d3').textContent = t; };
 
-</body>
-</html>
+  // 1번 — 지금까지 방이 그려지던 그대로. 바깥 파일을 <image> 로 불러 쓴다
+  var s1 = document.getElementById('s1');
+  var ns = 'http://www.w3.org/2000/svg';
+  function put(parent, href, x, y, w, h) {
+    var n = document.createElementNS(ns, 'image');
+    n.setAttribute('href', href); n.setAttribute('x', x); n.setAttribute('y', y);
+    n.setAttribute('width', w); n.setAttribute('height', h);
+    parent.appendChild(n);
+  }
+  for (var i = 0; i < 6; i++) put(s1, TILE, i * 64, 32, 64, 32);
+  put(s1, SOFA, 232, -12, 128, 112);
+
+  // 2번 — 같은 내용을 SVG 문자열로 만들어 캔버스에 굽는다 (앱이 하는 것과 같다)
+  var cv = document.getElementById('s2');
+  Promise.all([TILE, SOFA].map(function (u) {
+    return fetch(u).then(function (r) { return r.ok ? r.text() : null; }).catch(function () { return null; });
+  })).then(function (srcs) {
+    if (!srcs[0] || !srcs[1]) { log('그림을 못 받음'); return; }
+    var uri = function (t) { return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(t); };
+    var inner = '';
+    for (var k = 0; k < 6; k++) inner += '<image href="' + uri(srcs[0]) + '" x="' + (k * 64) + '" y="32" width="64" height="32"/>';
+    inner += '<image href="' + uri(srcs[1]) + '" x="232" y="-12" width="128" height="112"/>';
+    var whole = '<svg xmlns="' + ns + '" width="768" height="192" viewBox="0 0 384 96">' + inner + '</svg>';
+    var img = new Image();
+    img.onload = function () {
+      cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+      var px = cv.getContext('2d').getImageData(80, 120, 1, 1).data;
+      log('그려짐 · 읽은 값 rgb(' + px[0] + ',' + px[1] + ',' + px[2] + ')');
+    };
+    img.onerror = function () { log('캔버스에 못 구움'); };
+    img.src = uri(whole);
+  });
+
+  document.getElementById('d1').textContent = matchMedia('(prefers-color-scheme: dark)').matches ? 'yes' : 'no';
+  document.getElementById('d2').textContent = getComputedStyle(document.documentElement).colorScheme || '(없음)';
+  document.getElementById('d4').textContent = navigator.userAgent.slice(0, 130);
+})();
+</script>
+</body></html>
