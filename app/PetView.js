@@ -309,14 +309,14 @@ export default function PetView({ currentMember, onClose }) {
             {panel === 'bag' && (
               <BagPanel currentMember={currentMember} inventory={inventory} foods={foods}
                 fedToday={fedToday} discovered={discovered}
-                onClose={() => setPanel(null)} onFed={onFed} bottom={dockH} />
+                onClose={() => setPanel(null)} onFed={onFed} onSold={() => refresh()} bottom={dockH} />
             )}
 
             {panel === 'closet' && (
               <ClosetPanel currentMember={currentMember} inventory={inventory} catalog={catalog}
                 shopItems={shopItems} equipped={profile.equipped || {}}
                 wearables={manifest?.wearables || []} species={profile.species}
-                onClose={() => setPanel(null)} bottom={dockH}
+                onClose={() => setPanel(null)} bottom={dockH} onSold={() => refresh()}
                 onChanged={() => {
                   // 2차 킷의 'show' 는 갈아입은 걸 자랑하는 동작이다
                   setGuest({ id: Date.now(), action: 'show', hold: 4400 });

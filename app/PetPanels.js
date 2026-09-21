@@ -13,8 +13,43 @@ import UiIcon from './UiIcon';
 import PetCanvas from './PetCanvas';
 import { findAsset, SPECIES_LABEL } from '../lib/pet/assets';
 import {
-  feed, equip, release, loadPetHistory, josa, livedSpan, stageOf, WEAR_SLOTS, STAGE_LABELS,
+  feed, equip, release, loadPetHistory, josa, livedSpan, stageOf,
+  sellItem, loadRefundable, WEAR_SLOTS, STAGE_LABELS,
 } from '../lib/game';
+
+/**
+ * 되팔기 확인. 점수가 오가는 일이라 한 번 물어본다.
+ * 선물받은 물건은 서버가 거절하므로 여기서 막지 않는다 —
+ * 이유를 서버 문구로 그대로 보여주는 편이 덜 헷갈린다.
+ */
+function SellConfirm({ item, refund, onCancel, onDone, busy }) {
+  return (
+    <div style={s.confirmWrap} onClick={onCancel}>
+      <div style={s.confirmCard} onClick={(e) => e.stopPropagation()}>
+        <div style={s.confirmTitle}>{item.name} 되팔기</div>
+        {refund ? (
+          <p style={s.confirmBody}>
+            <b>{refund.back.toLocaleString()}점</b>{refund.full ? ' 전액' : ''} 돌려받습니다.
+            {refund.full
+              ? <><br /><span style={s.sub}>오늘 산 것이라 취소로 처리돼요.</span></>
+              : <><br /><span style={s.sub}>산 지 하루가 지나 절반만 돌아옵니다.</span></>}
+          </p>
+        ) : (
+          <p style={s.confirmBody}>
+            되팔 수 있는지 서버가 확인합니다.<br />
+            <span style={s.sub}>선물받은 물건은 되팔 수 없어요.</span>
+          </p>
+        )}
+        <div style={s.confirmRow}>
+          <button onClick={onCancel} style={s.cancelBtn}>그만두기</button>
+          <button onClick={onDone} disabled={busy} style={s.releaseBtn}>
+            {busy ? '파는 중…' : '되팔기'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 /**
  * 떠난 친구의 마지막 모습.
@@ -55,11 +90,25 @@ export function Sheet({ title, onClose, children, foot, bottom = 62 }) {
 // 가방 — 사둔 간식을 꺼내 먹인다
 //   사는 것은 상점, 먹이는 것은 여기. 돈은 살 때 이미 냈다.
 // ============================================================
-export function BagPanel({ currentMember, inventory, foods, fedToday, discovered, onClose, onFed, bottom }) {
+export function BagPanel({ currentMember, inventory, foods, fedToday, discovered,
+                           onClose, onFed, onSold, bottom }) {
   const [busy, setBusy] = useState(null);
   const [msg, setMsg] = useState(null);
+  const [refunds, setRefunds] = useState({});
+  const [selling, setSelling] = useState(null);   // 되팔기 확인 중인 항목
 
+  useEffect(() => { loadRefundable(currentMember.id).then(setRefunds); }, [currentMember.id]);
   useEffect(() => { if (!msg) return; const t = setTimeout(() => setMsg(null), 3400); return () => clearTimeout(t); }, [msg]);
+
+  async function doSell(item) {
+    setBusy(item.food_id || item.id);
+    const r = await sellItem(currentMember.id, item.food_id || item.id);
+    setBusy(null); setSelling(null);
+    if (!r?.ok) { setMsg({ bad: true, text: r?.reason || '되팔지 못했어요' }); return; }
+    setMsg({ text: `${r.item} — ${r.refund.toLocaleString()}점 돌려받았어요${r.full ? ' (당일 취소)' : ''}` });
+    setRefunds(await loadRefundable(currentMember.id));
+    onSold?.();
+  }
 
   // 가방에 든 먹이만 (수량 0 은 서버가 지운다)
   const rows = foods
@@ -101,23 +150,39 @@ export function BagPanel({ currentMember, inventory, foods, fedToday, discovered
             const done = kindCount(f.kind) >= cap;
             const liked = discovered[f.food_id];
             return (
-              <button key={f.food_id} onClick={() => give(f)} disabled={busy || done}
-                style={{ ...s.bagCard, ...(done ? s.off : {}) }}>
+              <div key={f.food_id} style={s.bagCard}>
                 <span style={s.bagQty}>{f.qty}</span>
-                <span style={s.bagName}>{f.name}{liked && <span style={s.heart}> ♥</span>}</span>
-                <span style={s.bagMeta}>
-                  {done ? '오늘은 그만' : `친밀도 +${f.affection}`}
-                </span>
-              </button>
+                <button onClick={() => give(f)} disabled={busy || done}
+                  style={{ ...s.bagTop, ...(done ? s.off : {}) }}>
+                  <span style={s.bagName}>{f.name}{liked && <span style={s.heart}> ♥</span>}</span>
+                  <span style={s.bagMeta}>
+                    {done ? '오늘은 그만' : `친밀도 +${f.affection}`}
+                  </span>
+                </button>
+                {refunds[f.food_id] && (
+                  <button onClick={() => setSelling(f)} disabled={busy} style={s.sellBtn}>
+                    되팔기 {refunds[f.food_id].back.toLocaleString()}점
+                  </button>
+                )}
+              </div>
             );
           })}
         </div>
+      )}
+
+      {selling && (
+        <SellConfirm item={{ name: selling.name }} refund={refunds[selling.food_id]}
+          busy={busy} onCancel={() => setSelling(null)} onDone={() => doSell(selling)} />
       )}
 
       <p style={s.hint}>
         사료는 하루 한 번, 간식은 하루 두 번까지예요. 안 줘도 배고파지지 않습니다 —
         친밀도가 안 오를 뿐입니다. <b>이 친구가 좋아하는 간식이 두 가지 있어요.</b> 먹여보면 알 수 있습니다.
         비싼 간식일수록 친밀도가 많이 오릅니다.
+      </p>
+      <p style={s.hint}>
+        산 날 안에 마음이 바뀌면 <b>전액</b>, 그 뒤로는 <b>절반</b>을 돌려받습니다.
+        선물받은 물건은 되팔 수 없어요.
       </p>
     </Sheet>
   );
@@ -127,12 +192,25 @@ export function BagPanel({ currentMember, inventory, foods, fedToday, discovered
 // 옷장 — 전체 / 자리별
 // ============================================================
 export function ClosetPanel({ currentMember, inventory, catalog, shopItems, equipped,
-                              wearables = [], species, onClose, onChanged, bottom }) {
+                              wearables = [], species, onClose, onChanged, onSold, bottom }) {
   const [cat, setCat] = useState('all');
   const [busy, setBusy] = useState(null);
   const [msg, setMsg] = useState(null);
+  const [refunds, setRefunds] = useState({});
+  const [selling, setSelling] = useState(null);
 
+  useEffect(() => { loadRefundable(currentMember.id).then(setRefunds); }, [currentMember.id]);
   useEffect(() => { if (!msg) return; const t = setTimeout(() => setMsg(null), 3000); return () => clearTimeout(t); }, [msg]);
+
+  async function doSell(item) {
+    setBusy(item.id);
+    const r = await sellItem(currentMember.id, item.id);
+    setBusy(null); setSelling(null);
+    if (!r?.ok) { setMsg({ bad: true, text: r?.reason || '되팔지 못했어요' }); return; }
+    setMsg({ text: `${r.item} — ${r.refund.toLocaleString()}점 돌려받았어요${r.full ? ' (당일 취소)' : ''}` });
+    setRefunds(await loadRefundable(currentMember.id));
+    onSold?.();
+  }
 
   // 가지고 있는 착용 아이템.
   // 자리·그림 경로는 manifest 의 wearables 가 정답이다 (에셋 카탈로그에는 없다).
@@ -197,25 +275,38 @@ export function ClosetPanel({ currentMember, inventory, catalog, shopItems, equi
               const on = equipped?.[item.slot] === item.id;
               const fits = wearableHere(item);
               return (
-                <button key={item.id} onClick={() => toggle(item)} disabled={busy}
-                  style={{ ...s.wearCard, ...(on ? s.wearOn : {}), ...(fits ? {} : s.off) }}>
-                  <div style={s.wearThumb}>
-                    {item.path
-                      ? <img src={ASSET_BASE + item.path} alt="" style={s.wearImg} />
-                      : <span style={s.wearNoImg}>?</span>}
-                  </div>
-                  <span style={s.wearName}>{item.name}</span>
-                  <span style={s.wearState}>{!fits ? '못 채워요' : on ? '입는 중' : '입히기'}</span>
-                </button>
+                <div key={item.id} style={{ ...s.wearCard, ...(on ? s.wearOn : {}) }}>
+                  <button onClick={() => toggle(item)} disabled={busy}
+                    style={{ ...s.wearTop, ...(fits ? {} : s.off) }}>
+                    <div style={s.wearThumb}>
+                      {item.path
+                        ? <img src={ASSET_BASE + item.path} alt="" style={s.wearImg} />
+                        : <span style={s.wearNoImg}>?</span>}
+                    </div>
+                    <span style={s.wearName}>{item.name}</span>
+                    <span style={s.wearState}>{!fits ? '못 채워요' : on ? '입는 중' : '입히기'}</span>
+                  </button>
+                  {refunds[item.id] && !on && (
+                    <button onClick={() => setSelling(item)} disabled={busy} style={s.sellBtn}>
+                      되팔기 {refunds[item.id].back.toLocaleString()}점
+                    </button>
+                  )}
+                </div>
               );
             })}
           </div>
         </>
       )}
 
+      {selling && (
+        <SellConfirm item={selling} refund={refunds[selling.id]} busy={busy}
+          onCancel={() => setSelling(null)} onDone={() => doSell(selling)} />
+      )}
+
       <p style={s.hint}>
         한 자리에 하나씩 입힙니다. 입은 것을 다시 누르면 벗어요.
         독립시켜도 옷은 그대로 남습니다 — 다음 친구가 물려받아요.
+        입고 있는 것은 되팔 수 없으니 먼저 벗어주세요.
       </p>
     </Sheet>
   );
@@ -342,9 +433,19 @@ const s = {
   heart: { color: '#c2607a' },
 
   bagGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 7 },
-  bagCard: { position: 'relative', padding: '12px 4px 10px', border: '1px solid var(--border)',
+  bagCard: { position: 'relative', padding: '10px 4px 6px', border: '1px solid var(--border)',
              borderRadius: 11, background: 'var(--surface)', display: 'flex',
-             flexDirection: 'column', gap: 3, alignItems: 'center' },
+             flexDirection: 'column', gap: 4, alignItems: 'center' },
+  bagTop: { display: 'flex', flexDirection: 'column', gap: 3, alignItems: 'center',
+            width: '100%', background: 'none', border: 'none', padding: '2px 0 4px' },
+  sellBtn: { width: '100%', padding: '5px 0', borderRadius: 7, fontSize: 10,
+             border: '1px solid var(--border)', color: 'var(--text-3)', background: 'none' },
+  confirmWrap: { position: 'fixed', inset: 0, zIndex: 90, background: 'rgba(0,0,0,.45)',
+                 display: 'grid', placeItems: 'center', padding: 20 },
+  confirmCard: { width: '100%', maxWidth: 340, background: 'var(--bg)', borderRadius: 14,
+                 padding: '16px 16px 14px' },
+  confirmTitle: { fontSize: 15, fontWeight: 700, marginBottom: 8 },
+  confirmBody: { fontSize: 13, lineHeight: 1.7, marginBottom: 14 },
   bagQty: { position: 'absolute', top: 3, right: 5, fontSize: 10, fontWeight: 700,
             background: 'var(--text)', color: 'var(--bg)', borderRadius: 9, padding: '1px 6px' },
   bagName: { fontSize: 13, fontWeight: 600, textAlign: 'center', wordBreak: 'keep-all' },
@@ -355,8 +456,10 @@ const s = {
           border: '1px solid var(--border)', color: 'var(--text-2)', whiteSpace: 'nowrap' },
   chipOn: { background: 'var(--text)', color: 'var(--bg)', borderColor: 'var(--text)', fontWeight: 600 },
   wearGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 7 },
-  wearCard: { border: '1px solid var(--border)', borderRadius: 11, padding: '6px 4px 7px',
-              background: 'var(--surface)', textAlign: 'center' },
+  wearCard: { border: '1px solid var(--border)', borderRadius: 11, padding: '6px 4px 6px',
+              background: 'var(--surface)', textAlign: 'center',
+              display: 'flex', flexDirection: 'column', gap: 4 },
+  wearTop: { background: 'none', border: 'none', padding: 0, width: '100%' },
   wearOn: { borderColor: 'var(--text)', background: 'var(--surface-2)' },
   wearThumb: { height: 50, display: 'grid', placeItems: 'center' },
   wearImg: { width: 62, height: 50, objectFit: 'contain' },
