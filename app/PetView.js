@@ -21,6 +21,7 @@ const ACTION_VERB = {
   template: '템플릿을 등록했습니다', board: '근무표를 갱신했습니다',
   praise_send: '칭찬을 보냈습니다', praise_recv: '칭찬을 받았습니다',
   visit: '친구 방에 다녀왔습니다', team_goal: '의국 전체 목표를 달성했습니다',
+  admin_grant: '운영 지급을 받았습니다',
 };
 
 // 성장 기준선. 서버의 game_stage() 와 같은 값이어야 한다

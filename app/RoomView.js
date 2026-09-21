@@ -12,6 +12,7 @@
 // ============================================================
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import PetCanvas from './PetCanvas';
+import ShopView from './ShopView';
 import { loadManifest, findAsset } from '../lib/pet/assets';
 import {
   project, unproject, placement, blocked, route, approach, dimensions,
@@ -43,6 +44,9 @@ export default function RoomView({ currentMember, profile, onClose }) {
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState(null);
+  const [shopOpen, setShopOpen] = useState(false);
+  const [inv, setInv] = useState({});        // asset_id -> 보유 수량
+  const [balance, setBalance] = useState(profile?.balance || 0);
 
   const svgRef = useRef(null);
   const petRef = useRef({ pos: { x: 3.5, y: 3.5 }, path: [], hold: 1.2, action: 'idle' });
@@ -73,7 +77,28 @@ export default function RoomView({ currentMember, profile, onClose }) {
     return () => { dead = true; };
   }, [currentMember.id, profile?.breed, profile?.species]);
 
+  const reloadOwned = useCallback(async () => {
+    const [{ data: i }, { data: g }] = await Promise.all([
+      supabase.from('pet_inventory').select('asset_id, qty').eq('member_id', currentMember.id),
+      supabase.from('game_profiles').select('balance').eq('member_id', currentMember.id).maybeSingle(),
+    ]);
+    const map = {}; (i || []).forEach((r) => { map[r.asset_id] = r.qty; });
+    setInv(map);
+    if (g) setBalance(g.balance || 0);
+  }, [currentMember.id]);
+
+  useEffect(() => { reloadOwned(); }, [reloadOwned]);
+
   const items = room?.items || [];
+
+  // 보관함에 있지만 아직 방에 안 놓은 것
+  const spare = useMemo(() => {
+    const placed = {};
+    items.forEach((it) => { placed[it.assetId] = (placed[it.assetId] || 0) + 1; });
+    return Object.entries(inv)
+      .map(([id, qty]) => ({ id, left: qty - (placed[id] || 0) }))
+      .filter((x) => x.left > 0);
+  }, [inv, items]);
   const stage = profile ? stageOf(profile.total_earned || 0, profile.affection || 0) : 3;
   const petScale = stage === 0 ? 0.62 : 0.72;
 
@@ -168,6 +193,31 @@ export default function RoomView({ currentMember, profile, onClose }) {
     const res = placement(moved, next.filter((i) => i.uid !== uid), size, catalog);
     if (!res.ok) { setMsg(res.reason); return; }
     setRoom((r) => ({ ...r, items: next })); setDirty(true); setMsg(null);
+  }
+
+  /** 보관함에서 꺼내 빈 자리에 놓는다. 자리를 못 찾으면 알려준다 */
+  function placeFromInventory(assetId) {
+    const a = catalog[assetId];
+    if (!a) return;
+    const uid = `${assetId}-${Date.now().toString(36)}`;
+    for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
+      const cand = { uid, assetId, x, y, rotation: 0 };
+      if (placement(cand, items, size, catalog).ok) {
+        setRoom((r) => ({ ...r, items: [...items, cand] }));
+        setSelected(uid); setDirty(true); setMsg(`${a.name} 을(를) 꺼냈어요`);
+        return;
+      }
+    }
+    setMsg('놓을 자리가 없어요');
+  }
+
+  /** 방에서 빼서 보관함으로 되돌린다 (삭제가 아니라 치우기다) */
+  function storeItem(uid) {
+    const it = items.find((i) => i.uid === uid);
+    if (!it) return;
+    setRoom((r) => ({ ...r, items: items.filter((i) => i.uid !== uid) }));
+    setSelected(null); setDirty(true);
+    setMsg(`${catalog[it.assetId]?.name || '가구'} 을(를) 보관함에 넣었어요`);
   }
 
   function rotate(uid) {
@@ -291,11 +341,13 @@ export default function RoomView({ currentMember, profile, onClose }) {
         {!editing ? (
           <>
             <button onClick={() => { setEditing(true); setAction('idle'); }} style={st.primary}>가구 배치</button>
-            <span style={st.barHint}>친구가 스스로 방을 돌아다녀요</span>
+            <button onClick={() => setShopOpen(true)} style={st.btn}>상점</button>
+            <span style={st.barHint}>{(balance || 0).toLocaleString()}점</span>
           </>
         ) : (
           <>
             <button onClick={() => rotate(selected)} disabled={!selected} style={st.btn}>돌리기</button>
+            <button onClick={() => storeItem(selected)} disabled={!selected} style={st.btn}>치우기</button>
             <button onClick={save} disabled={!dirty || saving} style={st.primary}>
               {saving ? '저장 중…' : dirty ? '저장' : '저장됨'}
             </button>
@@ -304,10 +356,38 @@ export default function RoomView({ currentMember, profile, onClose }) {
         )}
       </div>
       {editing && (
-        <p style={st.hint}>
-          가구를 누르면 선택되고, 빈 칸을 누르면 그 자리로 옮깁니다.
-          벽 밖이나 다른 가구와 겹치는 자리는 거절돼요.
-        </p>
+        <>
+          {spare.length > 0 && (
+            <div style={st.invWrap}>
+              <div style={st.invHead}>보관함</div>
+              <div style={st.invStrip}>
+                {spare.map(({ id, left }) => (
+                  <button key={id} onClick={() => placeFromInventory(id)} style={st.invItem}>
+                    <img src={ASSET_BASE + catalog[id].path} alt="" style={st.invImg} />
+                    <span style={st.invName}>{catalog[id].name}</span>
+                    {left > 1 && <span style={st.invQty}>{left}</span>}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+          <p style={st.hint}>
+            가구를 누르면 선택되고, 빈 칸을 누르면 그 자리로 옮깁니다.
+            벽 밖이나 다른 가구와 겹치는 자리는 거절돼요.
+            <b> 치우기</b>는 없애는 게 아니라 보관함에 넣는 것입니다.
+          </p>
+        </>
+      )}
+
+      {shopOpen && (
+        <ShopView currentMember={currentMember} manifest={manifest} room={room} balance={balance}
+          onDone={async () => {
+            await reloadOwned();
+            const { data } = await supabase.from('pet_rooms').select('*')
+              .eq('member_id', currentMember.id).maybeSingle();
+            if (data) setRoom(data);
+          }}
+          onClose={() => setShopOpen(false)} />
       )}
     </Shell>
   );
@@ -349,4 +429,14 @@ const st = {
   btn: { padding: '11px 14px', borderRadius: 10, fontSize: 14, border: '1px solid var(--border)', color: 'var(--text-2)' },
   barHint: { fontSize: 12, color: 'var(--text-3)' },
   hint: { fontSize: 12, color: 'var(--text-3)', lineHeight: 1.6, marginTop: 10 },
+  invWrap: { marginTop: 12 },
+  invHead: { fontSize: 12, fontWeight: 600, color: 'var(--text-2)', marginBottom: 6 },
+  invStrip: { display: 'flex', gap: 6, overflowX: 'auto', paddingBottom: 4 },
+  invItem: { position: 'relative', flexShrink: 0, width: 70, padding: '4px 2px 5px',
+             border: '1px solid var(--border)', borderRadius: 9, background: 'var(--surface)' },
+  invImg: { width: 60, height: 50, objectFit: 'contain', display: 'block', margin: '0 auto' },
+  invName: { display: 'block', fontSize: 10, color: 'var(--text-2)', overflow: 'hidden',
+             textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
+  invQty: { position: 'absolute', top: 2, right: 4, fontSize: 10, fontWeight: 700,
+            background: 'var(--text)', color: 'var(--bg)', borderRadius: 9, padding: '0 5px' },
 };
