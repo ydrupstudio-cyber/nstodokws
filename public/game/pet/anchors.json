@@ -10025,14 +10025,14 @@
         100.42,
         80.12
       ],
-      "scale": 1.48,
+      "scale": 1.5,
       "rot": 0,
       "parent": "head",
       "localPoint": [
         100.42,
         80.12
       ],
-      "localScale": 1.48,
+      "localScale": 1.5,
       "depth": "front"
     },
     "face": {
@@ -10040,44 +10040,44 @@
         91.0,
         123.0
       ],
-      "scale": 1.06,
+      "scale": 1.08,
       "rot": 0,
       "parent": "head",
       "localPoint": [
         91.0,
         123.0
       ],
-      "localScale": 1.06,
+      "localScale": 1.08,
       "depth": "front"
     },
     "neck": {
       "point": [
         105,
-        140
+        147
       ],
-      "scale": 0.58,
+      "scale": 0.8,
       "rot": 0,
       "parent": "body",
       "localPoint": [
         105,
-        140
+        147
       ],
-      "localScale": 0.58,
+      "localScale": 0.8,
       "depth": "front"
     },
     "body": {
       "point": [
         105,
-        155
+        154
       ],
-      "scale": 0.5,
+      "scale": 0.84,
       "rot": 0,
       "parent": "body",
       "localPoint": [
         105,
-        155
+        154
       ],
-      "localScale": 0.5,
+      "localScale": 0.84,
       "depth": "front"
     },
     "back": {
@@ -10162,14 +10162,14 @@
         101.44,
         79.33
       ],
-      "scale": 1.48,
+      "scale": 1.5,
       "rot": 0,
       "parent": "head",
       "localPoint": [
         101.15,
         47.48
       ],
-      "localScale": 1.64,
+      "localScale": 1.6622,
       "depth": "front"
     },
     "face": {
@@ -10177,44 +10177,44 @@
         89.6,
         138.3
       ],
-      "scale": 0.95,
+      "scale": 0.9679,
       "rot": 0,
       "parent": "head",
       "localPoint": [
         88.0,
         113.0
       ],
-      "localScale": 1.06,
+      "localScale": 1.08,
       "depth": "front"
     },
     "neck": {
       "point": [
-        105,
-        140
+        63,
+        147
       ],
-      "scale": 0.58,
+      "scale": 0.8,
       "rot": 0,
       "parent": "body",
       "localPoint": [
-        105,
-        140
+        63,
+        147
       ],
-      "localScale": 0.58,
+      "localScale": 0.8,
       "depth": "front"
     },
     "body": {
       "point": [
-        105,
-        155
+        63,
+        154
       ],
-      "scale": 0.5,
+      "scale": 0.84,
       "rot": 0,
       "parent": "body",
       "localPoint": [
-        105,
-        155
+        63,
+        154
       ],
-      "localScale": 0.5,
+      "localScale": 0.84,
       "depth": "front"
     },
     "back": {
@@ -10299,14 +10299,14 @@
         101.32,
         64.2
       ],
-      "scale": 1.48,
+      "scale": 1.5,
       "rot": 0,
       "parent": "head",
       "localPoint": [
         101.15,
         57.49
       ],
-      "localScale": 1.57,
+      "localScale": 1.5912,
       "depth": "front"
     },
     "face": {
@@ -10314,44 +10314,44 @@
         88.96,
         116.38
       ],
-      "scale": 1.0,
+      "scale": 1.0189,
       "rot": 0,
       "parent": "head",
       "localPoint": [
         88.0,
         113.0
       ],
-      "localScale": 1.06,
+      "localScale": 1.08,
       "depth": "front"
     },
     "neck": {
       "point": [
         105,
-        140
+        147
       ],
-      "scale": 0.58,
+      "scale": 0.8,
       "rot": 0,
       "parent": "body",
       "localPoint": [
         105,
-        140
+        147
       ],
-      "localScale": 0.58,
+      "localScale": 0.8,
       "depth": "front"
     },
     "body": {
       "point": [
         105,
-        155
+        154
       ],
-      "scale": 0.5,
+      "scale": 0.84,
       "rot": 0,
       "parent": "body",
       "localPoint": [
         105,
-        155
+        154
       ],
-      "localScale": 0.5,
+      "localScale": 0.84,
       "depth": "front"
     },
     "back": {
@@ -10436,14 +10436,14 @@
         101.15,
         64.2
       ],
-      "scale": 1.48,
+      "scale": 1.5,
       "rot": 0,
       "parent": "head",
       "localPoint": [
         101.15,
         64.2
       ],
-      "localScale": 1.48,
+      "localScale": 1.5,
       "depth": "front"
     },
     "face": {
@@ -10451,44 +10451,44 @@
         88.0,
         113.0
       ],
-      "scale": 1.06,
+      "scale": 1.08,
       "rot": 0,
       "parent": "head",
       "localPoint": [
         88.0,
         113.0
       ],
-      "localScale": 1.06,
+      "localScale": 1.08,
       "depth": "front"
     },
     "neck": {
       "point": [
         105,
-        140
+        147
       ],
-      "scale": 0.58,
+      "scale": 0.8,
       "rot": 0,
       "parent": "body",
       "localPoint": [
         105,
-        140
+        147
       ],
-      "localScale": 0.58,
+      "localScale": 0.8,
       "depth": "front"
     },
     "body": {
       "point": [
         105,
-        155
+        154
       ],
-      "scale": 0.5,
+      "scale": 0.84,
       "rot": 0,
       "parent": "body",
       "localPoint": [
         105,
-        155
+        154
       ],
-      "localScale": 0.5,
+      "localScale": 0.84,
       "depth": "front"
     },
     "back": {
@@ -10571,16 +10571,16 @@
     "head": {
       "point": [
         98.76,
-        64.2
+        68.2
       ],
-      "scale": 1.48,
+      "scale": 1.5,
       "rot": 0,
       "parent": "head",
       "localPoint": [
-        102.52,
-        64.02
+        102.3107,
+        68.0145
       ],
-      "localScale": 1.48,
+      "localScale": 1.5,
       "depth": "front"
     },
     "face": {
@@ -10588,44 +10588,44 @@
         88.0,
         113.0
       ],
-      "scale": 1.06,
+      "scale": 1.08,
       "rot": 0,
       "parent": "head",
       "localPoint": [
         89.23,
         112.19
       ],
-      "localScale": 1.06,
+      "localScale": 1.08,
       "depth": "front"
     },
     "neck": {
       "point": [
         105,
-        140
+        147
       ],
-      "scale": 0.58,
+      "scale": 0.8,
       "rot": 0,
       "parent": "body",
       "localPoint": [
         105,
-        140
+        147
       ],
-      "localScale": 0.58,
+      "localScale": 0.8,
       "depth": "front"
     },
     "body": {
       "point": [
         105,
-        155
+        154
       ],
-      "scale": 0.5,
+      "scale": 0.84,
       "rot": 0,
       "parent": "body",
       "localPoint": [
         105,
-        155
+        154
       ],
-      "localScale": 0.5,
+      "localScale": 0.84,
       "depth": "front"
     },
     "back": {
@@ -10708,16 +10708,16 @@
     "head": {
       "point": [
         104.0,
-        115.5
+        91.95
       ],
-      "scale": 0.56,
+      "scale": 1.12,
       "rot": 0,
       "parent": "vertebra-1",
       "localPoint": [
         104.0,
-        115.5
+        91.95
       ],
-      "localScale": 0.56,
+      "localScale": 1.12,
       "depth": "front"
     },
     "face": {
@@ -10725,44 +10725,44 @@
         109.0,
         135.5
       ],
-      "scale": 0.5,
+      "scale": 0.9,
       "rot": 0,
       "parent": "head",
       "localPoint": [
         109.0,
         135.5
       ],
-      "localScale": 0.5,
+      "localScale": 0.9,
       "depth": "front"
     },
     "neck": {
       "point": [
-        110.5,
-        137
+        60.71,
+        130
       ],
-      "scale": 0.58,
+      "scale": 0.8,
       "rot": 0,
       "parent": "body",
       "localPoint": [
-        110.5,
-        137
+        60.71,
+        130
       ],
-      "localScale": 0.58,
+      "localScale": 0.8,
       "depth": "front"
     },
     "body": {
       "point": [
-        110.5,
-        152
+        60.71,
+        147
       ],
-      "scale": 0.45,
+      "scale": 0.8,
       "rot": 0,
       "parent": "body",
       "localPoint": [
-        110.5,
-        152
+        60.71,
+        147
       ],
-      "localScale": 0.45,
+      "localScale": 0.8,
       "depth": "front"
     },
     "back": {
@@ -10845,16 +10845,16 @@
     "head": {
       "point": [
         99.0,
-        99.5
+        75.95
       ],
-      "scale": 0.61,
+      "scale": 1.12,
       "rot": 0,
       "parent": "vertebra-1",
       "localPoint": [
         99.0,
-        99.5
+        75.95
       ],
-      "localScale": 0.61,
+      "localScale": 1.12,
       "depth": "front"
     },
     "face": {
@@ -10862,44 +10862,44 @@
         109.0,
         129.5
       ],
-      "scale": 0.65,
+      "scale": 0.9,
       "rot": 0,
       "parent": "head",
       "localPoint": [
         109.0,
         129.5
       ],
-      "localScale": 0.65,
+      "localScale": 0.9,
       "depth": "front"
     },
     "neck": {
       "point": [
-        107.5,
-        137
+        60.71,
+        130
       ],
-      "scale": 0.58,
+      "scale": 0.8,
       "rot": 0,
       "parent": "body",
       "localPoint": [
-        107.5,
-        137
+        60.71,
+        130
       ],
-      "localScale": 0.58,
+      "localScale": 0.8,
       "depth": "front"
     },
     "body": {
       "point": [
-        107.5,
-        152
+        60.71,
+        147
       ],
-      "scale": 0.45,
+      "scale": 0.8,
       "rot": 0,
       "parent": "body",
       "localPoint": [
-        107.5,
-        152
+        60.71,
+        147
       ],
-      "localScale": 0.45,
+      "localScale": 0.8,
       "depth": "front"
     },
     "back": {
@@ -10982,16 +10982,16 @@
     "head": {
       "point": [
         100.0,
-        88.0
+        64.45
       ],
-      "scale": 0.63,
+      "scale": 1.12,
       "rot": 0,
       "parent": "vertebra-1",
       "localPoint": [
         100.0,
-        88.0
+        64.45
       ],
-      "localScale": 0.63,
+      "localScale": 1.12,
       "depth": "front"
     },
     "face": {
@@ -10999,44 +10999,44 @@
         108.0,
         125.5
       ],
-      "scale": 0.65,
+      "scale": 0.9,
       "rot": 0,
       "parent": "head",
       "localPoint": [
         108.0,
         125.5
       ],
-      "localScale": 0.65,
+      "localScale": 0.9,
       "depth": "front"
     },
     "neck": {
       "point": [
-        104.5,
-        137
+        56.71,
+        130
       ],
-      "scale": 0.58,
+      "scale": 0.8,
       "rot": 0,
       "parent": "body",
       "localPoint": [
-        104.5,
-        137
+        56.71,
+        130
       ],
-      "localScale": 0.58,
+      "localScale": 0.8,
       "depth": "front"
     },
     "body": {
       "point": [
-        104.5,
-        152
+        56.71,
+        147
       ],
-      "scale": 0.45,
+      "scale": 0.8,
       "rot": 0,
       "parent": "body",
       "localPoint": [
-        104.5,
-        152
+        56.71,
+        147
       ],
-      "localScale": 0.45,
+      "localScale": 0.8,
       "depth": "front"
     },
     "back": {
@@ -11119,16 +11119,16 @@
     "head": {
       "point": [
         100.0,
-        73.0
+        49.45
       ],
-      "scale": 0.68,
+      "scale": 1.12,
       "rot": 0,
       "parent": "vertebra-1",
       "localPoint": [
         100.0,
-        73.0
+        49.45
       ],
-      "localScale": 0.68,
+      "localScale": 1.12,
       "depth": "front"
     },
     "face": {
@@ -11136,44 +11136,44 @@
         106.0,
         121.5
       ],
-      "scale": 0.65,
+      "scale": 0.9,
       "rot": 0,
       "parent": "head",
       "localPoint": [
         106.0,
         121.5
       ],
-      "localScale": 0.65,
+      "localScale": 0.9,
       "depth": "front"
     },
     "neck": {
       "point": [
-        103.0,
-        137
+        52.71,
+        130
       ],
-      "scale": 0.58,
+      "scale": 0.8,
       "rot": 0,
       "parent": "body",
       "localPoint": [
-        103.0,
-        137
+        52.71,
+        130
       ],
-      "localScale": 0.58,
+      "localScale": 0.8,
       "depth": "front"
     },
     "body": {
       "point": [
-        103.0,
-        152
+        52.71,
+        147
       ],
-      "scale": 0.45,
+      "scale": 0.8,
       "rot": 0,
       "parent": "body",
       "localPoint": [
-        103.0,
-        152
+        52.71,
+        147
       ],
-      "localScale": 0.45,
+      "localScale": 0.8,
       "depth": "front"
     },
     "back": {
@@ -11256,16 +11256,16 @@
     "head": {
       "point": [
         100.0,
-        73.0
+        49.45
       ],
-      "scale": 0.68,
+      "scale": 1.12,
       "rot": 0,
       "parent": "vertebra-1",
       "localPoint": [
         100.0,
-        73.0
+        49.45
       ],
-      "localScale": 0.68,
+      "localScale": 1.12,
       "depth": "front"
     },
     "face": {
@@ -11273,44 +11273,44 @@
         106.0,
         121.5
       ],
-      "scale": 0.65,
+      "scale": 0.9,
       "rot": 0,
       "parent": "head",
       "localPoint": [
         106.0,
         121.5
       ],
-      "localScale": 0.65,
+      "localScale": 0.9,
       "depth": "front"
     },
     "neck": {
       "point": [
-        103.0,
-        137
+        52.71,
+        130
       ],
-      "scale": 0.58,
+      "scale": 0.8,
       "rot": 0,
       "parent": "body",
       "localPoint": [
-        103.0,
-        137
+        52.71,
+        130
       ],
-      "localScale": 0.58,
+      "localScale": 0.8,
       "depth": "front"
     },
     "body": {
       "point": [
-        103.0,
-        152
+        52.71,
+        147
       ],
-      "scale": 0.45,
+      "scale": 0.8,
       "rot": 0,
       "parent": "body",
       "localPoint": [
-        103.0,
-        152
+        52.71,
+        147
       ],
-      "localScale": 0.45,
+      "localScale": 0.8,
       "depth": "front"
     },
     "back": {

@@ -24,6 +24,7 @@ import {
   depthSorted, petPos, randomFreeCell, interactionOf, perchCell, frontCell,
   INTERACTION_ACTION, PERCH_LIFT, ASSET_BASE,
 } from '../lib/pet/room';
+import { extraActions } from '../lib/pet/actions';
 import { supabase } from '../lib/supabase';
 import { stageOf, josa } from '../lib/game';
 
@@ -33,8 +34,24 @@ const MAX_DELTA = 0.06;       // 탭이 멈췄다 돌아와도 순간이동하�
  * 걸음을 멈춘 뒤 하는 것. 2차 킷이 준 동작을 섞는다.
  * roll(데굴데굴)은 옆으로 눕는 자세라 바닥에서만 한다 — 가구 위에서 구르면 이상하다.
  */
-const REST_ACTIONS       = ['groom', 'yawn', 'look', 'sit', 'idle', 'doze', 'roll'];
+const REST_ACTIONS       = ['groom', 'yawn', 'look', 'sit', 'idle', 'doze', 'roll', 'play', 'stretch'];
 const REST_ON_FURNITURE  = ['groom', 'yawn', 'sit', 'idle', 'doze', 'nap'];
+
+/**
+ * 머리 위에 뜨는 감정 표현. 2차 킷이 준 48×48 이펙트를 그대로 쓴다.
+ * 동작마다 어떤 게 뜨는지는 킷이 actions.js 에 적어 뒀다 (extraActions[].fx).
+ * 여기 표는 1차 동작과, 킷이 비워 둔 자리를 메운 것이다.
+ */
+const FX_SRC = {
+  heart: 'food/fx-heart.svg', sparkle: 'food/fx-sparkle.svg', note: 'food/fx-note.svg',
+  crumbs: 'food/fx-crumbs.svg', zzz: 'food/fx-zzz.svg', exclaim: 'food/fx-exclaim.svg',
+};
+const ACTION_FX = {};
+extraActions.forEach((a) => { if (a.fx) ACTION_FX[a.id] = a.fx; });
+Object.assign(ACTION_FX, {
+  eat: 'crumbs', play: 'note', celebrate: 'sparkle', wave: 'heart',
+  nap: 'zzz', stretch: 'note', wake: 'exclaim', inspect: 'sparkle',
+});
 
 /**
  * 친밀도가 쌓일수록 활발해진다.
@@ -69,6 +86,7 @@ export default function RoomView({
   const [facing, setFacing] = useState(1);
   const [lift, setLift] = useState(0);        // 가구 위에 올라가 있으면 그 높이만큼 뜬다
   const [mark, setMark] = useState(null);     // 머리 위 하트·반짝임
+  const [petBox, setPetBox] = useState(null); // 그려진 몸의 실제 범위 (PetCanvas 가 알려준다)
   const [ripple, setRipple] = useState(null); // 누른 자리 표시
 
   // 편집
@@ -301,7 +319,7 @@ export default function RoomView({
       st.lift = 0; setLift(0);
       st.hold = 2.6;
     }
-    if (bond >= 1) setMark({ kind: 'heart', id: Date.now() });
+    if (bond >= 1) setMark({ fx: 'exclaim', id: Date.now() });
     // 교감하는 법은 처음 몇 번만 알려준다. 매번 뜨면 잔소리가 된다.
     // 기기별 편의라 localStorage 로 충분하다 — 지워져도 안내가 한 번 더 뜰 뿐이다
     try {
@@ -313,8 +331,31 @@ export default function RoomView({
     } catch { /* 사생활 보호 모드에서는 안내를 건너뛴다 */ }
   }, [catalog, room, asset, editing, bond, items, size]);
 
-  useEffect(() => { if (!mark) return; const t = setTimeout(() => setMark(null), 1700); return () => clearTimeout(t); }, [mark]);
+  useEffect(() => { if (!mark) return; const t = setTimeout(() => setMark(null), 1900); return () => clearTimeout(t); }, [mark]);
+
+  // 동작이 바뀌면 그 동작에 어울리는 표현이 머리 위에 뜬다.
+  // 한 번만 뜨고 마는 게 아니라 방에서 사는 내내 계속 나온다.
+  useEffect(() => {
+    const fx = ACTION_FX[action];
+    if (!fx) return;
+    // 조용한 사이일수록 덜 뜬다. 가족이 되면 거의 매번 뜬다
+    const chance = [0.35, 0.5, 0.65, 0.8, 0.9][Math.max(0, Math.min(4, bond))];
+    if (Math.random() > chance) return;
+    setMark({ fx, id: Date.now() + Math.random() });
+  }, [action, bond]);
   useEffect(() => { if (!ripple) return; const t = setTimeout(() => setRipple(null), 800); return () => clearTimeout(t); }, [ripple]);
+
+  /**
+   * PetCanvas 가 알려준 몸 범위. '펫 그림 상자 안에서의 상대 위치' 라
+   * 걸어다녀도 값이 바뀌지 않는다 — 단계나 동작이 바뀔 때만 다시 온다.
+   */
+  const onPetBounds = useCallback((b) => {
+    setPetBox((prev) => {
+      if (prev && Math.abs(prev.dx - b.dx) < 1 && Math.abs(prev.dy - b.dy) < 1
+          && Math.abs(prev.w - b.w) < 1 && Math.abs(prev.h - b.h) < 1) return prev;
+      return b;
+    });
+  }, []);
 
   // ── 교감 ──
   /** 펫을 누르면 좋아한다. 점수도 친밀도도 오르지 않는다 — 그냥 쓰다듬는 것이다 */
@@ -332,7 +373,7 @@ export default function RoomView({
     st.after = 'idle'; st.afterLift = st.lift;
     st.hold = 2.0;
     guestRef.current = now + 1900;            // 잠깐은 제 갈 길을 가지 않는다
-    if (bond >= 1) setMark({ kind: 'heart', id: now });
+    setMark({ fx: bond >= 1 ? 'heart' : 'exclaim', id: now });
   }
 
   /** 바닥을 누르면 그리로 온다. 가구를 누르면 그 가구를 쓰러 간다 */
@@ -503,6 +544,23 @@ export default function RoomView({
   const pp = { x: pp0.x, y: pp0.y - lift };   // 가구 위에 앉으면 그 높이만큼 올려 그린다
   const petW = 200 * petScale;
   const petH = 190 * petScale;
+
+  /**
+   * 누르면 쓰다듬어지는 자리.
+   * 실측한 몸 범위에 여유를 두고, 손가락으로 누를 수 있는 최소 크기를 보장한다.
+   * 좌우 반전 중이면 그림이 뒤집혀 있으므로 판도 같이 뒤집는다 —
+   * 판은 반전 <g> 바깥에 있어서 저절로 따라가지 않는다.
+   */
+  const hitRect = (() => {
+    const PAD = 10, MIN = 62;          // 씬 단위. 방 한 칸이 64 다
+    const b = petBox || { dx: 55 * petScale, dy: 95 * petScale,
+                          w: 90 * petScale, h: 85 * petScale };
+    let x = pp.x + b.dx - PAD, y = pp.y + b.dy - PAD, w = b.w + PAD * 2, h = b.h + PAD * 2;
+    if (w < MIN) { x -= (MIN - w) / 2; w = MIN; }
+    if (h < MIN) { y -= (MIN - h) / 2; h = MIN; }
+    if (facing < 0) x = pp.x * 2 + petW - (x + w);   // 그림과 같이 뒤집는다
+    return { x, y, w, h };
+  })();
   const ghostItem = drag?.cell ? items.find((i) => i.uid === drag.uid) : null;
 
   const tiles = [];
@@ -571,15 +629,17 @@ export default function RoomView({
                       ? `translate(${(pp.x * 2 + petW).toFixed(2)} 0) scale(-1 1)` : undefined}>
                     {asset && <PetCanvas asset={asset} stage={stage} action={action}
                                          size={petW} embedded x={pp.x} y={pp.y}
-                                         mood={temper.mood} wearing={wearing} />}
+                                         mood={temper.mood} wearing={wearing}
+                                         onBounds={onPetBounds} />}
                   </g>
                   {/* 쓰다듬기 판. 펫 그림은 aria-hidden 이라 눌릴 수 없어서 따로 깐다.
                       좌우 반전 바깥에 둬야 누르는 자리가 그림을 따라간다.
-                      ⚠ 넓게 잡으면 뒤쪽 가구를 누르는 손가락까지 삼킨다 (침대를 못 눌렀다).
-                      킷 규약상 펫은 x=100 중심, 바닥선 y=176 이라 아랫도리만 덮는다. */}
-                  {!editing && (
-                    <rect x={pp.x + 62 * petScale} y={pp.y + 110 * petScale}
-                          width={76 * petScale} height={72 * petScale}
+
+                      ⚠ 크기를 상수로 어림잡으면 안 된다. 캐릭터마다 몸이 달라서
+                      머리를 눌렀는데 판 밖이면 펫이 그리로 걸어가 버린다 (실제로 겪었다).
+                      PetCanvas 가 실제로 그려진 범위를 알려주고, 여기서 여유를 더한다. */}
+                  {!editing && hitRect && (
+                    <rect x={hitRect.x} y={hitRect.y} width={hitRect.w} height={hitRect.h}
                           fill="transparent" style={{ cursor: 'pointer' }}
                           onPointerDown={petTap} onClick={(e) => e.stopPropagation()} />
                   )}
@@ -601,18 +661,25 @@ export default function RoomView({
             );
           })}
 
-          {/* 머리 위 표시 — 반가움·쓰다듬기 */}
-          {mark && (
-            <g key={mark.id} transform={`translate(${(pp.x + petW / 2).toFixed(1)} ${(pp.y - 4).toFixed(1)})`}
-               style={{ pointerEvents: 'none' }}>
-              <path d="M0,6 C-9,-3 -16,4 -8,11 L0,18 L8,11 C16,4 9,-3 0,6 Z"
-                    fill="#c2607a" opacity="0.92" transform="translate(-13 -28) scale(1.6)">
-                <animateTransform attributeName="transform" type="translate"
-                  values="-0.5,-8; -0.5,-22; -0.5,-30" dur="1.6s" additive="sum" fill="freeze" />
-                <animate attributeName="opacity" values="0;0.95;0.95;0" dur="1.6s" fill="freeze" />
-              </path>
-            </g>
-          )}
+          {/* 머리 위 감정 표현 */}
+          {mark && FX_SRC[mark.fx] && (() => {
+            const FX = 30, RISE = 12;            // 씬 단위. 한 칸이 64 다
+            const bodyTop = pp.y + (petBox ? petBox.dy : 95 * petScale);
+            // 몸 꼭대기 바로 위에 띄운다. 그림 상자 기준으로 잡으면
+            // 캐릭터마다 머리 위치가 달라 천장에 붙어 잘린다 (실제로 잘렸다).
+            // 떠오르는 높이(RISE)까지 미리 빼 둬야 올라가다 잘리지 않는다
+            const y = Math.max(vb[1] + 4 + RISE, bodyTop - FX - 4);
+            return (
+              <g key={mark.id} style={{ pointerEvents: 'none' }}>
+                <image href={ASSET_BASE + FX_SRC[mark.fx]}
+                       x={pp.x + petW / 2 - FX / 2} y={y} width={FX} height={FX}>
+                  <animateTransform attributeName="transform" type="translate"
+                    values="0,4; 0,-6; 0,-12" dur="1.8s" fill="freeze" />
+                  <animate attributeName="opacity" values="0;1;1;0" dur="1.8s" fill="freeze" />
+                </image>
+              </g>
+            );
+          })()}
 
           {/* 누른 자리 — 여기로 오라는 표시 */}
           {ripple && (() => {

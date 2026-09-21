@@ -37,10 +37,18 @@ export default function PetCanvas({
   x = 0, y = 0,     // embedded 일 때 씬 좌표계에서의 위치
   mood = null,      // 'happy' | 'neutral' | null. 친밀도가 쌓이면 표정이 남는다
   wearing = null,   // { slot: itemId } — game_profiles.equipped 그대로
+  onBounds,         // embedded 일 때 그려진 몸의 실제 범위를 씬 좌표로 알려준다
 }) {
   const hostRef = useRef(null);
   const rafRef = useRef(0);
   const [err, setErr] = useState(null);
+  // 부모가 매 렌더 새 함수를 줘도 애니메이션이 끊기지 않게 ref 로 받는다
+  const onBoundsRef = useRef(onBounds);
+  onBoundsRef.current = onBounds;
+  // 만들어 둔 svg 와 지금 위치. 위치가 바뀌었다고 그림을 다시 만들면 안 된다
+  const builtRef = useRef(null);
+  const posRef = useRef({ x, y });
+  posRef.current = { x, y };
 
   // 객체를 그대로 의존성에 넣으면 매 렌더 새 참조라 애니메이션이 끊긴다
   const wearKey = wearing ? Object.entries(wearing).sort().map((e) => e.join(':')).join(',') : '';
@@ -95,8 +103,8 @@ export default function PetCanvas({
       svg.style.height = (size * 0.95) + 'px';
       svg.style.display = 'block';
       if (embedded) {
-        svg.setAttribute('x', x);
-        svg.setAttribute('y', y);
+        svg.setAttribute('x', posRef.current.x);
+        svg.setAttribute('y', posRef.current.y);
         svg.style.width = ''; svg.style.height = '';   // 씬 좌표계에서는 속성으로만
         svg.setAttribute('width', size);
         svg.setAttribute('height', size * 0.95);
@@ -117,7 +125,24 @@ export default function PetCanvas({
       }
 
       host.replaceChildren(svg);
+      builtRef.current = svg;
       setErr(null);
+
+      // 그려진 몸이 씬에서 실제로 차지하는 칸. 부모가 이걸로 '쓰다듬기 판' 을 만든다.
+      // 상수로 어림잡으면 캐릭터마다 어긋나서 머리를 눌렀는데 펫이 걸어가 버린다.
+      if (embedded && onBoundsRef.current) {
+        try {
+          const body = svg.querySelector('[data-part="pet"]');
+          const bb = body?.getBBox();
+          const vb = svg.viewBox?.baseVal;
+          if (bb && bb.width > 0 && vb?.width) {
+            const k = size / vb.width;          // 씬 단위 / 리그 단위
+            // 절대 좌표가 아니라 '그림 상자 안에서의 위치' 로 알린다.
+            // 걸어다닐 때마다 값이 바뀌면 부모가 매 프레임 다시 그린다
+            onBoundsRef.current({ dx: bb.x * k, dy: bb.y * k, w: bb.width * k, h: bb.height * k });
+          }
+        } catch { /* 범위를 못 재도 그림은 나와야 한다 */ }
+      }
 
       // 저감 모션이면 한 프레임만 그리고 멈춘다
       if (reduced) {
@@ -157,7 +182,19 @@ export default function PetCanvas({
     };
     // onDone 은 의도적으로 뺀다 — 부모가 매 렌더 새 함수를 주면 애니메이션이 끊긴다
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [asset?.id, stage, action, size, embedded, x, y, mood, wearKey]);
+    // x·y 는 일부러 뺀다. 위치가 바뀔 때마다 그림을 다시 만들면
+    // 애니메이션 시계가 매 프레임 0 으로 되돌아가 걷는 다리가 멈춘다
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [asset?.id, stage, action, size, embedded, mood, wearKey]);
+
+  // 위치만 바뀌었을 때는 속성만 갈아 끼운다
+  useEffect(() => {
+    if (!embedded) return;
+    const svg = builtRef.current;
+    if (!svg) return;
+    svg.setAttribute('x', x);
+    svg.setAttribute('y', y);
+  }, [x, y, embedded]);
 
   if (embedded) {
     // 씬 SVG 안에서는 <g> 가 호스트다. 중첩 <svg> 가 들어간다

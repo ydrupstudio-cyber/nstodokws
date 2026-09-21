@@ -17,6 +17,7 @@ import AttendCalendar from './AttendCalendar';
 import RoomView from './RoomView';
 import ShopView from './ShopView';
 import { BagPanel, ClosetPanel, FamilyPanel, Sheet } from './PetPanels';
+import UiIcon from './UiIcon';
 import { loadManifest, grouped, findAsset, SPECIES_LABEL } from '../lib/pet/assets';
 import { supabase } from '../lib/supabase';
 import {
@@ -247,12 +248,7 @@ export default function PetView({ currentMember, onClose }) {
                 <span style={s.bondBadge}>{BOND_LABELS[si]}</span>
               </div>
               <div style={s.hudRight}>
-                {/* 킷 manifest 는 ui/icon-coin.svg 를 적어 뒀지만 파일이 안 왔다 (404).
-                    점수는 늘 떠 있어야 하는 것이라 아이콘을 여기서 직접 그린다 */}
-                <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" style={s.coin}>
-                  <circle cx="8" cy="8" r="7" fill="none" stroke="var(--text-2)" strokeWidth="1.6" />
-                  <circle cx="8" cy="8" r="3" fill="var(--text-2)" />
-                </svg>
+                <UiIcon name="icon-coin" size={17} style={{ color: 'var(--text-2)' }} />
                 <span style={s.points}>{balance.toLocaleString()}</span>
               </div>
             </div>
@@ -266,6 +262,7 @@ export default function PetView({ currentMember, onClose }) {
             {/* 친밀도 레벨 바 — 다음 성장까지 얼마 남았는지 */}
             <div style={s.levelWrap}>
               <div style={s.levelTop}>
+                <UiIcon name="icon-heart" size={13} style={{ color: 'var(--text-3)' }} />
                 <span style={s.levelNow}>{STAGE_LABELS[si]}</span>
                 <span style={s.levelNum}>
                   친밀도 {affection.toLocaleString()}
@@ -287,11 +284,11 @@ export default function PetView({ currentMember, onClose }) {
             {/* 하단 바 — 편집 중에는 방이 자기 조작 막대를 쓴다 */}
             {!editing && (
               <div style={s.dock} ref={dockRef}>
-                <Dock icon="🍚" label="가방"  on={panel === 'bag'}    onClick={() => setPanel(panel === 'bag' ? null : 'bag')} />
-                <Dock icon="🧣" label="옷장"  on={panel === 'closet'} onClick={() => setPanel(panel === 'closet' ? null : 'closet')} />
-                <Dock icon="🛒" label="상점"  onClick={() => { setPanel(null); setShopOpen(true); }} />
-                <Dock icon="🪑" label="가구"  onClick={() => { setPanel(null); setEditing(true); }} />
-                <Dock icon="☰"  label="더보기" on={MORE_PANELS.includes(panel)}
+                <Dock icon="icon-bag"    label="가방"  on={panel === 'bag'}    onClick={() => setPanel(panel === 'bag' ? null : 'bag')} />
+                <Dock icon="icon-closet" label="옷장"  on={panel === 'closet'} onClick={() => setPanel(panel === 'closet' ? null : 'closet')} />
+                <Dock icon="icon-shop"   label="상점"  onClick={() => { setPanel(null); setShopOpen(true); }} />
+                <Dock icon="icon-room"   label="가구"  onClick={() => { setPanel(null); setEditing(true); }} />
+                <Dock icon="icon-more"   label="더보기" on={MORE_PANELS.includes(panel)}
                       onClick={() => setPanel(MORE_PANELS.includes(panel) ? null : 'more')} />
               </div>
             )}
@@ -325,10 +322,10 @@ export default function PetView({ currentMember, onClose }) {
 
             {panel === 'more' && (
               <Sheet title="더보기" onClose={() => setPanel(null)} bottom={dockH}>
-                <MoreRow label="출석 달력" sub={`지금 ${profile.total_streak || 0}일 연속`} onClick={() => setPanel('attend')} />
-                <MoreRow label="활동 기록" sub="누가 무엇으로 점수를 받았는지" onClick={() => setPanel('feed')} />
-                <MoreRow label="랭킹" sub="누적 획득 점수" onClick={() => setPanel('rank')} />
-                <MoreRow label="함께했던 친구들" sub="독립시키기도 여기에 있습니다" onClick={() => setPanel('family')} />
+                <MoreRow icon="icon-task" label="출석 달력" sub={`지금 ${profile.total_streak || 0}일 연속`} onClick={() => setPanel('attend')} />
+                <MoreRow icon="icon-leaf" label="활동 기록" sub="누가 무엇으로 점수를 받았는지" onClick={() => setPanel('feed')} />
+                <MoreRow icon="icon-star" label="랭킹" sub="누적 획득 점수" onClick={() => setPanel('rank')} />
+                <MoreRow icon="icon-friends" label="함께했던 친구들" sub="독립시키기도 여기에 있습니다" onClick={() => setPanel('family')} />
                 <div style={s.miniStats}>
                   <Stat label="누적 획득" value={(profile.total_earned || 0).toLocaleString()} />
                   <Stat label="쓸 수 있는 점수" value={balance.toLocaleString()} />
@@ -413,15 +410,16 @@ export default function PetView({ currentMember, onClose }) {
 function Dock({ icon, label, on, onClick }) {
   return (
     <button onClick={onClick} style={{ ...s.dockBtn, ...(on ? s.dockOn : {}) }}>
-      <span style={s.dockIcon}>{icon}</span>
+      <UiIcon name={icon} size={20} style={{ color: on ? 'var(--text)' : 'var(--text-2)' }} />
       <span style={s.dockLabel}>{label}</span>
     </button>
   );
 }
 
-function MoreRow({ label, sub, onClick }) {
+function MoreRow({ icon, label, sub, onClick }) {
   return (
     <button onClick={onClick} style={s.moreRow}>
+      {icon && <UiIcon name={icon} size={18} style={{ color: 'var(--text-3)' }} />}
       <div style={{ flex: 1, minWidth: 0, textAlign: 'left' }}>
         <div style={s.moreLabel}>{label}</div>
         <div style={s.moreSub}>{sub}</div>
@@ -505,7 +503,6 @@ const s = {
              background: 'var(--surface)', display: 'flex', flexDirection: 'column',
              alignItems: 'center', gap: 2 },
   dockOn: { background: 'var(--surface-2)', borderColor: 'var(--text-3)' },
-  dockIcon: { fontSize: 17, lineHeight: 1 },
   dockLabel: { fontSize: 10, color: 'var(--text-2)', fontWeight: 600 },
 
   moreRow: { display: 'flex', alignItems: 'center', gap: 8, width: '100%',

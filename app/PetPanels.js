@@ -9,6 +9,7 @@
 // ============================================================
 import { useState, useEffect, useMemo } from 'react';
 import { ASSET_BASE } from '../lib/pet/room';
+import UiIcon from './UiIcon';
 import {
   feed, equip, release, loadPetHistory, josa, WEAR_SLOTS, STAGE_LABELS,
 } from '../lib/game';
@@ -66,6 +67,7 @@ export function BagPanel({ currentMember, inventory, foods, fedToday, discovered
 
       {rows.length === 0 ? (
         <div style={s.empty}>
+          <UiIcon name="icon-bag" size={34} style={{ color: 'var(--text-3)', margin: '0 auto 10px' }} />
           가방이 비었어요.<br />
           <span style={s.emptySub}>상점에서 간식을 사면 여기에 들어옵니다.</span>
         </div>
@@ -152,6 +154,7 @@ export function ClosetPanel({ currentMember, inventory, catalog, shopItems, equi
 
       {owned.length === 0 ? (
         <div style={s.empty}>
+          <UiIcon name="icon-closet" size={34} style={{ color: 'var(--text-3)', margin: '0 auto 10px' }} />
           아직 가진 옷이 없어요.<br />
           <span style={s.emptySub}>상점 <b>꾸미기</b> 칸에서 데려올 수 있습니다.</span>
         </div>
