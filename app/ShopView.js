@@ -11,6 +11,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { supabase } from '../lib/supabase';
 import { ASSET_BASE } from '../lib/pet/room';
 import { WEAR_SLOTS, josa } from '../lib/game';
+import { FurniturePreview, WearPreview, WallpaperPreview } from './ShopPreview';
 
 const KIND_LABEL = {
   seating: '앉는 것', surface: '놓는 것', 'pet-supply': '펫 용품',
@@ -23,13 +24,18 @@ function reqId(memberId, itemId) {
   return `${memberId}:${itemId}:${Date.now()}:${Math.random().toString(36).slice(2, 8)}`;
 }
 
-export default function ShopView({ currentMember, manifest, room, balance, onDone, onClose }) {
+export default function ShopView({ currentMember, manifest, room, balance,
+                                   profile, petAsset, onDone, onClose }) {
   const [tab, setTab] = useState('furniture');
   const [shop, setShop] = useState([]);
   const [foods, setFoods] = useState([]);
   const [inv, setInv] = useState({});
   const [busy, setBusy] = useState(null);
   const [msg, setMsg] = useState(null);
+  // 사기 전에 크게 보고 입혀보는 판. 같은 카드를 다시 누르면 닫힌다
+  const [preview, setPreview] = useState(null);   // { kind, id }
+  const peek = (kind, id) =>
+    setPreview((p) => (p && p.kind === kind && p.id === id ? null : { kind, id }));
 
   const catalog = useMemo(() => {
     const c = {}; manifest.assets.forEach((a) => { c[a.id] = a; }); return c;
@@ -127,12 +133,14 @@ export default function ShopView({ currentMember, manifest, room, balance, onDon
                 const poor = (balance || 0) < item.price;
                 return (
                   <div key={item.item_id} style={s.card}>
-                    <div style={s.thumb}>
-                      <img src={ASSET_BASE + a.path} alt="" style={s.thumbImg} />
-                      {have > 0 && <span style={s.haveTag}>{have}</span>}
-                    </div>
-                    <div style={s.cardName}>{item.name}</div>
-                    <div style={{ ...s.rarity, color: RARITY_COLOR[a.rarity] }}>{a.rarity}</div>
+                    <button onClick={() => peek('furniture', item.item_id)} style={s.peekBtn}>
+                      <div style={s.thumb}>
+                        <img src={ASSET_BASE + a.path} alt="" style={s.thumbImg} />
+                        {have > 0 && <span style={s.haveTag}>{have}</span>}
+                      </div>
+                      <div style={s.cardName}>{item.name}</div>
+                      <div style={{ ...s.rarity, color: RARITY_COLOR[a.rarity] }}>{a.rarity}</div>
+                    </button>
                     <button onClick={() => buy(item)} disabled={busy || poor || have >= 4}
                       style={{ ...s.buy, ...((poor || have >= 4) ? s.buyOff : {}) }}>
                       {have >= 4 ? '가득' : poor ? `${item.price}점` : `${item.price}점`}
@@ -199,13 +207,15 @@ export default function ShopView({ currentMember, manifest, room, balance, onDon
                     const limited = Array.isArray(meta.available);
                     return (
                       <div key={item.item_id} style={s.card}>
-                        <div style={s.thumb}>
-                          <img src={ASSET_BASE + meta.path} alt="" style={s.wearImg} />
-                        </div>
-                        <div style={s.cardName}>{meta.name}</div>
-                        <div style={{ ...s.rarity, color: RARITY_COLOR[meta.rarity] }}>
-                          {meta.rarity}{limited && ' · 동물만'}
-                        </div>
+                        <button onClick={() => peek('wear', item.item_id)} style={s.peekBtn}>
+                          <div style={s.thumb}>
+                            <img src={ASSET_BASE + meta.path} alt="" style={s.wearImg} />
+                          </div>
+                          <div style={s.cardName}>{meta.name}</div>
+                          <div style={{ ...s.rarity, color: RARITY_COLOR[meta.rarity] }}>
+                            {meta.rarity}{limited && ' · 동물만'}
+                          </div>
+                        </button>
                         {have ? <span style={s.ownedTag}>소장중</span> : (
                           <button onClick={() => buy(item)} disabled={busy || poor}
                             style={{ ...s.buy, ...(poor ? s.buyOff : {}) }}>{item.price}점</button>
@@ -238,13 +248,17 @@ export default function ShopView({ currentMember, manifest, room, balance, onDon
               const poor = item && (balance || 0) < item.price;
               return (
                 <div key={w.id} style={s.wpRow}>
-                  <div style={{ ...s.wpSwatch, background: w.base }}>
-                    <span style={{ ...s.wpSide, background: w.side }} />
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={s.wpName}>{w.name}</div>
-                    <div style={s.wpStory}>{w.story}</div>
-                  </div>
+                  <button onClick={() => peek('wallpaper', w.id)} style={s.wpPeek}>
+                    {/* 색 칩만 보여주면 전부 비슷해 보인다. 실제 도안을 깐다 */}
+                    <div style={{ ...s.wpSwatch, background: w.base }}>
+                      <img src={ASSET_BASE + w.patternSource} alt="" style={s.wpPattern} />
+                      <span style={{ ...s.wpSide, background: w.side, opacity: .55 }} />
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0, textAlign: 'left' }}>
+                      <div style={s.wpName}>{w.name}</div>
+                      <div style={s.wpStory}>{w.description || w.story}</div>
+                    </div>
+                  </button>
                   {has ? <span style={s.ownedTag}>소장중</span> : (
                     <button onClick={() => buy(item)} disabled={busy || poor || !item}
                       style={{ ...s.buyRow, ...(poor ? s.buyOff : {}) }}>{w.price}점</button>
@@ -283,6 +297,51 @@ export default function ShopView({ currentMember, manifest, room, balance, onDon
             })}
           </div>
         )}
+        {preview && (() => {
+          const close = () => setPreview(null);
+          if (preview.kind === 'furniture') {
+            const a = catalog[preview.id];
+            const item = shop.find((x) => x.item_id === preview.id);
+            const have = inv[preview.id] || 0;
+            return <FurniturePreview asset={a} item={item} onClose={close}
+              foot={<div style={s.pvFoot}>
+                {have >= 4 ? <span style={s.pvFull}>가득 (4개까지)</span> : (
+                  <button onClick={() => { buy(item); close(); }}
+                    disabled={busy || (balance || 0) < item.price}
+                    style={{ ...s.pvBuy, ...((balance || 0) < item.price ? s.buyOff : {}) }}>
+                    {item.price.toLocaleString()}점으로 들이기{have > 0 ? ` (${have}개 보유)` : ''}
+                  </button>)}
+              </div>} />;
+          }
+          if (preview.kind === 'wear') {
+            const meta = wearMeta[preview.id];
+            const item = shop.find((x) => x.item_id === preview.id);
+            const have = (inv[preview.id] || 0) > 0;
+            return <WearPreview meta={meta} item={item} petAsset={petAsset} profile={profile}
+              equipped={profile?.equipped || {}} onClose={close}
+              foot={<div style={s.pvFoot}>
+                {have ? <span style={s.pvFull}>소장중 — 옷장에서 입힐 수 있어요</span> : (
+                  <button onClick={() => { buy(item); close(); }}
+                    disabled={busy || (balance || 0) < item.price}
+                    style={{ ...s.pvBuy, ...((balance || 0) < item.price ? s.buyOff : {}) }}>
+                    {item.price.toLocaleString()}점으로 들이기
+                  </button>)}
+              </div>} />;
+          }
+          const w = wallpapers.find((x) => x.id === preview.id);
+          const item = shop.find((x) => x.item_id === preview.id);
+          const has = owned.includes(preview.id);
+          return <WallpaperPreview coll={w} item={item} owned={has}
+            roomSize={manifest.roomLevels?.[room?.level || 0]?.size || 8} onClose={close}
+            foot={<div style={s.pvFoot}>
+              {has ? <span style={s.pvFull}>소장중</span> : item ? (
+                <button onClick={() => { buy(item); close(); }}
+                  disabled={busy || (balance || 0) < item.price}
+                  style={{ ...s.pvBuy, ...((balance || 0) < item.price ? s.buyOff : {}) }}>
+                  {item.price.toLocaleString()}점으로 바르기
+                </button>) : <span style={s.pvFull}>아직 팔지 않습니다</span>}
+            </div>} />;
+        })()}
       </div>
     </div>
   );
@@ -308,6 +367,13 @@ const s = {
              background: 'var(--text)', color: 'var(--bg)', borderRadius: 10, padding: '1px 6px' },
   cardName: { fontSize: 11, fontWeight: 600, marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
   rarity: { fontSize: 10, marginBottom: 4 },
+  pvFoot: { padding: '10px 16px 16px', borderTop: '1px solid var(--border)' },
+  pvBuy: { width: '100%', padding: 13, borderRadius: 11, fontSize: 14, fontWeight: 700,
+           background: 'var(--text)', color: 'var(--bg)', border: 'none' },
+  pvFull: { display: 'block', textAlign: 'center', fontSize: 13, color: 'var(--text-3)', padding: 6 },
+  peekBtn: { width: '100%', background: 'none', border: 'none', padding: 0, textAlign: 'center', cursor: 'pointer' },
+  wpPeek: { display: 'flex', alignItems: 'center', gap: 10, flex: 1, minWidth: 0,
+            background: 'none', border: 'none', padding: 0, cursor: 'pointer' },
   buy: { width: '100%', padding: '5px 0', borderRadius: 7, fontSize: 11, fontWeight: 600,
          background: 'var(--text)', color: 'var(--bg)', border: 'none' },
   // 목록 행(벽지·방)용. width:100% 를 쓰면 옆의 설명 칸이 한 글자 폭으로 눌린다
@@ -315,7 +381,9 @@ const s = {
             fontSize: 12, fontWeight: 600, background: 'var(--text)', color: 'var(--bg)', border: 'none' },
   buyOff: { background: 'var(--surface-2)', color: 'var(--text-3)' },
   wpRow: { display: 'flex', alignItems: 'center', gap: 10, padding: '9px 0', borderBottom: '1px solid var(--border)' },
-  wpSwatch: { width: 40, height: 40, borderRadius: 8, flexShrink: 0, position: 'relative', overflow: 'hidden' },
+  wpSwatch: { width: 44, height: 44, borderRadius: 8, flexShrink: 0, position: 'relative', overflow: 'hidden',
+              border: '1px solid var(--border)' },
+  wpPattern: { position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' },
   wpSide: { position: 'absolute', right: 0, top: 0, bottom: 0, width: '45%' },
   wpName: { fontSize: 13, fontWeight: 600, wordBreak: 'keep-all' },
   wpStory: { fontSize: 11, color: 'var(--text-3)', marginTop: 1, lineHeight: 1.45 },

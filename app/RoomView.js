@@ -606,13 +606,20 @@ export default function RoomView({
           <polygon points={walls.right} fill={baseCol} />
           {coll && (
             <>
+              {/* 벽지 원본은 240×120 반복 도안이다. 60×30 으로 찍으면 4배로 줄어들어
+                  무늬가 뭉개지고, 거기에 opacity 까지 걸면 단색 벽처럼 보인다 (그랬다).
+                  원본은 자기 배경색을 안에 갖고 있으므로 불투명하게 그대로 깐다 —
+                  아래 base 색은 도안을 못 불러왔을 때를 위한 바탕이다. */}
               <defs>
-                <pattern id="wp" width="60" height="30" patternUnits="userSpaceOnUse">
-                  <image href={ASSET_BASE + coll.patternSource} width="60" height="30" />
+                <pattern id="wp" width="120" height="60" patternUnits="userSpaceOnUse">
+                  <image href={ASSET_BASE + coll.patternSource} width="120" height="60" />
                 </pattern>
               </defs>
-              <polygon points={walls.left} fill="url(#wp)" opacity=".5" />
-              <polygon points={walls.right} fill="url(#wp)" opacity=".5" />
+              <polygon points={walls.left} fill="url(#wp)" />
+              <polygon points={walls.right} fill="url(#wp)" />
+              {/* 왼쪽 벽은 그늘진 면이라 한 겹 어둡게 덮는다. 두 면이 같은 밝기면
+                  모서리가 사라져서 방이 평면으로 보인다 */}
+              <polygon points={walls.left} fill="#000" opacity="0.10" />
             </>
           )}
           {/* 바닥 */}

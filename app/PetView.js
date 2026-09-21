@@ -51,6 +51,7 @@ function timeLabel(iso) {
 export default function PetView({ currentMember, onClose }) {
   const [profile, setProfile] = useState(null);
   const [room, setRoom] = useState(null);      // 상점이 벽지·방 크기를 알아야 한다
+  const [petAsset, setPetAsset] = useState(null);   // 상점에서 옷을 입혀보려면 필요하다
   const [manifest, setManifest] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -107,6 +108,7 @@ export default function PetView({ currentMember, onClose }) {
     setFedToday(fs.todayIds); setDiscovered(fs.discovered);
     setInventory(inv);
     setRoom(rm?.data || null);
+    setPetAsset(p?.breed ? await findAsset(p.species, p.breed) : null);
     setLoading(false);
   }, [currentMember.id]);
 
@@ -398,7 +400,7 @@ export default function PetView({ currentMember, onClose }) {
 
         {shopOpen && manifest && (
           <ShopView currentMember={currentMember} manifest={manifest}
-            room={room} balance={balance}
+            room={room} balance={balance} profile={profile} petAsset={petAsset}
             onDone={async () => { await refresh(); roomReload.current?.(); }}
             onClose={() => setShopOpen(false)} />
         )}
