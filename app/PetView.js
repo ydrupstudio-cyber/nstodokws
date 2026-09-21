@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { YEAR_LEVELS } from '../lib/config';
 import PetCanvas from './PetCanvas';
+import AttendCalendar from './AttendCalendar';
 import { grouped, findAsset, petAssets, SPECIES_LABEL, STAGE_LABEL, BOND_LABEL } from '../lib/pet/assets';
 import {
   loadProfile, loadFeed, loadRanking, adopt, feed, loadFoods, loadFeedState,
@@ -146,7 +147,7 @@ export default function PetView({ currentMember, onClose }) {
         </div>
 
         <div style={styles.tabs}>
-          {[['pet', '내 펫'], ['food', '먹이'], ['feed', '활동 기록'], ['rank', '랭킹']].map(([k, label]) => (
+          {[['pet', '내 펫'], ['food', '먹이'], ['attend', '출석'], ['feed', '기록'], ['rank', '랭킹']].map(([k, label]) => (
             <button key={k} onClick={() => setTab(k)}
               style={{ ...styles.tab, ...(tab === k ? styles.tabOn : {}) }}>{label}</button>
           ))}
@@ -215,7 +216,10 @@ export default function PetView({ currentMember, onClose }) {
                 <Stat label="연속 출석" value={`${profile.total_streak || 0}일`} />
               </div>
 
-              <div style={styles.sectionHead}>오늘 출석</div>
+              <div style={styles.sectionHeadRow}>
+                <span style={styles.sectionHead}>오늘 출석</span>
+                <button onClick={() => setTab('attend')} style={styles.moreBtn}>달력 보기</button>
+              </div>
               <div style={styles.slotRow}>
                 {[1, 2, 3, 4].map((n) => (
                   <div key={n} style={{ ...styles.slot, ...(slots.includes(n) ? styles.slotOn : {}) }}>
@@ -281,6 +285,34 @@ export default function PetView({ currentMember, onClose }) {
                 </p>
               </div>
             ) : <div style={styles.empty}>먼저 펫을 데려오세요</div>
+          )}
+
+          {/* ───────── 출석 달력 ───────── */}
+          {tab === 'attend' && (
+            <div>
+              <AttendCalendar memberId={currentMember.id} />
+              <div style={styles.streakBox}>
+                <div>
+                  <div style={styles.streakNum}>{profile?.total_streak || 0}일</div>
+                  <div style={styles.streakLab}>지금 연속</div>
+                </div>
+                <div style={styles.streakDiv} />
+                <div>
+                  <div style={styles.streakNum}>{profile?.best_streak || 0}일</div>
+                  <div style={styles.streakLab}>최고 기록</div>
+                </div>
+                <div style={styles.streakDiv} />
+                <div>
+                  <div style={styles.streakNum}>{profile?.streak_weeks || 0}주</div>
+                  <div style={styles.streakLab}>연속 완주</div>
+                </div>
+              </div>
+              <p style={styles.hint}>
+                하루에 한 번만 들러도 연속은 이어집니다. 2일차부터 보너스가 붙고,
+                7일을 채우면 사다리가 처음부터 다시 시작해요.
+                4주·8주·12주 연속에는 큰 보상이 있습니다.
+              </p>
+            </div>
           )}
 
           {/* ───────── 활동 기록 ───────── */}
@@ -392,6 +424,14 @@ const styles = {
   statValue: { fontSize: 18, fontWeight: 600 },
 
   sectionHead: { fontSize: 12, fontWeight: 600, color: 'var(--text-2)', marginBottom: 8, letterSpacing: '0.03em' },
+  sectionHeadRow: { display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 8 },
+  moreBtn: { fontSize: 12, color: 'var(--text-3)', background: 'none', border: 'none', padding: 0, cursor: 'pointer' },
+  streakBox: { display: 'flex', alignItems: 'center', justifyContent: 'space-around', gap: 8,
+               padding: '14px 8px', background: 'var(--surface)', border: '1px solid var(--border)',
+               borderRadius: 12, marginTop: 14, textAlign: 'center' },
+  streakNum: { fontSize: 20, fontWeight: 700 },
+  streakLab: { fontSize: 11, color: 'var(--text-3)', marginTop: 2 },
+  streakDiv: { width: 1, alignSelf: 'stretch', background: 'var(--border)' },
   slotRow: { display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 6 },
   slot: { display: 'flex', alignItems: 'center', gap: 7, padding: '9px 10px', border: '1px solid var(--border)', borderRadius: 9, fontSize: 12, color: 'var(--text-3)' },
   slotOn: { color: 'var(--text)', borderColor: 'var(--text-3)', background: 'var(--surface-2)' },
