@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../lib/supabase';
 import { YEAR_LEVELS, ASSIGNEE_ORDER } from '../lib/config';
 import { formatTimeLabel, relativeTime, parseProfessorBracket, formatShortDateLabel } from '../lib/utils';
@@ -24,6 +24,10 @@ export default function TaskRow({
   const [commentCount, setCommentCount] = useState(0);
   const [newComment, setNewComment] = useState('');
   const [loadingComments, setLoadingComments] = useState(false);
+  // 메모 접기 — 한 줄만 보이고, 넘치면 '더보기'
+  const [memoOpen, setMemoOpen] = useState(false);
+  const [memoClamped, setMemoClamped] = useState(false);
+  const memoRef = useRef(null);
 
   // 본문/메모에서 [X] 패턴 자동 추출
   const knownInitials = professors.map((p) => p.initial);
@@ -40,6 +44,13 @@ export default function TaskRow({
   const textColor = isDone ? 'var(--text-3)' : showAsUrgent ? 'var(--danger)' : 'var(--text)';
   const bgColor = !isDone && showAsUrgent ? 'var(--danger-bg)' : 'var(--surface)';
   const borderColor = !isDone && showAsUrgent ? 'var(--danger-border)' : isCarried ? '#E8963E' : 'var(--border)';
+
+  // 메모가 한 줄을 넘는지 확인한다. 펼친 상태에서는 재지 않는다
+  useEffect(() => {
+    if (memoOpen) return;
+    const el = memoRef.current;
+    if (el) setMemoClamped(el.scrollHeight > el.clientHeight + 1);
+  }, [displayMemo, memoOpen]);
 
   // 댓글 수 가져오기
   useEffect(() => {
@@ -174,7 +185,17 @@ export default function TaskRow({
               textDecoration: isDone ? 'line-through' : 'none',
               color: isDone ? 'var(--text-3)' : 'var(--text-2)',
             }}>
-              {displayMemo}
+              <div ref={memoRef} style={memoOpen ? styles.memoBodyOpen : styles.memoBodyClamped}>
+                {displayMemo}
+              </div>
+              {(memoClamped || memoOpen) && (
+                <button
+                  onClick={() => setMemoOpen(!memoOpen)}
+                  style={styles.memoToggle}
+                >
+                  {memoOpen ? '접기' : '… 더보기'}
+                </button>
+              )}
             </div>
           )}
 
@@ -334,7 +355,16 @@ const styles = {
     fontSize: 11, color: 'var(--text-2)', background: 'var(--surface-2)',
     padding: '2px 8px', borderRadius: 100,
   },
-  memo: { fontSize: 13, marginTop: 4, wordBreak: 'break-word', lineHeight: 1.5 },
+  memo: { fontSize: 13, marginTop: 4, lineHeight: 1.5 },
+  memoBodyClamped: {
+    display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical',
+    overflow: 'hidden', wordBreak: 'break-word', whiteSpace: 'pre-wrap',
+  },
+  memoBodyOpen: { wordBreak: 'break-word', whiteSpace: 'pre-wrap' },
+  memoToggle: {
+    background: 'none', border: 'none', padding: 0, marginTop: 2,
+    fontSize: 12, color: 'var(--text-3)', cursor: 'pointer',
+  },
   photoIcon: {
     display: 'inline-flex', alignItems: 'center', gap: 4,
     fontSize: 12, color: 'var(--info)', background: 'var(--surface-2)',
