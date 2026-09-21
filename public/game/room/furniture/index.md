@@ -1,56 +1,62 @@
-# 가구 목록
+# 3차 가구·벽 장식
 
-가격은 초기 제안값이며 실제 점수 경제에 연결된 값이 아닙니다.
-
-| 파일 | 이름 | 크기 | 희귀도 | 제안 가격 | 분류 |
-|---|---|---|---|---|---|
-| `fn-sofa.svg` | 민트 소파 | 2×1 | 고급 | 900 | seating |
-| `fn-beanbag.svg` | 피치 빈백 | 1×1 | 일반 | 350 | seating |
-| `fn-chair.svg` | 작업 의자 | 1×1 | 일반 | 350 | seating |
-| `fn-cushion.svg` | 라일락 방석 | 1×1 | 일반 | 350 | seating |
-| `fn-desk.svg` | 오크 책상 | 2×1 | 고급 | 900 | surface |
-| `fn-table.svg` | 작은 테이블 | 2×1 | 일반 | 350 | surface |
-| `fn-shelf.svg` | 색색 책장 | 2×1 | 희귀 | 1800 | surface |
-| `fn-nightstand.svg` | 침대 옆 협탁 | 1×1 | 일반 | 350 | surface |
-| `fn-cat-tree.svg` | 구름 캣타워 | 2×2 | 희귀 | 1800 | pet-supply |
-| `fn-pet-bed.svg` | 포근한 펫 침대 | 1×1 | 고급 | 900 | pet-supply |
-| `fn-bowl.svg` | 두 그릇 세트 | 1×1 | 일반 | 350 | pet-supply |
-| `fn-scratcher.svg` | 오크 스크래처 | 1×1 | 일반 | 350 | pet-supply |
-| `fn-dog-house.svg` | 작은 강아지집 | 2×2 | 희귀 | 1800 | pet-supply |
-| `fn-plant-large.svg` | 큰 몬스테라 | 1×1 | 고급 | 900 | plant |
-| `fn-plant-small.svg` | 작은 새싹 | 1×1 | 일반 | 350 | plant |
-| `fn-plant-hanging.svg` | 행잉 플랜트 | 1×1 | 고급 | 900 | plant |
-| `fn-floor-lamp.svg` | 머시룸 플로어램프 | 1×1 | 고급 | 900 | light |
-| `fn-table-lamp.svg` | 작은 테이블램프 | 1×1 | 일반 | 350 | light |
-| `fn-mood-lamp.svg` | 뇌 무드등 | 1×1 | 특별 | 2600 | light |
-| `fn-frame.svg` | 뇌 그림 액자 스탠드 | 1×1 | 고급 | 900 | wall-decor |
-| `fn-clock.svg` | 데이지 시계 스탠드 | 1×1 | 일반 | 350 | wall-decor |
-| `fn-board.svg` | 작은 할일 보드 스탠드 | 2×1 | 고급 | 900 | wall-decor |
-| `fn-rug.svg` | 선셋 러그 | 2×2 | 일반 | 350 | misc |
-| `fn-cushion-pile.svg` | 쿠션 더미 | 1×1 | 고급 | 900 | misc |
-
-
-# 2차 추가 — 18종 / 합계 42종
-
-| id | 표시명 | 점수 | 면적 | 설치 | 반응 |
-|---|---|---:|---|---|---|
-| fn-rocking-chair | 민트 흔들의자 | 650 | [1, 1] | floor | sit |
-| fn-floor-pillow | 살구 좌식방석 | 180 | [1, 1] | floor | sit |
-| fn-hammock | 정원 해먹 | 1100 | [3, 1] | floor | nap |
-| fn-round-table | 우드 원형테이블 | 700 | [2, 2] | floor | — |
-| fn-storage-chest | 낮은 수납함 | 450 | [2, 1] | floor | — |
-| fn-sideboard | 오트밀 사이드보드 | 900 | [2, 1] | floor | — |
-| fn-pet-tunnel | 민트 터널 | 650 | [2, 1] | floor | inspect |
-| fn-ball-basket | 공놀이 바구니 | 280 | [1, 1] | floor | play |
-| fn-hammock-bed | 라벤더 해먹침대 | 750 | [2, 1] | floor | nap |
-| fn-cactus | 작은 선인장 | 200 | [1, 1] | floor | inspect |
-| fn-tree-pot | 둥근 나무 화분 | 650 | [1, 1] | floor | inspect |
-| fn-candle | 꿀빛 캔들 | 160 | [1, 1] | floor | — |
-| fn-string-lights | 정원 스트링라이트 | 800 | [3, 1] | floor | — |
-| fn-wall-mirror | 창문 벽거울 | 350 | [1, 1] | wall | inspect |
-| fn-wall-calendar | 살구 벽달력 | 150 | [1, 1] | wall | — |
-| fn-arc-rug | 궤도 무늬 러그 | 250 | [2, 2] | floor | — |
-| fn-staff-locker | 의국 민트 로커 | 1000 | [2, 1] | floor | — |
-| fn-snack-trolley | 당직 간식 트롤리 | 850 | [2, 1] | floor | inspect |
-
-벽거울·달력은 진짜 벽면 부착물입니다. `mount=wall`, 위치는 wallId+u+height로 저장하고 바닥 점유와 분리하세요. floor 전용 엔진에 바로 등록하지 마세요. 0/270 뷰는 앞면, 90/180 뷰는 뒷면입니다. 스트링라이트는 바닥 지지대형입니다. 캔들은 장식 광원이며 화재 규칙이 없습니다. 좌석 interaction은 동작 연결 제안으로, 가구별 승하차 위치는 앱에서 연결해야 합니다.
+| id | 표시명 | kind | 점유칸 | interaction | 희귀도 | 가격 | 설치 |
+|---|---|---|---|---|---|---:|---|
+| fn-bed-single-oak | 오트밀 싱글 침대 | bed | 2×3 | sleep | 고급 | 900 | floor / object |
+| fn-bed-bunk-mint | 민트 이층 침대 | bed | 2×3 | sleep | 희귀 | 1600 | floor / object |
+| fn-bed-duty-fold | 당직실 접이식 침대 | bed | 2×2 | sleep | 고급 | 600 | floor / object |
+| fn-bed-floor-quilt | 차곡차곡 요이불 | bed | 2×2 | sleep | 일반 | 350 | floor / floor |
+| fn-bed-canopy-linen | 린넨 캐노피 침대 | bed | 3×3 | sleep | 희귀 | 2400 | floor / object |
+| fn-bed-round-cloud | 구름 원형 쿠션 침대 | bed | 2×2 | sleep | 고급 | 700 | floor / object |
+| fn-rug-pebble | 조약돌 원형 러그 | rug | 2×2 | — | 일반 | 180 | floor / floor |
+| fn-rug-tuft | 포근한 긴털 러그 | rug | 2×2 | — | 일반 | 240 | floor / floor |
+| fn-rug-petal | 네잎 꽃잎 러그 | rug | 2×2 | — | 일반 | 290 | floor / floor |
+| fn-rug-woven | 올리브 짜임 러그 | rug | 3×3 | — | 고급 | 480 | floor / floor |
+| fn-rug-orbit | 보름달 궤도 러그 | rug | 3×3 | — | 고급 | 580 | floor / floor |
+| fn-rug-patchwork | 추억 조각보 러그 | rug | 3×3 | — | 고급 | 520 | floor / floor |
+| fn-rug-border | 여백의 테두리 러그 | rug | 3×3 | — | 고급 | 430 | floor / floor |
+| fn-rug-meadow | 정원 들꽃 대형 러그 | rug | 4×4 | — | 고급 | 780 | floor / floor |
+| fn-rug-snow | 첫눈 눈결 대형 러그 | rug | 4×4 | — | 고급 | 860 | floor / floor |
+| fn-rug-runner-linen | 침대 옆 리넨 러너 | rug | 2×4 | — | 고급 | 420 | floor / floor |
+| fn-rug-runner-stripe | 복도의 줄무늬 러너 | rug | 4×2 | — | 고급 | 390 | floor / floor |
+| fn-wall-landscape | 산책길 가로 액자 | wall-decor | 2×1 | look | 일반 | 320 | wall / wall |
+| fn-wall-botanical | 풀잎 세로 액자 | wall-decor | 1×1 | look | 일반 | 260 | wall / wall |
+| fn-wall-display-shelf | 작은 보물 벽선반 | wall-decor | 2×1 | inspect | 고급 | 380 | wall / wall |
+| fn-wall-moon-clock | 달의 벽시계 | wall-decor | 1×1 | look | 일반 | 280 | wall / wall |
+| fn-wall-bird-mobile | 나뭇잎 새 모빌 | wall-decor | 1×1 | look | 일반 | 350 | wall / wall |
+| fn-wall-festival-garland | 계절의 가랜드 | wall-decor | 3×1 | look | 일반 | 240 | wall / wall |
+| fn-plant-palm-tall | 키다리 야자 | plant | 2×2 | inspect | 고급 | 820 | floor / object |
+| fn-plant-olive-tree | 올리브 나무 | plant | 2×2 | inspect | 고급 | 760 | floor / object |
+| fn-plant-eucalyptus | 가느다란 유칼립투스 화병 | plant | 1×1 | inspect | 일반 | 260 | floor / object |
+| fn-plant-succulent-garden | 다육이 모둠 | plant | 1×1 | inspect | 일반 | 220 | floor / object |
+| fn-plant-terrarium | 유리 속 작은 정원 | plant | 1×1 | inspect | 고급 | 380 | floor / object |
+| fn-plant-trailing-vine | 벽에서 흐르는 넝쿨 | plant | 1×1 | inspect | 일반 | 300 | wall / wall |
+| fn-plant-window-herbs | 창가 허브 상자 | plant | 1×1 | inspect | 일반 | 180 | floor / object |
+| fn-plant-forgotten-pot | 아무도 물 안 준 화분 | plant | 1×1 | inspect | 일반 | 90 | floor / object |
+| fn-bookcase-wall | 책으로 채운 벽면 서가 | storage | 3×2 | inspect | 희귀 | 1850 | floor / object |
+| fn-sofa-long-knit | 기다란 니트 소파 | seating | 3×2 | sit | 희귀 | 1550 | floor / object |
+| fn-worktable-studio | 함께 쓰는 작업 테이블 | surface | 3×2 | inspect | 희귀 | 1750 | floor / object |
+| fn-cabinet-tall-linen | 깊은 린넨 수납장 | storage | 2×3 | inspect | 고급 | 1350 | floor / object |
+| fn-sofa-corner-cloud | 구름 코너 소파 | seating | 3×3 | sit | 희귀 | 2200 | floor / object |
+| fn-budget-mini-photo | 첫날의 작은 사진 | decor | 1×1 | look | 일반 | 100 | floor / object |
+| fn-budget-waste-bin | 작은 라탄 휴지통 | storage | 1×1 | inspect | 일반 | 120 | floor / object |
+| fn-budget-starter-stool | 동그란 시작 스툴 | seating | 1×1 | sit | 일반 | 160 | floor / object |
+| fn-budget-book-stack | 읽다 만 책 세 권 | decor | 1×1 | inspect | 일반 | 90 | floor / object |
+| fn-budget-mug-tray | 따뜻한 머그 한 잔 | surface | 1×1 | inspect | 일반 | 80 | floor / object |
+| fn-budget-home-slippers | 가지런한 실내화 | decor | 1×1 | inspect | 일반 | 110 | floor / object |
+| fn-budget-door-mat | 작은 현관 매트 | rug | 1×1 | — | 일반 | 130 | floor / floor |
+| fn-budget-desk-clock | 종종 울리는 탁상시계 | decor | 1×1 | look | 일반 | 180 | floor / object |
+| fn-bedside-bridge | 침대 옆 브리지 협탁 | surface | 1×1 | inspect | 일반 | 280 | floor / object |
+| fn-reading-lamp | 따뜻한 독서 스탠드 | light | 1×1 | look | 고급 | 380 | floor / object |
+| fn-ward-fridge | 의국 메모 냉장고 | storage | 1×1 | inspect | 고급 | 720 | floor / object |
+| fn-coffee-station | 당직 커피 스테이션 | surface | 2×1 | inspect | 고급 | 920 | floor / object |
+| fn-coat-stand | 퇴근한 가운걸이 | storage | 1×1 | inspect | 고급 | 360 | floor / object |
+| fn-wall-duty-board | 이번 주 당직 화이트보드 | wall-decor | 2×1 | look | 일반 | 320 | wall / wall |
+| fn-iv-moon-lamp | 수액걸대 모티프 달 조명 | light | 1×1 | look | 고급 | 490 | floor / object |
+| fn-window-perch | 볕 드는 창가 자리 | seating | 2×1 | sit | 고급 | 620 | floor / object |
+| fn-wall-catwalk | 사뿐사뿐 캣워크 선반 | pet | 2×1 | sit | 고급 | 540 | wall / wall |
+| fn-hideout-felt | 도토리 펠트 숨숨집 | pet | 2×2 | sleep | 고급 | 650 | floor / object |
+| fn-toy-chest-open | 열린 장난감 상자 | pet | 1×1 | play | 일반 | 240 | floor / object |
+| fn-moon-tea-table | 달맞이 송편 다과상 | surface | 2×2 | eat | 고급 | 450 | floor / object |
+| fn-cherry-branch | 봄날 벚꽃 가지 화병 | plant | 1×1 | look | 고급 | 480 | floor / object |
+| fn-snow-lantern | 첫눈 유리 랜턴 | light | 1×1 | look | 고급 | 420 | floor / object |

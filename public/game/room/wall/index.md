@@ -1,32 +1,16 @@
-# room/wall
+# 3차 벽지 10종
 
-| 파일 | 이름 | 분류 |
-|---|---|---|
-| `wall-plain.svg` | 크림 벽 | wall |
-| `wall-stripe.svg` | 라일락 스트라이프 | wall |
-| `wall-brick.svg` | 피치 벽돌 | wall |
-| `wall-wood.svg` | 오크 패널 | wall |
-| `wall-bookshelf.svg` | 작은 서가 | wall |
-| `wall-window.svg` | 햇빛 창가 | wall |
-| `wall-poster.svg` | 의국 갤러리 | wall |
-| `wall-curtain.svg` | 하늘 커튼 | wall |
-| `wall-mori.svg` | 모리 · 잎의 정원 | wall |
-| `wall-nuit.svg` | 뉘 · 밤의 선 | wall |
-| `wall-route.svg` | 루트 · 느린 여행 | wall |
-| `wall-sola.svg` | 솔라 · 살구빛 실크 | wall |
+240×120 반복. 걸레받이는 도안에 포함하지 않고 `baseColor`로 벽의 바닥 경계에 한 번 그립니다.
 
-
-# 2차 컬렉션 — 8종 / 합계 12종
-
-240×120 반복 모듈, 경계에 도형이 닿지 않아 반복됩니다. 가상 하우스의 독자 문양입니다.
-
-| id | 이름 | 가격 | base | side | ink | accent | 설명 |
-|---|---|---:|---|---|---|---|---|
-| mori-linen | MORI · 리넨 숨결 | 400 | #F0E8D7 | #DAD0BB | #BAAC91 | #D5C6AA | 촘촘한 두 줄 결이 남는 따뜻한 리넨 |
-| nuit-mist | NUIT · 아침 안개 | 500 | #DEE5EC | #C2CEDC | #99AABD | #C9D7E0 | 점과 짧은 결만 있는 차분한 블루 그레이 |
-| route-step | ROUTE · 작은 계단 | 550 | #F1E4CE | #D9C3A8 | #B29275 | #D5B4A7 | 열린 계단 선과 작은 사각형 |
-| sola-orbit | SOLA · 낮의 궤도 | 900 | #F5E8D8 | #DAC8B5 | #C09670 | #E8BA79 | 엇갈린 원과 반원으로 만든 리듬 |
-| mori-clover | MORI · 네 잎 오후 | 750 | #E1EAD9 | #BFCEB7 | #7D9F85 | #AEC3A1 | 네 잎과 점이 번갈아 이어지는 정원 |
-| sola-meadow | SOLA · 들꽃 편지 | 850 | #F4E4D9 | #D8BDB0 | #B58186 | #D8ACAD | 작은 꽃과 잎이 느슨하게 흐르는 들판 |
-| mori-snow | MORI · 눈 내린 정원 | 1100 | #E1E8E5 | #BDCFC8 | #91AAA1 | #FCF9EB | 설화와 둥근 열매의 겨울 한정 컬렉션 |
-| nuit-window | NUIT · 야간 창가 | 1200 | #45516D | #333E58 | #8795B7 | #E9C985 | 먼 창문과 별빛을 듬성듬성 배치한 야경 |
+| id | 이름 | 가격 | 도형 수 | base | side | ink | accent | baseColor |
+|---|---|---:|---:|---|---|---|---|---|
+| mori-tailored-stripe | MORI · 두께가 다른 줄 | 380 | 37 | #F3EBDC | #DED3C0 | #AD9B80 | #C8B69C | #A28E78 |
+| mori-soft-check | MORI · 포근한 체크 | 420 | 29 | #F1EBDD | #D9DCC9 | #97A48D | #B5C1A5 | #9DA98C |
+| route-clay-brick | ROUTE · 살구 벽돌 | 460 | 55 | #E4D8CD | #C9AE9D | #AF8F7C | #DDBBA7 | #B1917B |
+| mori-oak-panels | MORI · 오크 판벽 | 480 | 65 | #E4CFAD | #CDB38E | #A68D6C | #EEDDC0 | #A68B6A |
+| sola-garden-bloom | SOLA · 크게 핀 오후 | 850 | 41 | #F5E5D8 | #DEBFAF | #A77E82 | #D9A4A7 | #A9B599 |
+| ward-mint-tile | 의국 · 맑은 민트 타일 | 500 | 49 | #ECF0E4 | #C0D4CA | #7C9D95 | #C7DED4 | #698A81 |
+| nuit-city-lights | NUIT · 불 꺼지지 않는 창 | 980 | 61 | #3F4E67 | #2E3C55 | #7991AB | #E9CC8C | #29364A |
+| route-reading-wall | ROUTE · 책등의 풍경 | 1080 | 76 | #D8C8B2 | #B29A83 | #7A6E68 | #B5C5B3 | #8E7865 |
+| sola-moon-patchwork | SOLA · 달맞이 보자기 | 720 | 41 | #ECE2CE | #D3BEA7 | #9C8C79 | #BACBB5 | #B39C81 |
+| nuit-snow-letter | NUIT · 첫눈의 편지 | 860 | 70 | #667C93 | #4A617C | #CAD8DD | #F3E7C5 | #465C75 |

@@ -20,7 +20,7 @@ import {
   project, unproject, placement, blocked, route, approach, dimensions,
 } from '../lib/pet/room-engine';
 import {
-  buildCatalog, viewBoxFor, floorCorners, wallShapes, furniturePos,
+  buildCatalog, viewBoxFor, floorCorners, wallShapes, wallBaseboard, furniturePos,
   depthSorted, petPos, randomFreeCell, interactionOf, perchCell, frontCell,
   INTERACTION_ACTION, PERCH_LIFT, ASSET_BASE,
 } from '../lib/pet/room';
@@ -696,6 +696,16 @@ export default function RoomView({
               </defs>
               <polygon points={walls.left} fill="url(#wp)" />
               <polygon points={walls.right} fill="url(#wp)" />
+              {/* 걸레받이. 3차 벽지부터 색을 들고 온다 */}
+              {coll.baseColor && (() => {
+                const bb = wallBaseboard(size, coll.baseboardHeight || 20);
+                return (
+                  <>
+                    <polygon points={bb.right} fill={coll.baseColor} />
+                    <polygon points={bb.left} fill={coll.baseColor} />
+                  </>
+                );
+              })()}
               {/* 왼쪽 벽은 그늘진 면이라 한 겹 어둡게 덮는다. 두 면이 같은 밝기면
                   모서리가 사라져서 방이 평면으로 보인다 */}
               <polygon points={walls.left} fill="#000" opacity="0.10" />

@@ -1,0 +1,738 @@
+[
+  {
+    "id": "first-corner",
+    "name": "처음 꾸미는 내 방",
+    "tag": "작게 시작해도 포근하게",
+    "size": 8,
+    "wallpaper": "mori-soft-check",
+    "night": false,
+    "pet": "korean-shorthair",
+    "petPosition": [
+      5.2,
+      5.3
+    ],
+    "items": [
+      "fn-budget-starter-stool",
+      "fn-budget-book-stack",
+      "fn-budget-mug-tray",
+      "fn-rug-pebble"
+    ],
+    "placements": [
+      {
+        "id": "fn-rug-pebble",
+        "x": 3,
+        "y": 3,
+        "rotation": 0
+      },
+      {
+        "id": "fn-budget-starter-stool",
+        "x": 3,
+        "y": 3,
+        "rotation": 0
+      },
+      {
+        "id": "fn-budget-book-stack",
+        "x": 4,
+        "y": 3,
+        "rotation": 0
+      },
+      {
+        "id": "fn-budget-mug-tray",
+        "x": 4,
+        "y": 4,
+        "rotation": 0
+      }
+    ],
+    "styling": [
+      {
+        "id": "win-square",
+        "wallId": "right",
+        "u": 0.5,
+        "height": 0,
+        "rotation": 0
+      },
+      {
+        "id": "fn-budget-door-mat",
+        "x": 3,
+        "y": 6,
+        "rotation": 0
+      },
+      {
+        "id": "fn-plant-window-herbs",
+        "x": 1,
+        "y": 1,
+        "rotation": 0
+      },
+      {
+        "id": "fn-wall-botanical",
+        "wallId": "left",
+        "u": 0.42,
+        "height": 0,
+        "rotation": 270
+      },
+      {
+        "id": "fn-budget-mini-photo",
+        "x": 1,
+        "y": 3,
+        "rotation": 0
+      }
+    ],
+    "floor": "#E8DAC1",
+    "itemTotal": 510,
+    "bundlePriceProposal": 460,
+    "coordinateSystem": {
+      "floor": "integer top-left tile coordinates",
+      "wallU": "0..1 along the wall from the far corner",
+      "wallHeight": "SVG anchor lift in screen pixels above the floor-wall boundary",
+      "wallFacing": {
+        "left": 270,
+        "right": 0
+      }
+    },
+    "includesStylingInPrice": false
+  },
+  {
+    "id": "after-duty",
+    "name": "당직 끝 쉼터",
+    "tag": "불 끄기 전, 나만의 의국",
+    "size": 8,
+    "wallpaper": "ward-mint-tile",
+    "night": true,
+    "pet": "spine",
+    "petPosition": [
+      4.5,
+      6.4
+    ],
+    "items": [
+      "fn-bed-duty-fold",
+      "fn-ward-fridge",
+      "fn-coffee-station",
+      "fn-wall-duty-board"
+    ],
+    "placements": [
+      {
+        "id": "fn-bed-duty-fold",
+        "x": 1,
+        "y": 1,
+        "rotation": 0
+      },
+      {
+        "id": "fn-ward-fridge",
+        "x": 5,
+        "y": 1,
+        "rotation": 0
+      },
+      {
+        "id": "fn-coffee-station",
+        "x": 5,
+        "y": 2,
+        "rotation": 270
+      },
+      {
+        "id": "fn-wall-duty-board",
+        "wallId": "left",
+        "u": 0.58,
+        "height": 0,
+        "rotation": 270
+      }
+    ],
+    "styling": [
+      {
+        "id": "fn-rug-runner-stripe",
+        "x": 1,
+        "y": 4,
+        "rotation": 0
+      },
+      {
+        "id": "fn-coat-stand",
+        "x": 7,
+        "y": 1,
+        "rotation": 0
+      },
+      {
+        "id": "fn-iv-moon-lamp",
+        "x": 1,
+        "y": 4,
+        "rotation": 0
+      },
+      {
+        "id": "fn-budget-home-slippers",
+        "x": 3,
+        "y": 3,
+        "rotation": 0
+      },
+      {
+        "id": "win-blind",
+        "wallId": "right",
+        "u": 0.38,
+        "height": 0,
+        "rotation": 0
+      },
+      {
+        "id": "fn-budget-waste-bin",
+        "x": 6,
+        "y": 6,
+        "rotation": 0
+      }
+    ],
+    "floor": "#E2DCCA",
+    "itemTotal": 2560,
+    "bundlePriceProposal": 2300,
+    "coordinateSystem": {
+      "floor": "integer top-left tile coordinates",
+      "wallU": "0..1 along the wall from the far corner",
+      "wallHeight": "SVG anchor lift in screen pixels above the floor-wall boundary",
+      "wallFacing": {
+        "left": 270,
+        "right": 0
+      }
+    },
+    "includesStylingInPrice": false
+  },
+  {
+    "id": "spring-window",
+    "name": "봄날 창가",
+    "tag": "햇살과 잎사귀가 머무는 자리",
+    "size": 8,
+    "wallpaper": "sola-garden-bloom",
+    "night": false,
+    "pet": "ragdoll",
+    "petPosition": [
+      4.2,
+      4.6
+    ],
+    "items": [
+      "win-arch",
+      "fn-window-perch",
+      "fn-plant-window-herbs",
+      "fn-rug-meadow"
+    ],
+    "placements": [
+      {
+        "id": "fn-rug-meadow",
+        "x": 2,
+        "y": 3,
+        "rotation": 0
+      },
+      {
+        "id": "win-arch",
+        "wallId": "right",
+        "u": 0.32,
+        "height": 0,
+        "rotation": 0
+      },
+      {
+        "id": "fn-window-perch",
+        "x": 1,
+        "y": 0,
+        "rotation": 0
+      },
+      {
+        "id": "fn-plant-window-herbs",
+        "x": 4,
+        "y": 1,
+        "rotation": 0
+      }
+    ],
+    "styling": [
+      {
+        "id": "fn-plant-palm-tall",
+        "x": 0,
+        "y": 4,
+        "rotation": 0
+      },
+      {
+        "id": "fn-wall-display-shelf",
+        "wallId": "left",
+        "u": 0.3,
+        "height": 0,
+        "rotation": 270
+      },
+      {
+        "id": "fn-cherry-branch",
+        "x": 6,
+        "y": 1,
+        "rotation": 0
+      },
+      {
+        "id": "fn-budget-book-stack",
+        "x": 6,
+        "y": 6,
+        "rotation": 0
+      }
+    ],
+    "floor": "#E9DCC5",
+    "itemTotal": 2200,
+    "bundlePriceProposal": 1980,
+    "coordinateSystem": {
+      "floor": "integer top-left tile coordinates",
+      "wallU": "0..1 along the wall from the far corner",
+      "wallHeight": "SVG anchor lift in screen pixels above the floor-wall boundary",
+      "wallFacing": {
+        "left": 270,
+        "right": 0
+      }
+    },
+    "includesStylingInPrice": false
+  },
+  {
+    "id": "midnight-library",
+    "name": "밤의 서가",
+    "tag": "한 챕터만 더 읽고 잘게",
+    "size": 10,
+    "wallpaper": "nuit-city-lights",
+    "night": true,
+    "pet": "russian-blue",
+    "petPosition": [
+      5.1,
+      6.8
+    ],
+    "items": [
+      "fn-bookcase-wall",
+      "fn-sofa-long-knit",
+      "fn-rug-orbit",
+      "win-panorama"
+    ],
+    "placements": [
+      {
+        "id": "fn-rug-orbit",
+        "x": 5,
+        "y": 4,
+        "rotation": 0
+      },
+      {
+        "id": "fn-bookcase-wall",
+        "x": 1,
+        "y": 1,
+        "rotation": 0
+      },
+      {
+        "id": "fn-sofa-long-knit",
+        "x": 5,
+        "y": 1,
+        "rotation": 0
+      },
+      {
+        "id": "win-panorama",
+        "wallId": "left",
+        "u": 0.58,
+        "height": 0,
+        "rotation": 270
+      }
+    ],
+    "styling": [
+      {
+        "id": "fn-reading-lamp",
+        "x": 8,
+        "y": 3,
+        "rotation": 0
+      },
+      {
+        "id": "fn-moon-tea-table",
+        "x": 5,
+        "y": 4,
+        "rotation": 0
+      },
+      {
+        "id": "fn-plant-olive-tree",
+        "x": 1,
+        "y": 7,
+        "rotation": 0
+      },
+      {
+        "id": "fn-budget-book-stack",
+        "x": 8,
+        "y": 7,
+        "rotation": 0
+      },
+      {
+        "id": "fn-wall-moon-clock",
+        "wallId": "right",
+        "u": 0.53,
+        "height": 0,
+        "rotation": 0
+      }
+    ],
+    "floor": "#C6B59B",
+    "itemTotal": 4960,
+    "bundlePriceProposal": 4460,
+    "coordinateSystem": {
+      "floor": "integer top-left tile coordinates",
+      "wallU": "0..1 along the wall from the far corner",
+      "wallHeight": "SVG anchor lift in screen pixels above the floor-wall boundary",
+      "wallFacing": {
+        "left": 270,
+        "right": 0
+      }
+    },
+    "includesStylingInPrice": false
+  },
+  {
+    "id": "quiet-suite",
+    "name": "호텔 같은 한 칸",
+    "tag": "침대·협탁·등이 이어지는 밤",
+    "size": 10,
+    "wallpaper": "mori-tailored-stripe",
+    "night": false,
+    "pet": "maltese",
+    "petPosition": [
+      6.8,
+      5.8
+    ],
+    "items": [
+      "fn-bed-single-oak",
+      "fn-bedside-bridge",
+      "fn-reading-lamp",
+      "fn-rug-runner-linen"
+    ],
+    "placements": [
+      {
+        "id": "fn-rug-runner-linen",
+        "x": 3,
+        "y": 3,
+        "rotation": 0
+      },
+      {
+        "id": "fn-bed-single-oak",
+        "x": 1,
+        "y": 1,
+        "rotation": 0
+      },
+      {
+        "id": "fn-bedside-bridge",
+        "x": 3,
+        "y": 1,
+        "rotation": 0
+      },
+      {
+        "id": "fn-reading-lamp",
+        "x": 4,
+        "y": 1,
+        "rotation": 0
+      }
+    ],
+    "styling": [
+      {
+        "id": "win-curtain",
+        "wallId": "right",
+        "u": 0.64,
+        "height": 0,
+        "rotation": 0
+      },
+      {
+        "id": "fn-cabinet-tall-linen",
+        "x": 7,
+        "y": 2,
+        "rotation": 0
+      },
+      {
+        "id": "fn-plant-olive-tree",
+        "x": 0,
+        "y": 7,
+        "rotation": 0
+      },
+      {
+        "id": "fn-budget-home-slippers",
+        "x": 3,
+        "y": 5,
+        "rotation": 0
+      },
+      {
+        "id": "fn-wall-landscape",
+        "wallId": "left",
+        "u": 0.4,
+        "height": 0,
+        "rotation": 270
+      }
+    ],
+    "floor": "#E5D0AE",
+    "itemTotal": 1980,
+    "bundlePriceProposal": 1780,
+    "coordinateSystem": {
+      "floor": "integer top-left tile coordinates",
+      "wallU": "0..1 along the wall from the far corner",
+      "wallHeight": "SVG anchor lift in screen pixels above the floor-wall boundary",
+      "wallFacing": {
+        "left": 270,
+        "right": 0
+      }
+    },
+    "includesStylingInPrice": false
+  },
+  {
+    "id": "moon-holiday",
+    "name": "달맞이 한가위",
+    "tag": "한복을 입고 송편 한 접시",
+    "size": 8,
+    "wallpaper": "sola-moon-patchwork",
+    "night": true,
+    "pet": "korean-shorthair",
+    "petPosition": [
+      4.1,
+      5.7
+    ],
+    "items": [
+      "fn-bed-floor-quilt",
+      "fn-moon-tea-table",
+      "fn-rug-patchwork",
+      "win-round"
+    ],
+    "placements": [
+      {
+        "id": "fn-bed-floor-quilt",
+        "x": 1,
+        "y": 1,
+        "rotation": 0
+      },
+      {
+        "id": "fn-rug-patchwork",
+        "x": 3,
+        "y": 3,
+        "rotation": 0
+      },
+      {
+        "id": "fn-moon-tea-table",
+        "x": 3,
+        "y": 3,
+        "rotation": 0
+      },
+      {
+        "id": "win-round",
+        "wallId": "right",
+        "u": 0.56,
+        "height": 0,
+        "rotation": 0
+      }
+    ],
+    "styling": [
+      {
+        "id": "fn-wall-festival-garland",
+        "wallId": "left",
+        "u": 0.47,
+        "height": 0,
+        "rotation": 270
+      },
+      {
+        "id": "fn-plant-olive-tree",
+        "x": 6,
+        "y": 1,
+        "rotation": 0
+      },
+      {
+        "id": "fn-snow-lantern",
+        "x": 1,
+        "y": 5,
+        "rotation": 0
+      },
+      {
+        "id": "fn-budget-home-slippers",
+        "x": 3,
+        "y": 6,
+        "rotation": 0
+      }
+    ],
+    "floor": "#DBC29C",
+    "itemTotal": 1770,
+    "bundlePriceProposal": 1590,
+    "coordinateSystem": {
+      "floor": "integer top-left tile coordinates",
+      "wallU": "0..1 along the wall from the far corner",
+      "wallHeight": "SVG anchor lift in screen pixels above the floor-wall boundary",
+      "wallFacing": {
+        "left": 270,
+        "right": 0
+      }
+    },
+    "includesStylingInPrice": false
+  },
+  {
+    "id": "first-snow",
+    "name": "첫눈의 잠자리",
+    "tag": "방을 넓힌 나에게 주는 선물",
+    "size": 12,
+    "wallpaper": "nuit-snow-letter",
+    "night": true,
+    "pet": "brain",
+    "petPosition": [
+      5.8,
+      7.8
+    ],
+    "items": [
+      "fn-bed-canopy-linen",
+      "fn-rug-snow",
+      "win-curtain",
+      "fn-snow-lantern"
+    ],
+    "placements": [
+      {
+        "id": "fn-rug-snow",
+        "x": 5,
+        "y": 5,
+        "rotation": 0
+      },
+      {
+        "id": "fn-bed-canopy-linen",
+        "x": 1,
+        "y": 1,
+        "rotation": 0
+      },
+      {
+        "id": "win-curtain",
+        "wallId": "right",
+        "u": 0.63,
+        "height": 0,
+        "rotation": 0
+      },
+      {
+        "id": "fn-snow-lantern",
+        "x": 4,
+        "y": 3,
+        "rotation": 0
+      }
+    ],
+    "styling": [
+      {
+        "id": "fn-sofa-corner-cloud",
+        "x": 8,
+        "y": 1,
+        "rotation": 0
+      },
+      {
+        "id": "fn-cabinet-tall-linen",
+        "x": 1,
+        "y": 8,
+        "rotation": 0
+      },
+      {
+        "id": "fn-reading-lamp",
+        "x": 9,
+        "y": 6,
+        "rotation": 0
+      },
+      {
+        "id": "fn-bedside-bridge",
+        "x": 4,
+        "y": 2,
+        "rotation": 0
+      },
+      {
+        "id": "fn-wall-festival-garland",
+        "wallId": "left",
+        "u": 0.52,
+        "height": 0,
+        "rotation": 270
+      },
+      {
+        "id": "fn-plant-eucalyptus",
+        "x": 10,
+        "y": 9,
+        "rotation": 0
+      }
+    ],
+    "floor": "#D9D0C2",
+    "itemTotal": 4530,
+    "bundlePriceProposal": 4080,
+    "coordinateSystem": {
+      "floor": "integer top-left tile coordinates",
+      "wallU": "0..1 along the wall from the far corner",
+      "wallHeight": "SVG anchor lift in screen pixels above the floor-wall boundary",
+      "wallFacing": {
+        "left": 270,
+        "right": 0
+      }
+    },
+    "includesStylingInPrice": false
+  },
+  {
+    "id": "pet-playroom",
+    "name": "단짝의 놀이터",
+    "tag": "숨고, 구경하고, 다시 놀고",
+    "size": 10,
+    "wallpaper": "mori-oak-panels",
+    "night": false,
+    "pet": "pomeranian",
+    "petPosition": [
+      5.5,
+      5.6
+    ],
+    "items": [
+      "fn-hideout-felt",
+      "fn-toy-chest-open",
+      "fn-wall-catwalk",
+      "fn-rug-petal"
+    ],
+    "placements": [
+      {
+        "id": "fn-rug-petal",
+        "x": 4,
+        "y": 4,
+        "rotation": 0
+      },
+      {
+        "id": "fn-hideout-felt",
+        "x": 1,
+        "y": 1,
+        "rotation": 0
+      },
+      {
+        "id": "fn-toy-chest-open",
+        "x": 4,
+        "y": 2,
+        "rotation": 0
+      },
+      {
+        "id": "fn-wall-catwalk",
+        "wallId": "left",
+        "u": 0.61,
+        "height": 0,
+        "rotation": 270
+      }
+    ],
+    "styling": [
+      {
+        "id": "win-panorama",
+        "wallId": "right",
+        "u": 0.66,
+        "height": 0,
+        "rotation": 0
+      },
+      {
+        "id": "fn-bed-round-cloud",
+        "x": 6,
+        "y": 1,
+        "rotation": 0
+      },
+      {
+        "id": "fn-plant-palm-tall",
+        "x": 1,
+        "y": 6,
+        "rotation": 0
+      },
+      {
+        "id": "fn-budget-starter-stool",
+        "x": 7,
+        "y": 7,
+        "rotation": 0
+      },
+      {
+        "id": "fn-window-perch",
+        "x": 4,
+        "y": 7,
+        "rotation": 0
+      }
+    ],
+    "floor": "#E1CEAD",
+    "itemTotal": 1720,
+    "bundlePriceProposal": 1550,
+    "coordinateSystem": {
+      "floor": "integer top-left tile coordinates",
+      "wallU": "0..1 along the wall from the far corner",
+      "wallHeight": "SVG anchor lift in screen pixels above the floor-wall boundary",
+      "wallFacing": {
+        "left": 270,
+        "right": 0
+      }
+    },
+    "includesStylingInPrice": false
+  }
+]

@@ -11,7 +11,7 @@
 // ============================================================
 import { useMemo } from 'react';
 import PetCanvas from './PetCanvas';
-import { ASSET_BASE, floorCorners, wallShapes, viewBoxFor } from '../lib/pet/room';
+import { ASSET_BASE, floorCorners, wallShapes, wallBaseboard, viewBoxFor } from '../lib/pet/room';
 import { project } from '../lib/pet/room-engine';   // 좌표 계산은 킷 원본에 있다
 import { stageOf } from '../lib/game';
 
@@ -131,6 +131,13 @@ export function WallpaperPreview({ coll, item, owned, roomSize = 8, onClose, foo
           <polygon points={walls.right} fill={coll.base} />
           <polygon points={walls.left} fill={`url(#${pid})`} />
           <polygon points={walls.right} fill={`url(#${pid})`} />
+          {coll.baseColor && (() => {
+            const bb = wallBaseboard(roomSize, coll.baseboardHeight || 20);
+            return (<>
+              <polygon points={bb.right} fill={coll.baseColor} />
+              <polygon points={bb.left} fill={coll.baseColor} />
+            </>);
+          })()}
           <polygon points={walls.left} fill="#000" opacity="0.10" />
           <polygon points={corners.map((p) => `${p.x},${p.y}`).join(' ')} fill="var(--surface-2)" />
           {tiles}

@@ -1,0 +1,34 @@
+[
+  {
+    "id": "bedside-oak",
+    "name": "침대 옆을 한 줄로",
+    "items": [
+      "fn-bed-single-oak",
+      "fn-bedside-bridge",
+      "fn-reading-lamp"
+    ],
+    "rule": "협탁을 침대 오른쪽에 빈칸 없이, 스탠드는 협탁 오른쪽에 배치",
+    "gapTiles": 0
+  },
+  {
+    "id": "window-garden",
+    "name": "창문 아래 작은 자리",
+    "items": [
+      "win-arch",
+      "fn-window-perch",
+      "fn-plant-window-herbs"
+    ],
+    "rule": "창문의 중심과 창가 자리 중심을 맞추고, 허브는 옆 칸에 배치",
+    "wallAlignment": "center"
+  },
+  {
+    "id": "duty-pantry",
+    "name": "당직의 작은 탕비실",
+    "items": [
+      "fn-ward-fridge",
+      "fn-coffee-station",
+      "fn-budget-waste-bin"
+    ],
+    "rule": "냉장고와 커피 스테이션을 같은 벽에 정렬하고 휴지통은 가까운 빈칸에 배치"
+  }
+]
