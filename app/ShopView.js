@@ -137,7 +137,7 @@ export default function ShopView({ currentMember, manifest, room, balance, onDon
                   </div>
                   {has ? <span style={s.ownedTag}>소장중</span> : (
                     <button onClick={() => buy(item)} disabled={busy || poor || !item}
-                      style={{ ...s.buy, ...(poor ? s.buyOff : {}) }}>{w.price}점</button>
+                      style={{ ...s.buyRow, ...(poor ? s.buyOff : {}) }}>{w.price}점</button>
                   )}
                 </div>
               );
@@ -166,7 +166,7 @@ export default function ShopView({ currentMember, manifest, room, balance, onDon
                   {done || current ? <span style={s.ownedTag}>{current ? '지금 이 방' : '지남'}</span>
                     : next && item ? (
                       <button onClick={() => buy(item)} disabled={busy || poor}
-                        style={{ ...s.buy, ...(poor ? s.buyOff : {}) }}>{item.price}점</button>
+                        style={{ ...s.buyRow, ...(poor ? s.buyOff : {}) }}>{item.price}점</button>
                     ) : <span style={s.lockTag}>잠김</span>}
                 </div>
               );
@@ -200,12 +200,15 @@ const s = {
   rarity: { fontSize: 10, marginBottom: 4 },
   buy: { width: '100%', padding: '5px 0', borderRadius: 7, fontSize: 11, fontWeight: 600,
          background: 'var(--text)', color: 'var(--bg)', border: 'none' },
+  // 목록 행(벽지·방)용. width:100% 를 쓰면 옆의 설명 칸이 한 글자 폭으로 눌린다
+  buyRow: { flexShrink: 0, whiteSpace: 'nowrap', padding: '7px 13px', borderRadius: 8,
+            fontSize: 12, fontWeight: 600, background: 'var(--text)', color: 'var(--bg)', border: 'none' },
   buyOff: { background: 'var(--surface-2)', color: 'var(--text-3)' },
   wpRow: { display: 'flex', alignItems: 'center', gap: 10, padding: '9px 0', borderBottom: '1px solid var(--border)' },
   wpSwatch: { width: 40, height: 40, borderRadius: 8, flexShrink: 0, position: 'relative', overflow: 'hidden' },
   wpSide: { position: 'absolute', right: 0, top: 0, bottom: 0, width: '45%' },
-  wpName: { fontSize: 13, fontWeight: 600 },
-  wpStory: { fontSize: 11, color: 'var(--text-3)', marginTop: 1 },
+  wpName: { fontSize: 13, fontWeight: 600, wordBreak: 'keep-all' },
+  wpStory: { fontSize: 11, color: 'var(--text-3)', marginTop: 1, lineHeight: 1.45 },
   ownedTag: { fontSize: 11, color: 'var(--text-3)', flexShrink: 0 },
   lockTag: { fontSize: 11, color: 'var(--text-3)', opacity: .6, flexShrink: 0 },
   roomRow: { display: 'flex', alignItems: 'center', gap: 10, padding: '11px 10px', marginBottom: 6,
