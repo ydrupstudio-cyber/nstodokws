@@ -10,7 +10,7 @@
 //       → growth(단계 적용) → 매 프레임 animateAction
 // ============================================================
 import { useEffect, useRef, useState } from 'react';
-import { svgNode, growth } from '../lib/pet/rig';
+import { svgNode, growth, expression, wear } from '../lib/pet/rig';
 import { actionPose, animateAction } from '../lib/pet/motion';
 import { loadSvgSource } from '../lib/pet/assets';
 
@@ -22,6 +22,8 @@ export default function PetCanvas({
   onDone,           // celebrate 처럼 한 번만 재생하는 동작이 끝나면 호출
   embedded = false, // true 면 <g> 안에 중첩 <svg> 로 그린다 (미니룸 씬 안에 넣을 때)
   x = 0, y = 0,     // embedded 일 때 씬 좌표계에서의 위치
+  mood = null,      // 'happy' | 'neutral' | null. 친밀도가 쌓이면 표정이 남는다
+  wearPath = null,  // 착용 아이템 SVG 경로. 지금 킷이 지원하는 자리는 목뿐이다
 }) {
   const hostRef = useRef(null);
   const rafRef = useRef(0);
@@ -67,14 +69,26 @@ export default function PetCanvas({
       host.replaceChildren(svg);
       setErr(null);
 
+      // 착용 아이템. 지금 킷의 rig 는 목 자리(accessory-neck)만 갖고 있다.
+      // 나머지 자리(모자·신발…)는 에셋이 들어오면 여기에 같은 방식으로 붙인다.
+      if (wearPath) {
+        loadSvgSource(wearPath)
+          .then((acc) => { if (!cancelled) { try { wear(svg, acc, asset); } catch { /* 자리가 없는 캐릭터 */ } } })
+          .catch(() => { /* 액세서리 하나 못 불러왔다고 펫이 안 나오면 안 된다 */ });
+      }
+
       // 저감 모션이면 한 프레임만 그리고 멈춘다
-      if (reduced) { animateAction(svg, asset, action, 0, true); return; }
+      if (reduced) { animateAction(svg, asset, action, 0, true); applyMood(svg, action, mood); return; }
 
       const start = performance.now();
       const tick = (now) => {
         if (cancelled) return;
         const t = (now - start) / 1000;
-        try { animateAction(svg, asset, action, t, false); } catch { /* 한 프레임 실패는 무시 */ }
+        try {
+          animateAction(svg, asset, action, t, false);
+          // animateAction 은 매 프레임 표정을 되돌린다. 기분은 그 뒤에 덧씌운다
+          applyMood(svg, action, mood);
+        } catch { /* 한 프레임 실패는 무시 */ }
         // 한 번만 재생하는 동작
         if (onDone && ONE_SHOT.has(action) && t > 1.9) { onDone(); return; }
         rafRef.current = requestAnimationFrame(tick);
@@ -88,7 +102,7 @@ export default function PetCanvas({
     };
     // onDone 은 의도적으로 뺀다 — 부모가 매 렌더 새 함수를 주면 애니메이션이 끊긴다
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [asset?.id, stage, action, size, embedded, x, y]);
+  }, [asset?.id, stage, action, size, embedded, x, y, mood, wearPath]);
 
   if (embedded) {
     // 씬 SVG 안에서는 <g> 가 호스트다. 중첩 <svg> 가 들어간다
@@ -102,3 +116,11 @@ export default function PetCanvas({
 }
 
 const ONE_SHOT = new Set(['celebrate', 'wave', 'stretch', 'wake']);
+
+// 동작이 스스로 정하는 표정(자고 있다, 기지개를 켠다)은 건드리지 않는다.
+// 그 밖의 평상시 동작에서만 친밀도에 따른 기분이 얼굴에 남는다.
+const MOOD_KEEP = new Set(['nap', 'wake', 'stretch', 'eat']);
+function applyMood(svg, action, mood) {
+  if (!mood || mood === 'neutral' || MOOD_KEEP.has(action)) return;
+  try { expression(svg, mood); } catch { /* 이 캐릭터에 그 표정이 없으면 그냥 넘어간다 */ }
+}

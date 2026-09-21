@@ -3,8 +3,11 @@
 // ============================================================
 // 미니룸 — 펫이 살아 있는 방
 //
+// 이 컴포넌트는 '방 화면 그 자체'다. 모달 껍데기를 두르지 않는다.
+// 껍데기(HUD·하단 바·패널)는 PetView 가 씌운다.
+//
 // 격자·충돌·경로는 lib/pet/room-engine.js (킷 원본) 이 전부 계산한다.
-// 이 컴포넌트는 그 결과를 SVG 로 그리고, 시간을 흘려보내고, 저장을 붙인다.
+// 여기서는 그 결과를 SVG 로 그리고, 시간을 흘려보내고, 저장을 붙인다.
 //
 // 정적 에셋(가구·바닥·벽지)은 <image href> 로 그린다. 브라우저가 알아서
 // 캐시하고, 수십 개를 인라인하면 DOM 이 무거워진다. 펫만 인라인하는 이유는
@@ -12,7 +15,6 @@
 // ============================================================
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import PetCanvas from './PetCanvas';
-import ShopView from './ShopView';
 import { loadManifest, findAsset } from '../lib/pet/assets';
 import {
   project, unproject, placement, blocked, route, approach, dimensions,
@@ -22,12 +24,32 @@ import {
   depthSorted, petPos, randomFreeCell, INTERACTION_ACTION, ASSET_BASE,
 } from '../lib/pet/room';
 import { supabase } from '../lib/supabase';
+import { stageOf, josa } from '../lib/game';
 
-const WALK_SPEED = 1.05;      // 초당 칸. 아기는 느리다
-const BABY_SPEED = 0.75;
 const MAX_DELTA = 0.06;       // 탭이 멈췄다 돌아와도 순간이동하지 않게
 
-export default function RoomView({ currentMember, profile, onClose }) {
+/**
+ * 친밀도가 쌓일수록 활발해진다.
+ * 서먹한 사이에는 구석에서 잘 안 움직이고, 가족이 되면 방을 돌아다닌다.
+ * 이 값들은 '느낌' 이라 정답이 없다 — 실제로 보고 조정한 값이다.
+ */
+const TEMPER = [
+  { speed: 0.70, rest: [3.2, 3.0], wander: 0.30, mood: null },      // 서먹
+  { speed: 0.85, rest: [2.6, 2.6], wander: 0.42, mood: null },      // 익숙
+  { speed: 1.00, rest: [2.0, 2.2], wander: 0.55, mood: 'happy' },   // 친함
+  { speed: 1.12, rest: [1.5, 1.8], wander: 0.66, mood: 'happy' },   // 단짝
+  { speed: 1.22, rest: [1.1, 1.5], wander: 0.74, mood: 'happy' },   // 가족
+];
+
+export default function RoomView({
+  currentMember,
+  profile,
+  editing = false,
+  setEditing,
+  onRoomChange,     // 저장·구매로 방이 바뀌면 부모에게 알린다
+  guest,            // { action, id } — 밖에서 시킨 동작 (간식을 먹인다 등)
+  bond = 0,         // 친밀도 단계 0~4
+}) {
   const [manifest, setManifest] = useState(null);
   const [room, setRoom] = useState(null);
   const [asset, setAsset] = useState(null);
@@ -39,22 +61,22 @@ export default function RoomView({ currentMember, profile, onClose }) {
   const [facing, setFacing] = useState(1);
 
   // 편집
-  const [editing, setEditing] = useState(false);
   const [selected, setSelected] = useState(null);   // uid
+  const [drag, setDrag] = useState(null);           // { uid, cell, ok }
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState(null);
-  const [shopOpen, setShopOpen] = useState(false);
-  const [inv, setInv] = useState({});        // asset_id -> 보유 수량
-  const [balance, setBalance] = useState(profile?.balance || 0);
+  const [inv, setInv] = useState({});               // asset_id -> 보유 수량
 
   const svgRef = useRef(null);
   const petRef = useRef({ pos: { x: 3.5, y: 3.5 }, path: [], hold: 1.2, action: 'idle' });
   const rafRef = useRef(0);
+  const guestRef = useRef(0);   // guest 동작이 끝나는 시각 (performance.now 기준)
 
   const catalog = useMemo(() => (manifest ? buildCatalog(manifest) : null), [manifest]);
   const level = room ? (manifest?.roomLevels?.[room.level] || { size: 8 }) : { size: 8 };
   const size = level.size;
+  const temper = TEMPER[Math.max(0, Math.min(4, bond))];
 
   // ── 불러오기 ──
   useEffect(() => {
@@ -78,29 +100,58 @@ export default function RoomView({ currentMember, profile, onClose }) {
   }, [currentMember.id, profile?.breed, profile?.species]);
 
   const reloadOwned = useCallback(async () => {
-    const [{ data: i }, { data: g }] = await Promise.all([
-      supabase.from('pet_inventory').select('asset_id, qty').eq('member_id', currentMember.id),
-      supabase.from('game_profiles').select('balance').eq('member_id', currentMember.id).maybeSingle(),
-    ]);
-    const map = {}; (i || []).forEach((r) => { map[r.asset_id] = r.qty; });
+    const { data } = await supabase.from('pet_inventory')
+      .select('asset_id, qty').eq('member_id', currentMember.id);
+    const map = {}; (data || []).forEach((r) => { if (r.qty > 0) map[r.asset_id] = r.qty; });
     setInv(map);
-    if (g) setBalance(g.balance || 0);
   }, [currentMember.id]);
 
   useEffect(() => { reloadOwned(); }, [reloadOwned]);
 
-  const items = room?.items || [];
+  // 방이 밖에서 바뀌었을 수 있다 (상점에서 벽지를 샀다거나)
+  const reloadRoom = useCallback(async () => {
+    const { data } = await supabase.from('pet_rooms').select('*')
+      .eq('member_id', currentMember.id).maybeSingle();
+    if (data) setRoom(data);
+    reloadOwned();
+  }, [currentMember.id, reloadOwned]);
 
-  // 보관함에 있지만 아직 방에 안 놓은 것
+  useEffect(() => {
+    if (!onRoomChange) return;
+    onRoomChange.current = reloadRoom;      // 부모가 ref 를 건네주면 거기에 꽂는다
+  }, [onRoomChange, reloadRoom]);
+
+  const items = useMemo(() => room?.items || [], [room]);
+
+  // 보관함에 있지만 아직 방에 안 놓은 것 (가구만)
   const spare = useMemo(() => {
+    if (!catalog) return [];
     const placed = {};
     items.forEach((it) => { placed[it.assetId] = (placed[it.assetId] || 0) + 1; });
     return Object.entries(inv)
+      .filter(([id]) => catalog[id] && catalog[id].category === 'furniture')
       .map(([id, qty]) => ({ id, left: qty - (placed[id] || 0) }))
       .filter((x) => x.left > 0);
-  }, [inv, items]);
-  const stage = profile ? stageOf(profile.total_earned || 0, profile.affection || 0) : 3;
-  const petScale = stage === 0 ? 0.62 : 0.72;
+  }, [inv, items, catalog]);
+
+  const stage = stageOf(profile?.affection || 0);
+  // 방 안에서의 크기. 원본 그림 자체가 단계마다 다르게 그려져 있어서
+  // 여기서는 '방 대비 얼마나 크게 보일까' 만 정한다.
+  // 0.62/0.72 로 뒀더니 아기가 한 칸의 절반도 안 돼 눈에 띄지 않았다 (실측 26px).
+  const petScale = [0.95, 1.00, 1.06, 1.12, 1.15][stage] || 1.0;
+  // 지금 걸치고 있는 것. 킷의 rig 가 지원하는 자리는 목뿐이라 그것만 그린다
+  const wearPath = catalog && profile?.equipped?.neck
+    ? catalog[profile.equipped.neck]?.path || null : null;
+
+  // ── 밖에서 시킨 동작 (간식을 먹였다) ──
+  useEffect(() => {
+    if (!guest?.action) return;
+    const st = petRef.current;
+    st.path = [];
+    st.action = guest.action;
+    setAction(guest.action);
+    guestRef.current = performance.now() + (guest.hold || 3400);
+  }, [guest?.id]);   // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── 자율 행동: 걷다가 가구 옆에서 뭔가 한다 ──
   const pickNext = useCallback(() => {
@@ -108,7 +159,7 @@ export default function RoomView({ currentMember, profile, onClose }) {
     const st = petRef.current;
     const wall = blocked(items, size, catalog);
     const interactive = items.filter((it) => catalog[it.assetId]?.interaction);
-    // 절반은 가구 상호작용, 절반은 그냥 산책
+    // 활발할수록 가구를 더 자주 쓰고 더 멀리 간다
     const goFurniture = interactive.length > 0 && Math.random() < 0.55;
     if (goFurniture) {
       const target = interactive[Math.floor(Math.random() * interactive.length)];
@@ -120,12 +171,20 @@ export default function RoomView({ currentMember, profile, onClose }) {
         return;
       }
     }
+    if (Math.random() > temper.wander) {
+      // 지금은 움직이고 싶지 않다. 제자리에서 뭔가 한다
+      st.path = [];
+      st.after = ['look', 'sit', 'idle'][Math.floor(Math.random() * 3)];
+      st.action = st.after; setAction(st.after);
+      st.hold = temper.rest[0] + Math.random() * temper.rest[1];
+      return;
+    }
     const cell = randomFreeCell(size, wall);
     if (!cell) { st.hold = 2; return; }
     st.path = route(st.pos, cell, items, size, catalog);
     st.after = ['wave', 'stretch', 'look', 'sit', 'idle'][Math.floor(Math.random() * 5)];
     st.hold = st.path.length ? 0 : 1.6;
-  }, [catalog, room, items, size]);
+  }, [catalog, room, items, size, temper]);
 
   // ── 시간 루프 ──
   useEffect(() => {
@@ -134,13 +193,15 @@ export default function RoomView({ currentMember, profile, onClose }) {
     if (reduced || editing) { setAction('idle'); return; }
 
     let last = performance.now();
-    const speed = stage === 0 ? BABY_SPEED : WALK_SPEED;
+    const speed = (stage === 0 ? 0.75 : 1.05) * temper.speed;
 
     const tick = (now) => {
       // 탭이 숨겨진 동안은 시간이 흐르지 않는다 (켜두기만 해도 진행되면 안 된다)
       const dt = Math.min(MAX_DELTA, (now - last) / 1000);
       last = now;
       if (document.hidden) { rafRef.current = requestAnimationFrame(tick); return; }
+      // 밖에서 시킨 동작이 끝날 때까지는 자율 행동을 멈춘다
+      if (now < guestRef.current) { rafRef.current = requestAnimationFrame(tick); return; }
 
       const st = petRef.current;
       if (st.path.length) {
@@ -153,36 +214,75 @@ export default function RoomView({ currentMember, profile, onClose }) {
         if (Math.abs(dx) > 0.01) setFacing(dx > 0 ? 1 : -1);
         if (st.action !== 'walk') { st.action = 'walk'; setAction('walk'); }
         setPetCell({ ...st.pos });
-        if (!st.path.length) { st.action = st.after || 'idle'; setAction(st.action); st.hold = 2.4 + Math.random() * 2.4; }
+        if (!st.path.length) {
+          st.action = st.after || 'idle'; setAction(st.action);
+          st.hold = temper.rest[0] + Math.random() * temper.rest[1];
+        }
       } else {
         st.hold -= dt;
         if (st.hold <= 0) {
-          if (st.action !== 'idle') { st.action = 'idle'; setAction('idle'); st.hold = 1.2 + Math.random() * 2.2; }
-          else pickNext();
+          if (st.action !== 'idle') {
+            st.action = 'idle'; setAction('idle');
+            st.hold = 1.2 + Math.random() * 2.2;
+          } else pickNext();
         }
       }
       rafRef.current = requestAnimationFrame(tick);
     };
     rafRef.current = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafRef.current);
-  }, [catalog, room, editing, stage, pickNext]);
+  }, [catalog, room, editing, stage, pickNext, temper]);
 
-  // ── 편집: 빈 칸을 누르면 선택한 가구를 옮긴다 ──
-  function svgPoint(evt) {
+  // ── 좌표 ──
+  function svgCell(evt) {
     const svg = svgRef.current;
     if (!svg) return null;
     const pt = svg.createSVGPoint();
-    const src = evt.touches?.[0] || evt;
-    pt.x = src.clientX; pt.y = src.clientY;
+    pt.x = evt.clientX; pt.y = evt.clientY;
     // CSS 픽셀을 그대로 격자로 쓰면 창 크기·모바일에서 어긋난다
-    const local = pt.matrixTransform(svg.getScreenCTM().inverse());
+    const ctm = svg.getScreenCTM();
+    if (!ctm) return null;
+    const local = pt.matrixTransform(ctm.inverse());
     const g = unproject(local.x, local.y, size);
     return { x: Math.floor(g.x), y: Math.floor(g.y) };
   }
 
+  // ── 드래그 ──
+  function startDrag(evt, uid) {
+    if (!editing) return;
+    evt.stopPropagation();
+    setSelected(uid);
+    setMsg(null);
+    setDrag({ uid, cell: null, ok: true });
+    svgRef.current?.setPointerCapture?.(evt.pointerId);
+  }
+
+  function onMove(evt) {
+    if (!drag) return;
+    const cell = svgCell(evt);
+    if (!cell) return;
+    if (cell.x === drag.cell?.x && cell.y === drag.cell?.y) return;
+    const it = items.find((i) => i.uid === drag.uid);
+    if (!it) return;
+    const ok = placement({ ...it, x: cell.x, y: cell.y },
+                         items.filter((i) => i.uid !== drag.uid), size, catalog).ok;
+    setDrag({ ...drag, cell, ok });
+  }
+
+  function endDrag(evt) {
+    if (!drag) return;
+    const d = drag;
+    setDrag(null);
+    svgRef.current?.releasePointerCapture?.(evt.pointerId);
+    if (!d.cell) return;                       // 제자리에서 뗐다 — 선택만 된 것
+    if (d.ok) moveTo(d.uid, d.cell.x, d.cell.y);
+    else setMsg('거기엔 놓을 수 없어요');
+  }
+
+  /** 빈 칸을 그냥 눌러도 선택한 가구가 그 자리로 간다 (작은 화면에서 드래그가 어려울 때) */
   function onSurface(evt) {
-    if (!editing || !selected) return;
-    const cell = svgPoint(evt);
+    if (!editing || !selected || drag) return;
+    const cell = svgCell(evt);
     if (!cell) return;
     moveTo(selected, cell.x, cell.y);
   }
@@ -204,7 +304,7 @@ export default function RoomView({ currentMember, profile, onClose }) {
       const cand = { uid, assetId, x, y, rotation: 0 };
       if (placement(cand, items, size, catalog).ok) {
         setRoom((r) => ({ ...r, items: [...items, cand] }));
-        setSelected(uid); setDirty(true); setMsg(`${a.name} 을(를) 꺼냈어요`);
+        setSelected(uid); setDirty(true); setMsg(`${a.name}${josa(a.name, '을', '를')} 꺼냈어요`);
         return;
       }
     }
@@ -217,7 +317,8 @@ export default function RoomView({ currentMember, profile, onClose }) {
     if (!it) return;
     setRoom((r) => ({ ...r, items: items.filter((i) => i.uid !== uid) }));
     setSelected(null); setDirty(true);
-    setMsg(`${catalog[it.assetId]?.name || '가구'} 을(를) 보관함에 넣었어요`);
+    const nm = catalog[it.assetId]?.name || '가구';
+    setMsg(`${nm}${josa(nm, '을', '를')} 보관함에 넣었어요`);
   }
 
   function rotate(uid) {
@@ -249,9 +350,8 @@ export default function RoomView({ currentMember, profile, onClose }) {
 
   useEffect(() => { if (!msg) return; const t = setTimeout(() => setMsg(null), 2800); return () => clearTimeout(t); }, [msg]);
 
-  if (err) return <Shell onClose={onClose}><div style={st.empty}>{err}</div></Shell>;
-  if (!manifest || !room) return <Shell onClose={onClose}><div style={st.empty}>불러오는 중…</div></Shell>;
-  if (!profile?.species) return <Shell onClose={onClose}><div style={st.empty}>먼저 펫을 데려오세요</div></Shell>;
+  if (err) return <div style={st.empty}>{err}</div>;
+  if (!manifest || !room) return <div style={st.empty}>불러오는 중…</div>;
 
   const wallH = 96;
   const vb = viewBoxFor(size, wallH);
@@ -261,8 +361,11 @@ export default function RoomView({ currentMember, profile, onClose }) {
   const baseCol = coll?.base || 'var(--surface-2)';
   const sideCol = coll?.side || 'var(--surface-3)';
   const floorAsset = catalog['floor-' + room.floor];
-  const order = depthSorted(items, catalog, petCell);
+  // 드래그 중인 가구는 제자리에서 빼고 유령으로 따로 그린다
+  const shown = drag?.cell ? items.filter((i) => i.uid !== drag.uid) : items;
+  const order = depthSorted(shown, catalog, petCell);
   const pp = petPos(petCell, size, petScale);
+  const ghostItem = drag?.cell ? items.find((i) => i.uid === drag.uid) : null;
 
   const tiles = [];
   for (let x = 0; x < size; x++) for (let y = 0; y < size; y++) {
@@ -271,11 +374,21 @@ export default function RoomView({ currentMember, profile, onClose }) {
       x={p.x - 32} y={p.y - 16} width={64} height={32} />);
   }
 
+  function footprint(it, cx, cy) {
+    const [w, h] = dimensions(it, catalog);
+    const c = [project(cx, cy, size), project(cx + w, cy, size),
+               project(cx + w, cy + h, size), project(cx, cy + h, size)];
+    return c.map((p) => `${p.x},${p.y}`).join(' ');
+  }
+
   return (
-    <Shell onClose={onClose} title={level.name}>
+    <>
       <div style={st.stageWrap}>
-        <svg ref={svgRef} viewBox={vb.join(' ')} style={st.svg}
-             onClick={onSurface} role="img" aria-label="펫의 방">
+        <svg ref={svgRef} viewBox={vb.join(' ')}
+             style={{ ...st.svg, touchAction: editing ? 'none' : 'manipulation' }}
+             onClick={onSurface}
+             onPointerMove={onMove} onPointerUp={endDrag} onPointerCancel={endDrag}
+             role="img" aria-label="펫의 방">
           {/* 벽 */}
           <polygon points={walls.left} fill={sideCol} />
           <polygon points={walls.right} fill={baseCol} />
@@ -294,16 +407,20 @@ export default function RoomView({ currentMember, profile, onClose }) {
           <polygon points={corners.map((p) => `${p.x},${p.y}`).join(' ')} fill="var(--surface-2)" />
           {tiles}
 
-          {/* 편집 중 선택된 가구가 놓일 자리 안내 */}
-          {editing && selected && (() => {
+          {/* 편집 중 선택된 가구의 자리 안내 */}
+          {editing && selected && !drag?.cell && (() => {
             const it = items.find((i) => i.uid === selected);
             if (!it) return null;
-            const [w, h] = dimensions(it, catalog);
-            const c = [project(it.x, it.y, size), project(it.x + w, it.y, size),
-                       project(it.x + w, it.y + h, size), project(it.x, it.y + h, size)];
-            return <polygon points={c.map((p) => `${p.x},${p.y}`).join(' ')}
+            return <polygon points={footprint(it, it.x, it.y)}
                             fill="none" stroke="var(--text)" strokeWidth="2" strokeDasharray="5 3" />;
           })()}
+
+          {/* 드래그 중 놓일 자리 */}
+          {ghostItem && (
+            <polygon points={footprint(ghostItem, drag.cell.x, drag.cell.y)}
+              fill={drag.ok ? 'rgba(90,150,110,.22)' : 'rgba(180,85,63,.22)'}
+              stroke={drag.ok ? '#5a966e' : '#b4553f'} strokeWidth="2" />
+          )}
 
           {/* 가구와 펫 — 깊이 순 */}
           {order.map((o, i) => {
@@ -315,48 +432,51 @@ export default function RoomView({ currentMember, profile, onClose }) {
                 <g key="pet" transform={facing < 0
                     ? `translate(${(pp.x * 2 + w).toFixed(2)} 0) scale(-1 1)` : undefined}>
                   {asset && <PetCanvas asset={asset} stage={stage} action={action}
-                                       size={w} embedded x={pp.x} y={pp.y} />}
+                                       size={w} embedded x={pp.x} y={pp.y}
+                                       mood={temper.mood} wearPath={wearPath} />}
                 </g>
               );
             }
             const it = o.item;
             const a = catalog[it.assetId];
+            if (!a) return null;
             const pos = furniturePos(it, catalog, size);
             const src = a.rotations?.[it.rotation || 0]?.source || a.path;
             return (
               <image key={it.uid + i} href={ASSET_BASE + src}
                 x={pos.x} y={pos.y} width={256} height={224}
-                style={{ cursor: editing ? 'pointer' : 'default',
+                style={{ cursor: editing ? 'grab' : 'default',
                          opacity: editing && selected && selected !== it.uid ? 0.55 : 1 }}
-                onClick={(e) => { if (!editing) return; e.stopPropagation(); setSelected(it.uid); setMsg(a.name); }} />
+                onPointerDown={(e) => startDrag(e, it.uid)}
+                onClick={(e) => { if (editing) e.stopPropagation(); }} />
             );
           })}
+
+          {/* 드래그 유령 — 반투명하게 손끝을 따라온다 */}
+          {ghostItem && (() => {
+            const a = catalog[ghostItem.assetId];
+            const pos = furniturePos({ ...ghostItem, x: drag.cell.x, y: drag.cell.y }, catalog, size);
+            const src = a.rotations?.[ghostItem.rotation || 0]?.source || a.path;
+            return <image href={ASSET_BASE + src} x={pos.x} y={pos.y} width={256} height={224}
+                          opacity={drag.ok ? 0.6 : 0.32} style={{ pointerEvents: 'none' }} />;
+          })()}
         </svg>
 
         {msg && <div style={st.toast}>{msg}</div>}
       </div>
 
-      {/* 조작 */}
-      <div style={st.bar}>
-        {!editing ? (
-          <>
-            <button onClick={() => { setEditing(true); setAction('idle'); }} style={st.primary}>가구 배치</button>
-            <button onClick={() => setShopOpen(true)} style={st.btn}>상점</button>
-            <span style={st.barHint}>{(balance || 0).toLocaleString()}점</span>
-          </>
-        ) : (
-          <>
+      {editing && (
+        <div style={st.editPane}>
+          <div style={st.bar}>
             <button onClick={() => rotate(selected)} disabled={!selected} style={st.btn}>돌리기</button>
             <button onClick={() => storeItem(selected)} disabled={!selected} style={st.btn}>치우기</button>
             <button onClick={save} disabled={!dirty || saving} style={st.primary}>
               {saving ? '저장 중…' : dirty ? '저장' : '저장됨'}
             </button>
-            <button onClick={() => { setEditing(false); setSelected(null); }} style={st.btn}>완료</button>
-          </>
-        )}
-      </div>
-      {editing && (
-        <>
+            <button onClick={() => { setEditing?.(false); setSelected(null); setDrag(null); }}
+                    style={st.btn}>완료</button>
+          </div>
+
           {spare.length > 0 && (
             <div style={st.invWrap}>
               <div style={st.invHead}>보관함</div>
@@ -371,63 +491,28 @@ export default function RoomView({ currentMember, profile, onClose }) {
               </div>
             </div>
           )}
+
           <p style={st.hint}>
-            가구를 누르면 선택되고, 빈 칸을 누르면 그 자리로 옮깁니다.
-            벽 밖이나 다른 가구와 겹치는 자리는 거절돼요.
+            가구를 끌어서 옮기세요. 놓을 수 있는 자리는 초록, 안 되는 자리는 붉게 표시됩니다.
+            눌러서 고른 뒤 빈 칸을 톡 눌러도 옮겨져요.
             <b> 치우기</b>는 없애는 게 아니라 보관함에 넣는 것입니다.
           </p>
-        </>
-      )}
-
-      {shopOpen && (
-        <ShopView currentMember={currentMember} manifest={manifest} room={room} balance={balance}
-          onDone={async () => {
-            await reloadOwned();
-            const { data } = await supabase.from('pet_rooms').select('*')
-              .eq('member_id', currentMember.id).maybeSingle();
-            if (data) setRoom(data);
-          }}
-          onClose={() => setShopOpen(false)} />
-      )}
-    </Shell>
-  );
-}
-
-function stageOf(total, affection) {
-  if (total >= 20000 && affection >= 2500) return 4;
-  if (total >= 20000) return 3;
-  if (total >= 8000) return 2;
-  if (total >= 2000) return 1;
-  return 0;
-}
-
-function Shell({ children, onClose, title }) {
-  return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-sheet" onClick={(e) => e.stopPropagation()} style={{ maxHeight: '92vh' }}>
-        <div style={st.header}>
-          <h2 style={st.title}>🏠 {title || '내 방'}</h2>
-          <button onClick={onClose} style={st.close}>×</button>
         </div>
-        {children}
-      </div>
-    </div>
+      )}
+    </>
   );
 }
 
 const st = {
-  header: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: 12, borderBottom: '1px solid var(--border)', marginBottom: 12 },
-  title: { fontSize: 17, fontWeight: 500 },
-  close: { width: 40, height: 40, fontSize: 24, color: 'var(--text-2)', borderRadius: 8 },
   empty: { textAlign: 'center', padding: '50px 0', color: 'var(--text-3)' },
   stageWrap: { position: 'relative', borderRadius: 12, overflow: 'hidden', background: 'var(--surface-2)' },
-  svg: { display: 'block', width: '100%', height: 'auto', touchAction: 'manipulation' },
+  svg: { display: 'block', width: '100%', height: 'auto' },
   toast: { position: 'absolute', left: 10, bottom: 10, padding: '7px 11px', borderRadius: 18,
            background: 'var(--text)', color: 'var(--bg)', fontSize: 12, maxWidth: 'calc(100% - 20px)' },
-  bar: { display: 'flex', alignItems: 'center', gap: 8, marginTop: 12 },
-  primary: { padding: '11px 16px', borderRadius: 10, fontSize: 14, fontWeight: 600, background: 'var(--text)', color: 'var(--bg)' },
-  btn: { padding: '11px 14px', borderRadius: 10, fontSize: 14, border: '1px solid var(--border)', color: 'var(--text-2)' },
-  barHint: { fontSize: 12, color: 'var(--text-3)' },
+  editPane: { marginTop: 10 },
+  bar: { display: 'flex', alignItems: 'center', gap: 6 },
+  primary: { padding: '10px 15px', borderRadius: 10, fontSize: 13, fontWeight: 600, background: 'var(--text)', color: 'var(--bg)' },
+  btn: { padding: '10px 13px', borderRadius: 10, fontSize: 13, border: '1px solid var(--border)', color: 'var(--text-2)' },
   hint: { fontSize: 12, color: 'var(--text-3)', lineHeight: 1.6, marginTop: 10 },
   invWrap: { marginTop: 12 },
   invHead: { fontSize: 12, fontWeight: 600, color: 'var(--text-2)', marginBottom: 6 },

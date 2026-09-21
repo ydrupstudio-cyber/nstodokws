@@ -10,6 +10,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { supabase } from '../lib/supabase';
 import { ASSET_BASE } from '../lib/pet/room';
+import { WEAR_SLOTS, josa } from '../lib/game';
 
 const KIND_LABEL = {
   seating: '앉는 것', surface: '놓는 것', 'pet-supply': '펫 용품',
@@ -24,6 +25,7 @@ function reqId(memberId, itemId) {
 export default function ShopView({ currentMember, manifest, room, balance, onDone, onClose }) {
   const [tab, setTab] = useState('furniture');
   const [shop, setShop] = useState([]);
+  const [foods, setFoods] = useState([]);
   const [inv, setInv] = useState({});
   const [busy, setBusy] = useState(null);
   const [msg, setMsg] = useState(null);
@@ -33,12 +35,14 @@ export default function ShopView({ currentMember, manifest, room, balance, onDon
   }, [manifest]);
 
   const load = async () => {
-    const [{ data: s }, { data: i }] = await Promise.all([
+    const [{ data: s }, { data: i }, { data: f }] = await Promise.all([
       supabase.from('shop_items').select('*'),
       supabase.from('pet_inventory').select('asset_id, qty').eq('member_id', currentMember.id),
+      supabase.from('food_items').select('*').neq('kind', 'special').order('sort_order'),
     ]);
     setShop(s || []);
-    const map = {}; (i || []).forEach((r) => { map[r.asset_id] = r.qty; });
+    setFoods(f || []);
+    const map = {}; (i || []).forEach((r) => { if (r.qty > 0) map[r.asset_id] = r.qty; });
     setInv(map);
   };
   useEffect(() => { load(); }, []);
@@ -53,7 +57,7 @@ export default function ShopView({ currentMember, manifest, room, balance, onDon
     setBusy(null);
     if (error) { setMsg({ bad: true, text: '구매하지 못했어요' }); return; }
     if (!data?.ok) { setMsg({ bad: true, text: data?.reason || '구매하지 못했어요' }); return; }
-    setMsg({ text: `${data.item} 을(를) 들였어요` });
+    setMsg({ text: `${data.item}${josa(data.item, '을', '를')} 들였어요` });
     await load();
     onDone?.();
   }
@@ -69,6 +73,17 @@ export default function ShopView({ currentMember, manifest, room, balance, onDon
   const owned = room?.owned_wallpapers || ['plain'];
   const rooms = shop.filter((s) => s.kind === 'room').sort((a, b) => a.level - b.level);
 
+  // 간식 — 가격이 비쌀수록 친밀도가 많이 오른다 (친밀도 값은 food_items 가 갖고 있다)
+  const snacks = shop.filter((x) => x.kind === 'food')
+    .map((x) => ({ ...x, food: foods.find((f) => f.food_id === x.item_id) }))
+    .filter((x) => x.food)
+    .sort((a, b) => a.price - b.price);
+
+  // 꾸미기 — 착용 아이템을 자리별로 묶는다
+  const wearables = shop.filter((x) => x.kind === 'wearable');
+  const bySlot = {};
+  wearables.forEach((x) => { (bySlot[x.slot || 'neck'] = bySlot[x.slot || 'neck'] || []).push(x); });
+
   return (
     <div className="modal-overlay" onClick={onClose} style={{ zIndex: 60 }}>
       <div className="modal-sheet" onClick={(e) => e.stopPropagation()} style={{ maxHeight: '92vh' }}>
@@ -79,7 +94,8 @@ export default function ShopView({ currentMember, manifest, room, balance, onDon
         </div>
 
         <div style={s.tabs}>
-          {[['furniture', '가구'], ['wallpaper', '벽지'], ['room', '방 넓히기']].map(([k, l]) => (
+          {[['furniture', '가구'], ['snack', '간식'], ['wear', '꾸미기'],
+            ['wallpaper', '벽지'], ['room', '방']].map(([k, l]) => (
             <button key={k} onClick={() => setTab(k)}
               style={{ ...s.tab, ...(tab === k ? s.tabOn : {}) }}>{l}</button>
           ))}
@@ -114,6 +130,81 @@ export default function ShopView({ currentMember, manifest, room, balance, onDon
             </div>
           </div>
         ))}
+
+        {/* ── 간식 ── */}
+        {tab === 'snack' && (
+          <div>
+            <p style={s.hint}>
+              산 간식은 <b>가방</b> 에 들어갑니다. 방에서 꺼내 먹이세요.
+              비쌀수록 친밀도가 많이 오르고, 이 친구가 좋아하는 것이면 두 배 넘게 오릅니다.
+              하루에 사료 1번, 간식 2번까지 먹일 수 있어요.
+            </p>
+            <div style={s.grid}>
+              {snacks.map((item) => {
+                const have = inv[item.item_id] || 0;
+                const poor = (balance || 0) < item.price;
+                const full = have >= 20;
+                return (
+                  <div key={item.item_id} style={s.card}>
+                    <div style={s.snackTop}>
+                      <span style={s.snackName}>{item.food.name}</span>
+                      {have > 0 && <span style={s.haveTag}>{have}</span>}
+                    </div>
+                    <div style={s.snackKind}>
+                      {item.food.kind === 'kibble' ? '사료' : '간식'} · 친밀도 +{item.food.affection}
+                    </div>
+                    <button onClick={() => buy(item)} disabled={busy || poor || full}
+                      style={{ ...s.buy, ...((poor || full) ? s.buyOff : {}) }}>
+                      {full ? '가득' : `${item.price}점`}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+            {snacks.length === 0 && <div style={s.none}>아직 상점에 올라온 간식이 없습니다</div>}
+          </div>
+        )}
+
+        {/* ── 꾸미기 ── */}
+        {tab === 'wear' && (
+          <div>
+            <p style={s.hint}>
+              한 자리에 하나씩 입힙니다. 산 것은 <b>옷장</b> 에 들어가요.
+              독립시켜도 옷은 남습니다 — 다음 친구가 물려받습니다.
+            </p>
+            {WEAR_SLOTS.filter((w) => bySlot[w.slot]?.length).map((w) => (
+              <div key={w.slot} style={{ marginBottom: 18 }}>
+                <div style={s.sectionHead}>{w.label}</div>
+                <div style={s.grid}>
+                  {bySlot[w.slot].map((item) => {
+                    const a = catalog[item.item_id];
+                    const have = (inv[item.item_id] || 0) > 0;
+                    const poor = (balance || 0) < item.price;
+                    return (
+                      <div key={item.item_id} style={s.card}>
+                        <div style={s.thumb}>
+                          {a ? <img src={ASSET_BASE + a.path} alt="" style={s.thumbImg} />
+                             : <span style={s.noImg}>준비 중</span>}
+                        </div>
+                        <div style={s.cardName}>{item.name}</div>
+                        {have ? <span style={s.ownedTag}>소장중</span> : (
+                          <button onClick={() => buy(item)} disabled={busy || poor}
+                            style={{ ...s.buy, ...(poor ? s.buyOff : {}) }}>{item.price}점</button>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+            {wearables.length === 0 && (
+              <div style={s.none}>
+                꾸미기 아이템은 준비 중입니다.<br />
+                <span style={{ fontSize: 11 }}>모자·목도리·망토·신발이 곧 들어옵니다.</span>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* ── 벽지 ── */}
         {tab === 'wallpaper' && (
@@ -183,8 +274,8 @@ const s = {
   title: { fontSize: 17, fontWeight: 500, flex: 1 },
   balance: { fontSize: 15, fontWeight: 700 },
   close: { width: 40, height: 40, fontSize: 24, color: 'var(--text-2)', borderRadius: 8 },
-  tabs: { display: 'flex', gap: 6, marginBottom: 12 },
-  tab: { flex: 1, padding: 9, border: '1px solid var(--border)', borderRadius: 8, fontSize: 13, color: 'var(--text-2)' },
+  tabs: { display: 'flex', gap: 4, marginBottom: 12 },
+  tab: { flex: 1, padding: '9px 2px', border: '1px solid var(--border)', borderRadius: 8, fontSize: 12, color: 'var(--text-2)' },
   tabOn: { background: 'var(--surface-2)', color: 'var(--text)', borderColor: 'var(--text-3)', fontWeight: 600 },
   msg: { padding: '9px 12px', borderRadius: 9, background: 'var(--surface-2)', fontSize: 13, marginBottom: 10 },
   msgBad: { background: 'var(--danger-bg)', color: 'var(--danger)' },
@@ -214,4 +305,9 @@ const s = {
   roomRow: { display: 'flex', alignItems: 'center', gap: 10, padding: '11px 10px', marginBottom: 6,
              border: '1px solid var(--border)', borderRadius: 10 },
   roomNow: { background: 'var(--surface-2)', borderColor: 'var(--text-3)' },
+  none: { textAlign: 'center', padding: '30px 0', color: 'var(--text-3)', fontSize: 13, lineHeight: 1.7 },
+  noImg: { fontSize: 11, color: 'var(--text-3)' },
+  snackTop: { position: 'relative', paddingTop: 6, minHeight: 34, display: 'grid', placeItems: 'center' },
+  snackName: { fontSize: 13, fontWeight: 600, wordBreak: 'keep-all', lineHeight: 1.3 },
+  snackKind: { fontSize: 10, color: 'var(--text-3)', marginBottom: 5 },
 };
