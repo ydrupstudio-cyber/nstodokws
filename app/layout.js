@@ -11,6 +11,13 @@ export const viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
+  /*
+    이 페이지가 밝은 테마·어두운 테마를 스스로 처리한다고 브라우저에 알린다.
+    이걸 안 알리면 안드로이드 크롬·삼성인터넷의 '웹페이지 어둡게' 기능이
+    제멋대로 색을 뒤집는다. 그림이 허옇게 뜨고 가구가 비쳐 보였던 원인이다.
+    앱 안에서 밝은 테마를 골라 놔도 브라우저 설정이 이겨서 소용이 없었다.
+  */
+  colorScheme: 'light dark',
 };
 
 export default function RootLayout({ children }) {
