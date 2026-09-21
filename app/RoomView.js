@@ -21,7 +21,8 @@ import {
 } from '../lib/pet/room-engine';
 import {
   buildCatalog, viewBoxFor, floorCorners, wallShapes, furniturePos,
-  depthSorted, petPos, randomFreeCell, INTERACTION_ACTION, ASSET_BASE,
+  depthSorted, petPos, randomFreeCell, interactionOf, perchCell, frontCell,
+  INTERACTION_ACTION, PERCH_LIFT, ASSET_BASE,
 } from '../lib/pet/room';
 import { supabase } from '../lib/supabase';
 import { stageOf, josa } from '../lib/game';
@@ -59,6 +60,9 @@ export default function RoomView({
   const [petCell, setPetCell] = useState({ x: 3.5, y: 3.5 });
   const [action, setAction] = useState('idle');
   const [facing, setFacing] = useState(1);
+  const [lift, setLift] = useState(0);        // 가구 위에 올라가 있으면 그 높이만큼 뜬다
+  const [mark, setMark] = useState(null);     // 머리 위 하트·반짝임
+  const [ripple, setRipple] = useState(null); // 누른 자리 표시
 
   // 편집
   const [selected, setSelected] = useState(null);   // uid
@@ -69,9 +73,12 @@ export default function RoomView({
   const [inv, setInv] = useState({});               // asset_id -> 보유 수량
 
   const svgRef = useRef(null);
-  const petRef = useRef({ pos: { x: 3.5, y: 3.5 }, path: [], hold: 1.2, action: 'idle' });
+  const petRef = useRef({ pos: { x: 3.5, y: 3.5 }, path: [], hold: 1.2, action: 'idle',
+                          after: 'idle', afterLift: 0, lift: 0 });
   const rafRef = useRef(0);
   const guestRef = useRef(0);   // guest 동작이 끝나는 시각 (performance.now 기준)
+  const petTapRef = useRef(0);  // 쓰다듬기 연타 방지
+  const greetedRef = useRef(false);
 
   const catalog = useMemo(() => (manifest ? buildCatalog(manifest) : null), [manifest]);
   const level = room ? (manifest?.roomLevels?.[room.level] || { size: 8 }) : { size: 8 };
@@ -153,29 +160,59 @@ export default function RoomView({
     guestRef.current = performance.now() + (guest.hold || 3400);
   }, [guest?.id]);   // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ── 자율 행동: 걷다가 가구 옆에서 뭔가 한다 ──
+  /**
+   * 가구 하나를 쓰러 간다.
+   *   올라가 쉬는 가구(침대·방석·소파…)면 그 위 칸까지 간다.
+   *   앞을 막는 가구라도 마지막 한 걸음은 길찾기를 건너뛰고 올라선다 — 올라타는 것이니까.
+   *   그 밖의 가구는 예전처럼 옆 칸까지만 간다.
+   * @returns 갈 수 있으면 true
+   */
+  const planTo = useCallback((item) => {
+    if (!catalog) return false;
+    const asset = catalog[item.assetId];
+    const act = INTERACTION_ACTION[interactionOf(asset)] || 'inspect';
+    const st = petRef.current;
+    const up = PERCH_LIFT[item.assetId];
+
+    if (up === undefined) {
+      const res = approach(st.pos, item, items, size, catalog);
+      if (!res) return false;
+      st.path = res.path; st.after = act; st.afterLift = 0; st.hold = 0;
+      return true;
+    }
+
+    const pc = perchCell(item, catalog);
+    const goal = { x: pc.x + 0.5, y: pc.y + 0.5 };
+    let path;
+    if (!asset.blocksMovement) {
+      // 러그·방석·펫 침대는 그냥 걸어 올라갈 수 있다
+      path = route(st.pos, goal, items, size, catalog);
+      if (!path.length && Math.hypot(goal.x - st.pos.x, goal.y - st.pos.y) > 0.2) return false;
+    } else {
+      const res = approach(st.pos, item, items, size, catalog);
+      if (!res) return false;
+      path = [...res.path, goal];
+    }
+    st.path = path; st.after = act; st.afterLift = up; st.hold = 0;
+    return true;
+  }, [catalog, items, size]);
+
+  // ── 자율 행동: 걷다가 가구에서 쉬거나 논다 ──
   const pickNext = useCallback(() => {
     if (!catalog || !room) return;
     const st = petRef.current;
     const wall = blocked(items, size, catalog);
-    const interactive = items.filter((it) => catalog[it.assetId]?.interaction);
-    // 활발할수록 가구를 더 자주 쓰고 더 멀리 간다
-    const goFurniture = interactive.length > 0 && Math.random() < 0.55;
-    if (goFurniture) {
+    const interactive = items.filter((it) => interactionOf(catalog[it.assetId]));
+    // 활발할수록 자주 움직인다. 가만히 있고 싶을 땐 제자리에서 뭔가 한다
+    if (interactive.length > 0 && Math.random() < 0.6) {
       const target = interactive[Math.floor(Math.random() * interactive.length)];
-      const res = approach(st.pos, target, items, size, catalog);
-      if (res) {
-        st.path = res.path;
-        st.after = INTERACTION_ACTION[catalog[target.assetId].interaction] || 'inspect';
-        st.hold = 0;
-        return;
-      }
+      if (planTo(target)) return;
     }
     if (Math.random() > temper.wander) {
-      // 지금은 움직이고 싶지 않다. 제자리에서 뭔가 한다
       st.path = [];
       st.after = ['look', 'sit', 'idle'][Math.floor(Math.random() * 3)];
       st.action = st.after; setAction(st.after);
+      st.afterLift = st.lift;   // 가구 위에 있었다면 계속 거기 있는다
       st.hold = temper.rest[0] + Math.random() * temper.rest[1];
       return;
     }
@@ -183,8 +220,9 @@ export default function RoomView({
     if (!cell) { st.hold = 2; return; }
     st.path = route(st.pos, cell, items, size, catalog);
     st.after = ['wave', 'stretch', 'look', 'sit', 'idle'][Math.floor(Math.random() * 5)];
+    st.afterLift = 0;
     st.hold = st.path.length ? 0 : 1.6;
-  }, [catalog, room, items, size, temper]);
+  }, [catalog, room, items, size, temper, planTo]);
 
   // ── 시간 루프 ──
   useEffect(() => {
@@ -212,10 +250,15 @@ export default function RoomView({
         if (dist <= step) { st.pos = { ...goal }; st.path.shift(); }
         else { st.pos = { x: st.pos.x + (dx / dist) * step, y: st.pos.y + (dy / dist) * step }; }
         if (Math.abs(dx) > 0.01) setFacing(dx > 0 ? 1 : -1);
-        if (st.action !== 'walk') { st.action = 'walk'; setAction('walk'); }
+        if (st.action !== 'walk') {
+          st.action = 'walk'; setAction('walk');
+          // 걷기 시작하면 가구에서 내려온다
+          if (st.lift) { st.lift = 0; setLift(0); }
+        }
         setPetCell({ ...st.pos });
         if (!st.path.length) {
           st.action = st.after || 'idle'; setAction(st.action);
+          st.lift = st.afterLift || 0; setLift(st.lift);
           st.hold = temper.rest[0] + Math.random() * temper.rest[1];
         }
       } else {
@@ -232,6 +275,81 @@ export default function RoomView({
     rafRef.current = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafRef.current);
   }, [catalog, room, editing, stage, pickNext, temper]);
+
+  // ── 방을 열면 반겨준다 ──
+  // 친밀도가 낮으면 멀리서 쳐다보기만 하고, 쌓이면 다가와서 인사한다.
+  useEffect(() => {
+    if (greetedRef.current || !catalog || !room || !asset || editing) return;
+    greetedRef.current = true;
+    const st = petRef.current;
+    const act = bond >= 3 ? 'celebrate' : bond >= 1 ? 'wave' : 'look';
+    const target = bond >= 1 ? frontCell(size, blocked(items, size, catalog)) : null;
+    const path = target ? route(st.pos, target, items, size, catalog) : [];
+    if (path.length) {
+      st.path = path; st.after = act; st.afterLift = 0; st.hold = 0;
+    } else {
+      st.path = []; st.action = act; setAction(act);
+      st.lift = 0; setLift(0);
+      st.hold = 2.6;
+    }
+    if (bond >= 1) setMark({ kind: 'heart', id: Date.now() });
+    // 교감하는 법은 처음 몇 번만 알려준다. 매번 뜨면 잔소리가 된다.
+    // 기기별 편의라 localStorage 로 충분하다 — 지워져도 안내가 한 번 더 뜰 뿐이다
+    try {
+      const seen = Number(localStorage.getItem('ns-room-hint') || 0);
+      if (seen < 3) {
+        localStorage.setItem('ns-room-hint', String(seen + 1));
+        setMsg('펫을 누르면 쓰다듬고, 바닥을 누르면 그리로 와요');
+      }
+    } catch { /* 사생활 보호 모드에서는 안내를 건너뛴다 */ }
+  }, [catalog, room, asset, editing, bond, items, size]);
+
+  useEffect(() => { if (!mark) return; const t = setTimeout(() => setMark(null), 1700); return () => clearTimeout(t); }, [mark]);
+  useEffect(() => { if (!ripple) return; const t = setTimeout(() => setRipple(null), 800); return () => clearTimeout(t); }, [ripple]);
+
+  // ── 교감 ──
+  /** 펫을 누르면 좋아한다. 점수도 친밀도도 오르지 않는다 — 그냥 쓰다듬는 것이다 */
+  function petTap(evt) {
+    evt?.stopPropagation?.();
+    if (editing) return;
+    const now = performance.now();
+    if (now < petTapRef.current) return;      // 연타로 애니메이션이 끊기지 않게
+    petTapRef.current = now + 1400;
+    const st = petRef.current;
+    st.path = [];
+    const act = bond >= 2 ? 'celebrate' : 'wave';
+    st.action = act; setAction(act);
+    st.after = 'idle'; st.afterLift = st.lift;
+    st.hold = 2.0;
+    guestRef.current = now + 1600;            // 잠깐은 제 갈 길을 가지 않는다
+    setMark({ kind: 'heart', id: now });
+  }
+
+  /** 바닥을 누르면 그리로 온다. 가구를 누르면 그 가구를 쓰러 간다 */
+  function tapFloor(cell, evt) {
+    const st = petRef.current;
+    // 펫이 서 있는 칸을 누른 것도 쓰다듬기다 (머리 위를 눌러도 되도록)
+    if (Math.floor(st.pos.x) === cell.x && Math.floor(st.pos.y) === cell.y) {
+      petTap(evt); return;
+    }
+    const hit = items.find((it) => {
+      const [w, h] = dimensions(it, catalog);
+      return cell.x >= it.x && cell.x < it.x + w && cell.y >= it.y && cell.y < it.y + h;
+    });
+    if (hit && interactionOf(catalog[hit.assetId])) {
+      if (planTo(hit)) { guestRef.current = 0; setRipple({ ...cell, id: Date.now() }); return; }
+    }
+    const wall = blocked(items, size, catalog);
+    if (wall.has(`${cell.x},${cell.y}`)) { setMsg('거긴 못 올라가요'); return; }
+    const path = route(st.pos, { x: cell.x + 0.5, y: cell.y + 0.5 }, items, size, catalog);
+    if (!path.length) { setMsg('거기까지 갈 길이 없어요'); return; }
+    st.path = path;
+    st.after = bond >= 2 ? 'wave' : 'look';
+    st.afterLift = 0;
+    st.hold = 0;
+    guestRef.current = 0;
+    setRipple({ ...cell, id: Date.now() });
+  }
 
   // ── 좌표 ──
   function svgCell(evt) {
@@ -279,12 +397,19 @@ export default function RoomView({
     else setMsg('거기엔 놓을 수 없어요');
   }
 
-  /** 빈 칸을 그냥 눌러도 선택한 가구가 그 자리로 간다 (작은 화면에서 드래그가 어려울 때) */
+  /**
+   * 편집 중 — 빈 칸을 눌러도 고른 가구가 그 자리로 간다 (작은 화면에서 드래그가 어려울 때)
+   * 평소 —  누른 자리로 펫이 온다
+   */
   function onSurface(evt) {
-    if (!editing || !selected || drag) return;
     const cell = svgCell(evt);
-    if (!cell) return;
-    moveTo(selected, cell.x, cell.y);
+    if (!cell || cell.x < 0 || cell.y < 0 || cell.x >= size || cell.y >= size) return;
+    if (editing) {
+      if (!selected || drag) return;
+      moveTo(selected, cell.x, cell.y);
+      return;
+    }
+    tapFloor(cell, evt);
   }
 
   function moveTo(uid, x, y) {
@@ -364,7 +489,10 @@ export default function RoomView({
   // 드래그 중인 가구는 제자리에서 빼고 유령으로 따로 그린다
   const shown = drag?.cell ? items.filter((i) => i.uid !== drag.uid) : items;
   const order = depthSorted(shown, catalog, petCell);
-  const pp = petPos(petCell, size, petScale);
+  const pp0 = petPos(petCell, size, petScale);
+  const pp = { x: pp0.x, y: pp0.y - lift };   // 가구 위에 앉으면 그 높이만큼 올려 그린다
+  const petW = 200 * petScale;
+  const petH = 190 * petScale;
   const ghostItem = drag?.cell ? items.find((i) => i.uid === drag.uid) : null;
 
   const tiles = [];
@@ -427,13 +555,24 @@ export default function RoomView({
             if (o.kind === 'pet') {
               // foreignObject 가 아니라 중첩 <svg> 로 넣는다. 브라우저 호환과
               // 좌표 처리가 훨씬 단순하고, 실제로 그려보고 확인한 방식이다
-              const w = 200 * petScale;
               return (
-                <g key="pet" transform={facing < 0
-                    ? `translate(${(pp.x * 2 + w).toFixed(2)} 0) scale(-1 1)` : undefined}>
-                  {asset && <PetCanvas asset={asset} stage={stage} action={action}
-                                       size={w} embedded x={pp.x} y={pp.y}
-                                       mood={temper.mood} wearPath={wearPath} />}
+                <g key="pet">
+                  <g transform={facing < 0
+                      ? `translate(${(pp.x * 2 + petW).toFixed(2)} 0) scale(-1 1)` : undefined}>
+                    {asset && <PetCanvas asset={asset} stage={stage} action={action}
+                                         size={petW} embedded x={pp.x} y={pp.y}
+                                         mood={temper.mood} wearPath={wearPath} />}
+                  </g>
+                  {/* 쓰다듬기 판. 펫 그림은 aria-hidden 이라 눌릴 수 없어서 따로 깐다.
+                      좌우 반전 바깥에 둬야 누르는 자리가 그림을 따라간다.
+                      ⚠ 넓게 잡으면 뒤쪽 가구를 누르는 손가락까지 삼킨다 (침대를 못 눌렀다).
+                      킷 규약상 펫은 x=100 중심, 바닥선 y=176 이라 아랫도리만 덮는다. */}
+                  {!editing && (
+                    <rect x={pp.x + 62 * petScale} y={pp.y + 110 * petScale}
+                          width={76 * petScale} height={72 * petScale}
+                          fill="transparent" style={{ cursor: 'pointer' }}
+                          onPointerDown={petTap} onClick={(e) => e.stopPropagation()} />
+                  )}
                 </g>
               );
             }
@@ -451,6 +590,33 @@ export default function RoomView({
                 onClick={(e) => { if (editing) e.stopPropagation(); }} />
             );
           })}
+
+          {/* 머리 위 표시 — 반가움·쓰다듬기 */}
+          {mark && (
+            <g key={mark.id} transform={`translate(${(pp.x + petW / 2).toFixed(1)} ${(pp.y - 4).toFixed(1)})`}
+               style={{ pointerEvents: 'none' }}>
+              <path d="M0,6 C-9,-3 -16,4 -8,11 L0,18 L8,11 C16,4 9,-3 0,6 Z"
+                    fill="#c2607a" opacity="0.92" transform="translate(-13 -28) scale(1.6)">
+                <animateTransform attributeName="transform" type="translate"
+                  values="-0.5,-8; -0.5,-22; -0.5,-30" dur="1.6s" additive="sum" fill="freeze" />
+                <animate attributeName="opacity" values="0;0.95;0.95;0" dur="1.6s" fill="freeze" />
+              </path>
+            </g>
+          )}
+
+          {/* 누른 자리 — 여기로 오라는 표시 */}
+          {ripple && (() => {
+            const c = project(ripple.x + 0.5, ripple.y + 0.5, size);
+            return (
+              <ellipse key={ripple.id} cx={c.x} cy={c.y} rx="10" ry="5"
+                       fill="none" stroke="var(--text-2)" strokeWidth="2"
+                       style={{ pointerEvents: 'none' }}>
+                <animate attributeName="rx" from="8" to="30" dur="0.8s" fill="freeze" />
+                <animate attributeName="ry" from="4" to="15" dur="0.8s" fill="freeze" />
+                <animate attributeName="opacity" from="0.8" to="0" dur="0.8s" fill="freeze" />
+              </ellipse>
+            );
+          })()}
 
           {/* 드래그 유령 — 반투명하게 손끝을 따라온다 */}
           {ghostItem && (() => {
