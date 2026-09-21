@@ -10,9 +10,32 @@
 import { useState, useEffect, useMemo } from 'react';
 import { ASSET_BASE } from '../lib/pet/room';
 import UiIcon from './UiIcon';
+import PetCanvas from './PetCanvas';
+import { findAsset, SPECIES_LABEL } from '../lib/pet/assets';
 import {
-  feed, equip, release, loadPetHistory, josa, WEAR_SLOTS, STAGE_LABELS,
+  feed, equip, release, loadPetHistory, josa, livedSpan, stageOf, WEAR_SLOTS, STAGE_LABELS,
 } from '../lib/game';
+
+/**
+ * 떠난 친구의 마지막 모습.
+ * 이름과 숫자만 남기면 목록이 글자뿐이라, 무엇을 입고 어떤 모습이었는지 그린다.
+ * 기록이니까 움직이지 않는다 — 가만히 서 있는 한 장이다.
+ */
+function PetPortrait({ row, size = 64 }) {
+  const [asset, setAsset] = useState(null);
+  useEffect(() => {
+    let dead = false;
+    if (row.breed) findAsset(row.species, row.breed).then((a) => { if (!dead) setAsset(a); });
+    return () => { dead = true; };
+  }, [row.species, row.breed]);
+  if (!asset) return <div style={{ width: size, height: size * 0.95, flexShrink: 0 }} />;
+  return (
+    <div style={{ width: size, flexShrink: 0 }}>
+      <PetCanvas asset={asset} stage={row.stage ?? 3} action="idle" size={size}
+                 wearing={row.equipped && Object.keys(row.equipped).length ? row.equipped : null} />
+    </div>
+  );
+}
 
 /** 아래에서 올라오는 판 */
 export function Sheet({ title, onClose, children, foot, bottom = 62 }) {
@@ -32,7 +55,7 @@ export function Sheet({ title, onClose, children, foot, bottom = 62 }) {
 // 가방 — 사둔 간식을 꺼내 먹인다
 //   사는 것은 상점, 먹이는 것은 여기. 돈은 살 때 이미 냈다.
 // ============================================================
-export function BagPanel({ currentMember, inventory, foods, fedToday, discovered, onClose, onFed }) {
+export function BagPanel({ currentMember, inventory, foods, fedToday, discovered, onClose, onFed, bottom }) {
   const [busy, setBusy] = useState(null);
   const [msg, setMsg] = useState(null);
 
@@ -62,7 +85,7 @@ export function BagPanel({ currentMember, inventory, foods, fedToday, discovered
   }
 
   return (
-    <Sheet title="가방" onClose={onClose}>
+    <Sheet title="가방" onClose={onClose} bottom={bottom}>
       {msg && <div style={{ ...s.msg, ...(msg.bad ? s.msgBad : {}) }}>{msg.text}</div>}
 
       {rows.length === 0 ? (
@@ -104,7 +127,7 @@ export function BagPanel({ currentMember, inventory, foods, fedToday, discovered
 // 옷장 — 전체 / 자리별
 // ============================================================
 export function ClosetPanel({ currentMember, inventory, catalog, shopItems, equipped,
-                              wearables = [], species, onClose, onChanged }) {
+                              wearables = [], species, onClose, onChanged, bottom }) {
   const [cat, setCat] = useState('all');
   const [busy, setBusy] = useState(null);
   const [msg, setMsg] = useState(null);
@@ -149,7 +172,7 @@ export function ClosetPanel({ currentMember, inventory, catalog, shopItems, equi
   }
 
   return (
-    <Sheet title="옷장" onClose={onClose}>
+    <Sheet title="옷장" onClose={onClose} bottom={bottom}>
       {msg && <div style={{ ...s.msg, ...(msg.bad ? s.msgBad : {}) }}>{msg.text}</div>}
 
       {owned.length === 0 ? (
@@ -202,7 +225,7 @@ export function ClosetPanel({ currentMember, inventory, catalog, shopItems, equi
 // 함께했던 친구들 + 독립시키기
 //   '파양' 이라는 말은 쓰지 않는다. 졸업이고 독립이다.
 // ============================================================
-export function FamilyPanel({ currentMember, profile, onClose, onReleased }) {
+export function FamilyPanel({ currentMember, profile, onClose, onReleased, bottom }) {
   const [hist, setHist] = useState([]);
   const [step, setStep] = useState(0);     // 0 목록, 1 확인
   const [typed, setTyped] = useState('');
@@ -222,15 +245,19 @@ export function FamilyPanel({ currentMember, profile, onClose, onReleased }) {
   const name = profile?.pet_name || '';
 
   return (
-    <Sheet title="함께했던 친구들" onClose={onClose}>
+    <Sheet title="함께했던 친구들" onClose={onClose} bottom={bottom}>
       {profile?.species && (
         <div style={s.nowCard}>
-          <div>
+          <PetPortrait row={{ ...profile, stage: stageOf(profile.affection || 0) }} size={64} />
+          <div style={{ flex: 1, minWidth: 0 }}>
             <div style={s.nowName}>{profile.pet_name}</div>
             <div style={s.nowMeta}>
               지금 함께 · 친밀도 {(profile.affection || 0).toLocaleString()}
               {profile.generation > 1 && ` · ${profile.generation}번째 친구`}
             </div>
+            <div style={s.histSpan}>{livedSpan(profile.adopted_at, null).text}
+              {livedSpan(profile.adopted_at, null).days != null
+                && ` · ${livedSpan(profile.adopted_at, null).days}일째`}</div>
           </div>
         </div>
       )}
@@ -238,20 +265,25 @@ export function FamilyPanel({ currentMember, profile, onClose, onReleased }) {
       {hist.length === 0 ? (
         <p style={s.hint}>아직 독립한 친구가 없습니다.</p>
       ) : (
-        hist.map((h) => (
-          <div key={h.id} style={s.histRow}>
-            <span style={s.histGen}>{h.generation}</span>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={s.histName}>{h.pet_name}</div>
-              <div style={s.histMeta}>
-                {STAGE_LABELS[h.stage] || ''} · 친밀도 {(h.affection || 0).toLocaleString()}
+        hist.map((h) => {
+          const span = livedSpan(h.adopted_at, h.released_at);
+          return (
+            <div key={h.id} style={s.histRow}>
+              <span style={s.histGen}>{h.generation}</span>
+              <PetPortrait row={h} size={64} />
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={s.histName}>{h.pet_name}</div>
+                <div style={s.histMeta}>
+                  {SPECIES_LABEL[h.species] || ''} · {STAGE_LABELS[h.stage] || ''}
+                  {' · 친밀도 '}{(h.affection || 0).toLocaleString()}
+                </div>
+                <div style={s.histSpan}>
+                  {span.text}{span.days != null && ` · ${span.days}일`}
+                </div>
               </div>
             </div>
-            <span style={s.histDate}>
-              {h.released_at ? String(h.released_at).slice(0, 10) : ''}
-            </span>
-          </div>
-        ))
+          );
+        })
       )}
 
       {profile?.species && (
@@ -338,8 +370,9 @@ const s = {
              marginBottom: 12 },
   nowName: { fontSize: 15, fontWeight: 700 },
   nowMeta: { fontSize: 11, color: 'var(--text-3)', marginTop: 2 },
-  histRow: { display: 'flex', alignItems: 'center', gap: 9, padding: '9px 2px',
+  histRow: { display: 'flex', alignItems: 'center', gap: 9, padding: '10px 2px',
              borderBottom: '1px solid var(--border)' },
+  histSpan: { fontSize: 11, color: 'var(--text-3)', marginTop: 3, fontVariantNumeric: 'tabular-nums' },
   histGen: { width: 22, height: 22, flexShrink: 0, borderRadius: 11, background: 'var(--surface-2)',
              color: 'var(--text-3)', fontSize: 11, display: 'grid', placeItems: 'center' },
   histName: { fontSize: 13, fontWeight: 600 },

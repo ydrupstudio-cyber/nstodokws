@@ -74,6 +74,9 @@ export default function RoomView({
   onRoomChange,     // 저장·구매로 방이 바뀌면 부모에게 알린다
   guest,            // { action, id } — 밖에서 시킨 동작 (간식을 먹인다 등)
   bond = 0,         // 친밀도 단계 0~4
+  hostId,           // 남의 방을 볼 때 그 사람 id. 없으면 내 방
+  readOnly = false, // 남의 방에서는 가구를 못 건드린다
+  guestPet = null,  // { asset, profile, name } — 놀러 온 내 펫
 }) {
   const [manifest, setManifest] = useState(null);
   const [room, setRoom] = useState(null);
@@ -87,6 +90,10 @@ export default function RoomView({
   const [lift, setLift] = useState(0);        // 가구 위에 올라가 있으면 그 높이만큼 뜬다
   const [mark, setMark] = useState(null);     // 머리 위 하트·반짝임
   const [petBox, setPetBox] = useState(null); // 그려진 몸의 실제 범위 (PetCanvas 가 알려준다)
+  // 놀러 온 펫. 집주인 펫과 따로 움직인다
+  const [visCell, setVisCell] = useState({ x: 1.5, y: 1.5 });
+  const [visAction, setVisAction] = useState('idle');
+  const [visFacing, setVisFacing] = useState(1);
   const [ripple, setRipple] = useState(null); // 누른 자리 표시
 
   // 편집
@@ -104,8 +111,10 @@ export default function RoomView({
   const rafRef = useRef(0);
   const guestRef = useRef(0);   // guest 동작이 끝나는 시각 (performance.now 기준)
   const petTapRef = useRef(0);  // 쓰다듬기 연타 방지
+  const visRef = useRef({ pos: { x: 1.5, y: 1.5 }, path: [], hold: 1.6, action: 'idle' });
   const greetedRef = useRef(false);
 
+  const roomOwner = hostId || currentMember.id;
   const catalog = useMemo(() => (manifest ? buildCatalog(manifest) : null), [manifest]);
   const level = room ? (manifest?.roomLevels?.[room.level] || { size: 8 }) : { size: 8 };
   const size = level.size;
@@ -120,17 +129,17 @@ export default function RoomView({
         if (dead) return;
         setManifest(m);
         const { data } = await supabase.from('pet_rooms').select('*')
-          .eq('member_id', currentMember.id).maybeSingle();
+          .eq('member_id', roomOwner).maybeSingle();
         if (dead) return;
         setRoom(data || {
-          member_id: currentMember.id, level: 0, wallpaper: 'plain', floor: 'wood',
+          member_id: roomOwner, level: 0, wallpaper: 'plain', floor: 'wood',
           owned_wallpapers: ['plain'], items: [], revision: 0,
         });
         if (profile?.breed) setAsset(await findAsset(profile.species, profile.breed));
       } catch (e) { if (!dead) setErr('방을 불러오지 못했어요'); }
     })();
     return () => { dead = true; };
-  }, [currentMember.id, profile?.breed, profile?.species]);
+  }, [roomOwner, profile?.breed, profile?.species]);
 
   const reloadOwned = useCallback(async () => {
     const { data } = await supabase.from('pet_inventory')
@@ -144,10 +153,10 @@ export default function RoomView({
   // 방이 밖에서 바뀌었을 수 있다 (상점에서 벽지를 샀다거나)
   const reloadRoom = useCallback(async () => {
     const { data } = await supabase.from('pet_rooms').select('*')
-      .eq('member_id', currentMember.id).maybeSingle();
+      .eq('member_id', roomOwner).maybeSingle();
     if (data) setRoom(data);
     reloadOwned();
-  }, [currentMember.id, reloadOwned]);
+  }, [roomOwner, reloadOwned]);
 
   useEffect(() => {
     if (!onRoomChange) return;
@@ -344,7 +353,7 @@ export default function RoomView({
     if (Math.random() > chance) return;
     setMark({ fx, id: Date.now() + Math.random() });
   }, [action, bond]);
-  useEffect(() => { if (!ripple) return; const t = setTimeout(() => setRipple(null), 800); return () => clearTimeout(t); }, [ripple]);
+  useEffect(() => { if (!ripple) return; const t = setTimeout(() => setRipple(null), 1200); return () => clearTimeout(t); }, [ripple]);
 
   /**
    * PetCanvas 가 알려준 몸 범위. '펫 그림 상자 안에서의 상대 위치' 라
@@ -360,12 +369,18 @@ export default function RoomView({
 
   // ── 교감 ──
   /** 펫을 누르면 좋아한다. 점수도 친밀도도 오르지 않는다 — 그냥 쓰다듬는 것이다 */
-  function petTap(evt) {
+  function petTap(evt, isGuest = false) {
     evt?.stopPropagation?.();
     if (editing) return;
     const now = performance.now();
     if (now < petTapRef.current) return;      // 연타로 애니메이션이 끊기지 않게
     petTapRef.current = now + 1400;
+    if (isGuest) {
+      const v = visRef.current;
+      v.path = []; v.action = 'highfive'; setVisAction('highfive'); v.hold = 2.0;
+      setMark({ fx: 'heart', id: now });
+      return;
+    }
     const st = petRef.current;
     st.path = [];
     // 친해지면 하이파이브, 아직 서먹하면 새침하게 곁눈질한다
@@ -379,6 +394,18 @@ export default function RoomView({
 
   /** 바닥을 누르면 그리로 온다. 가구를 누르면 그 가구를 쓰러 간다 */
   function tapFloor(cell, evt) {
+    // 남의 방에서는 집주인 펫이 아니라 내 펫이 움직인다
+    if (readOnly && guestPet) {
+      const v = visRef.current;
+      if (Math.floor(v.pos.x) === cell.x && Math.floor(v.pos.y) === cell.y) { petTap(evt, true); return; }
+      const wall = blocked(items, size, catalog);
+      if (wall.has(`${cell.x},${cell.y}`)) { setMsg('거긴 못 올라가요'); return; }
+      const path = route(v.pos, { x: cell.x + 0.5, y: cell.y + 0.5 }, items, size, catalog);
+      if (!path.length) { setMsg('거기까지 갈 길이 없어요'); return; }
+      v.path = path; v.after = 'look'; v.hold = 0;
+      setRipple({ ...cell, id: Date.now() });
+      return;
+    }
     const st = petRef.current;
     // 펫이 서 있는 칸을 누른 것도 쓰다듬기다 (머리 위를 눌러도 되도록)
     if (Math.floor(st.pos.x) === cell.x && Math.floor(st.pos.y) === cell.y) {
@@ -402,6 +429,48 @@ export default function RoomView({
     guestRef.current = 0;
     setRipple({ ...cell, id: Date.now() });
   }
+
+  // ── 놀러 온 펫의 걸음 ──
+  // 집주인 펫만큼 부지런하지는 않다. 남의 집이니까 조심스럽게 돌아다닌다.
+  useEffect(() => {
+    if (!guestPet || !catalog || !room || editing) return;
+    let raf = 0, last = performance.now();
+    const tick = (now) => {
+      const dt = Math.min(MAX_DELTA, (now - last) / 1000);
+      last = now;
+      if (document.hidden) { raf = requestAnimationFrame(tick); return; }
+      const st = visRef.current;
+      if (st.path.length) {
+        const goal = st.path[0];
+        const dx = goal.x - st.pos.x, dy = goal.y - st.pos.y;
+        const dist = Math.hypot(dx, dy);
+        const step = 0.95 * dt;
+        if (dist <= step) { st.pos = { ...goal }; st.path.shift(); }
+        else { st.pos = { x: st.pos.x + (dx / dist) * step, y: st.pos.y + (dy / dist) * step }; }
+        if (Math.abs(dx) > 0.01) setVisFacing(dx > 0 ? 1 : -1);
+        if (st.action !== 'walk') { st.action = 'walk'; setVisAction('walk'); }
+        setVisCell({ ...st.pos });
+        if (!st.path.length) {
+          st.action = st.after || 'look'; setVisAction(st.action);
+          st.hold = 2.4 + Math.random() * 2.6;
+        }
+      } else {
+        st.hold -= dt;
+        if (st.hold <= 0) {
+          const wall = blocked(items, size, catalog);
+          const cell = randomFreeCell(size, wall);
+          if (cell) {
+            st.path = route(st.pos, cell, items, size, catalog);
+            st.after = ['look', 'groom', 'idle', 'sit'][Math.floor(Math.random() * 4)];
+          }
+          st.hold = st.path.length ? 0 : 2.5;
+        }
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [guestPet, catalog, room, editing, items, size]);
 
   // ── 좌표 ──
   function svgCell(evt) {
@@ -556,6 +625,16 @@ export default function RoomView({
   // 드래그 중인 가구는 제자리에서 빼고 유령으로 따로 그린다
   const shown = drag?.cell ? items.filter((i) => i.uid !== drag.uid) : items;
   const order = depthSorted(shown, catalog, petCell);
+  // 놀러 온 펫도 깊이 순서에 끼워야 가구 앞뒤가 맞는다
+  if (guestPet) {
+    const d = Math.floor(visCell.x) + Math.floor(visCell.y) + 0.5;
+    const at = order.findIndex((o) => o.depth > d);
+    const entry = { kind: 'visitor', depth: d };
+    if (at < 0) order.push(entry); else order.splice(at, 0, entry);
+  }
+  const visScale = guestPet ? [0.95, 1.00, 1.06, 1.12, 1.15][stageOf(guestPet.profile?.affection || 0)] : 1;
+  const vp = guestPet ? petPos(visCell, size, visScale) : null;
+  const visW = 200 * visScale, visH = 190 * visScale;
   const pp0 = petPos(petCell, size, petScale);
   const pp = { x: pp0.x, y: pp0.y - lift };   // 가구 위에 앉으면 그 높이만큼 올려 그린다
   const petW = 200 * petScale;
@@ -643,6 +722,35 @@ export default function RoomView({
 
           {/* 가구와 펫 — 깊이 순 */}
           {order.map((o, i) => {
+            if (o.kind === 'visitor') {
+              return (
+                <g key="visitor">
+                  <g transform={visFacing < 0
+                      ? `translate(${(vp.x * 2 + visW).toFixed(2)} 0) scale(-1 1)` : undefined}>
+                    <PetCanvas asset={guestPet.asset}
+                               stage={stageOf(guestPet.profile?.affection || 0)}
+                               action={visAction} size={visW} embedded x={vp.x} y={vp.y}
+                               mood="happy"
+                               wearing={guestPet.profile?.equipped
+                                 && Object.keys(guestPet.profile.equipped).length
+                                 ? guestPet.profile.equipped : null} />
+                  </g>
+                  {/* 내 펫이라는 표시. 남의 방에서는 둘이 헷갈린다 */}
+                  <g transform={`translate(${(vp.x + visW / 2).toFixed(1)} ${(vp.y + 84 * visScale).toFixed(1)})`}
+                     style={{ pointerEvents: 'none' }}>
+                    <rect x="-20" y="-11" width="40" height="15" rx="7.5"
+                          fill="var(--text)" opacity="0.72" />
+                    <text x="0" y="0" textAnchor="middle" fontSize="10" fill="var(--bg)"
+                          fontWeight="700">내 펫</text>
+                  </g>
+                  <rect x={vp.x + 62 * visScale} y={vp.y + 110 * visScale}
+                        width={76 * visScale} height={72 * visScale}
+                        fill="transparent" style={{ cursor: 'pointer' }}
+                        onPointerDown={(e) => petTap(e, true)}
+                        onClick={(e) => e.stopPropagation()} />
+                </g>
+              );
+            }
             if (o.kind === 'pet') {
               // foreignObject 가 아니라 중첩 <svg> 로 넣는다. 브라우저 호환과
               // 좌표 처리가 훨씬 단순하고, 실제로 그려보고 확인한 방식이다
@@ -704,17 +812,26 @@ export default function RoomView({
             );
           })()}
 
-          {/* 누른 자리 — 여기로 오라는 표시 */}
+          {/* 누른 자리 — 여기로 오라는 표시. 그 칸을 잠깐 밝히고 파문이 한 번 퍼진다 */}
           {ripple && (() => {
             const c = project(ripple.x + 0.5, ripple.y + 0.5, size);
+            const tile = [[0, -16], [32, 0], [0, 16], [-32, 0]]
+              .map(([dx, dy]) => `${c.x + dx},${c.y + dy}`).join(' ');
             return (
-              <ellipse key={ripple.id} cx={c.x} cy={c.y} rx="10" ry="5"
-                       fill="none" stroke="var(--text-2)" strokeWidth="2"
-                       style={{ pointerEvents: 'none' }}>
-                <animate attributeName="rx" from="8" to="30" dur="0.8s" fill="freeze" />
-                <animate attributeName="ry" from="4" to="15" dur="0.8s" fill="freeze" />
-                <animate attributeName="opacity" from="0.8" to="0" dur="0.8s" fill="freeze" />
-              </ellipse>
+              <g key={ripple.id} style={{ pointerEvents: 'none' }}>
+                <polygon points={tile} fill="var(--text)" opacity="0.18">
+                  <animate attributeName="opacity" values="0.28;0.22;0" dur="1.1s" fill="freeze" />
+                </polygon>
+                <polygon points={tile} fill="none" stroke="var(--text)" strokeWidth="2" opacity="0.6">
+                  <animate attributeName="opacity" values="0.75;0.5;0" dur="1.1s" fill="freeze" />
+                </polygon>
+                <ellipse cx={c.x} cy={c.y} rx="8" ry="4"
+                         fill="none" stroke="var(--text)" strokeWidth="2">
+                  <animate attributeName="rx" from="6" to="34" dur="1.1s" fill="freeze" />
+                  <animate attributeName="ry" from="3" to="17" dur="1.1s" fill="freeze" />
+                  <animate attributeName="opacity" from="0.8" to="0" dur="1.1s" fill="freeze" />
+                </ellipse>
+              </g>
             );
           })()}
 
@@ -731,7 +848,7 @@ export default function RoomView({
         {msg && <div style={st.toast}>{msg}</div>}
       </div>
 
-      {editing && (
+      {editing && !readOnly && (
         <div style={st.editPane}>
           <div style={st.bar}>
             <button onClick={() => rotate(selected)} disabled={!selected} style={st.btn}>돌리기</button>

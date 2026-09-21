@@ -17,6 +17,7 @@ import AttendCalendar from './AttendCalendar';
 import RoomView from './RoomView';
 import ShopView from './ShopView';
 import { BagPanel, ClosetPanel, FamilyPanel, Sheet } from './PetPanels';
+import VisitView from './VisitView';
 import UiIcon from './UiIcon';
 import { loadManifest, grouped, findAsset, SPECIES_LABEL } from '../lib/pet/assets';
 import { supabase } from '../lib/supabase';
@@ -40,7 +41,7 @@ const ACTION_VERB = {
 };
 
 // 하단 바의 '더보기' 가 열어 주는 것들. 이 중 하나가 떠 있으면 더보기는 '켜짐' 이다
-const MORE_PANELS = ['more', 'family', 'attend', 'feed', 'rank'];
+const MORE_PANELS = ['more', 'family', 'attend', 'feed', 'rank', 'visit'];
 
 function timeLabel(iso) {
   const d = new Date(iso), now = new Date();
@@ -86,16 +87,22 @@ export default function PetView({ currentMember, onClose }) {
   // 서랍을 하단 바 위에 띄우려면 바가 실제로 몇 px 인지 알아야 한다.
   // 글꼴 크기·기기에 따라 달라지므로 상수로 박지 않고 잰다.
   const dockRef = useRef(null);
-  const [dockH, setDockH] = useState(63);
+  const sheetRef = useRef(null);
+  const [dockH, setDockH] = useState(84);
   useEffect(() => {
-    const el = dockRef.current;
-    if (!el) return;
-    const measure = () => setDockH(Math.round(el.getBoundingClientRect().height) + 10);
+    const el = dockRef.current, box = sheetRef.current;
+    if (!el || !box) return;
+    // 바 높이만 재면 모자란다. 바 위쪽 여백과 모달 아래쪽 안쪽 여백까지 들어가야
+    // 서랍이 바에 가리지 않는다 — 실제로 '함께했던 친구들' 아래가 잘렸다
+    const measure = () => {
+      const d = el.getBoundingClientRect(), c = box.getBoundingClientRect();
+      setDockH(Math.max(60, Math.round(c.bottom - d.top) + 8));
+    };
     measure();
     const ro = new ResizeObserver(measure);
-    ro.observe(el);
+    ro.observe(el); ro.observe(box);
     return () => ro.disconnect();
-  }, [editing, loading]);
+  }, [editing, loading, panel]);
 
   const refresh = useCallback(async () => {
     const today = todayKST();
@@ -189,7 +196,7 @@ export default function PetView({ currentMember, onClose }) {
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-sheet" onClick={(e) => e.stopPropagation()}
+      <div className="modal-sheet" ref={sheetRef} onClick={(e) => e.stopPropagation()}
            style={{ maxHeight: '94vh', position: 'relative', overflow: 'hidden' }}>
 
         {/* ── 미니홈피 머리 ── */}
@@ -317,6 +324,11 @@ export default function PetView({ currentMember, onClose }) {
                 }} />
             )}
 
+            {panel === 'visit' && (
+              <VisitView currentMember={currentMember} myProfile={profile}
+                onClose={() => setPanel(null)} onChanged={() => refresh()} />
+            )}
+
             {panel === 'family' && (
               <FamilyPanel currentMember={currentMember} profile={profile}
                 onClose={() => setPanel(null)} onReleased={onReleased} bottom={dockH} />
@@ -327,6 +339,7 @@ export default function PetView({ currentMember, onClose }) {
                 <MoreRow icon="icon-task" label="출석 달력" sub={`지금 ${profile.total_streak || 0}일 연속`} onClick={() => setPanel('attend')} />
                 <MoreRow icon="icon-leaf" label="활동 기록" sub="누가 무엇으로 점수를 받았는지" onClick={() => setPanel('feed')} />
                 <MoreRow icon="icon-star" label="랭킹" sub="누적 획득 점수" onClick={() => setPanel('rank')} />
+                <MoreRow icon="icon-room" label="놀러가기" sub="다른 의국원 방에 내 펫과 함께" onClick={() => setPanel('visit')} />
                 <MoreRow icon="icon-friends" label="함께했던 친구들" sub="독립시키기도 여기에 있습니다" onClick={() => setPanel('family')} />
                 <div style={s.miniStats}>
                   <Stat label="누적 획득" value={(profile.total_earned || 0).toLocaleString()} />
