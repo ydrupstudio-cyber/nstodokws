@@ -20,6 +20,8 @@ export default function PetCanvas({
   action = 'idle',  // idle walk wave stretch sit nap wake eat play look inspect celebrate
   size = 220,
   onDone,           // celebrate 처럼 한 번만 재생하는 동작이 끝나면 호출
+  embedded = false, // true 면 <g> 안에 중첩 <svg> 로 그린다 (미니룸 씬 안에 넣을 때)
+  x = 0, y = 0,     // embedded 일 때 씬 좌표계에서의 위치
 }) {
   const hostRef = useRef(null);
   const rafRef = useRef(0);
@@ -46,8 +48,20 @@ export default function PetCanvas({
         setErr('그림을 여는 중 문제가 생겼어요'); return;
       }
       svg.setAttribute('width', size);
-      svg.setAttribute('height', Math.round(size * 0.95));
+      svg.setAttribute('height', size * 0.95);
+      // 인라인 스타일로 한 번 더 못박는다. 전역 `svg { width: ... }` 같은 CSS 가
+      // 속성을 덮어쓰면 방 안에서 펫만 거대해진다 (실제로 겪었다)
+      svg.style.width = size + 'px';
+      svg.style.height = (size * 0.95) + 'px';
       svg.style.display = 'block';
+      if (embedded) {
+        svg.setAttribute('x', x);
+        svg.setAttribute('y', y);
+        svg.style.width = ''; svg.style.height = '';   // 씬 좌표계에서는 속성으로만
+        svg.setAttribute('width', size);
+        svg.setAttribute('height', size * 0.95);
+        svg.style.overflow = 'visible';
+      }
       svg.dataset.stage = String(st);
       growth(svg, asset, st);
       host.replaceChildren(svg);
@@ -74,8 +88,12 @@ export default function PetCanvas({
     };
     // onDone 은 의도적으로 뺀다 — 부모가 매 렌더 새 함수를 주면 애니메이션이 끊긴다
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [asset?.id, stage, action, size]);
+  }, [asset?.id, stage, action, size, embedded, x, y]);
 
+  if (embedded) {
+    // 씬 SVG 안에서는 <g> 가 호스트다. 중첩 <svg> 가 들어간다
+    return <g ref={hostRef} aria-hidden="true" />;
+  }
   if (err) {
     return <div style={{ width: size, height: size * 0.95, display: 'grid', placeItems: 'center',
                          fontSize: 12, color: 'var(--text-3)' }}>{err}</div>;

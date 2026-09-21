@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { YEAR_LEVELS } from '../lib/config';
 import PetCanvas from './PetCanvas';
 import AttendCalendar from './AttendCalendar';
+import RoomView from './RoomView';
 import { grouped, findAsset, petAssets, SPECIES_LABEL, STAGE_LABEL, BOND_LABEL } from '../lib/pet/assets';
 import {
   loadProfile, loadFeed, loadRanking, adopt, feed, loadFoods, loadFeedState,
@@ -50,6 +51,7 @@ export default function PetView({ currentMember, onClose }) {
   const [rank, setRank] = useState([]);
   const [loading, setLoading] = useState(true);
   const [action, setAction] = useState('idle');
+  const [showRoom, setShowRoom] = useState(false);
 
   // 먹이
   const [foods, setFoods] = useState([]);
@@ -153,6 +155,11 @@ export default function PetView({ currentMember, onClose }) {
           ))}
         </div>
 
+        {showRoom && (
+          <RoomView currentMember={currentMember} profile={profile}
+                    onClose={() => { setShowRoom(false); refresh(); }} />
+        )}
+
         {loading ? <div style={styles.empty}>불러오는 중…</div> : <>
 
           {/* ───────── 입양 ───────── */}
@@ -201,6 +208,10 @@ export default function PetView({ currentMember, onClose }) {
                 <span style={styles.badge}>{STAGE_LABEL[si]}</span>
                 <span style={styles.bondBadge}>{BOND_LABEL[bi]}</span>
               </div>
+
+              <button onClick={() => setShowRoom(true)} style={styles.roomBtn}>
+                🏠 방에 가보기
+              </button>
 
               <div style={styles.progWrap}>
                 <div style={styles.progTrack}>
@@ -413,6 +424,9 @@ const styles = {
   badge: { fontSize: 12, padding: '3px 9px', borderRadius: 20, background: 'var(--surface-2)', color: 'var(--text-2)' },
   bondBadge: { fontSize: 12, padding: '3px 9px', borderRadius: 20, background: 'var(--surface-3)', color: 'var(--text-2)' },
 
+  roomBtn: { width: '100%', padding: 12, borderRadius: 10, fontSize: 14, fontWeight: 600,
+             border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text)',
+             marginBottom: 14 },
   progWrap: { marginBottom: 18 },
   progTrack: { height: 8, background: 'var(--surface-2)', borderRadius: 6, overflow: 'hidden' },
   progFill: { height: '100%', background: 'var(--text-2)', borderRadius: 6, transition: 'width .4s' },

@@ -19,9 +19,13 @@ public/game/            에셋 339개 (SVG). manifest.json 이 모든 경로의 
 lib/pet/rig.js          부위별 SVG 조작 (디자인 킷 원본, 수정 금지)
 lib/pet/motion.js       12가지 동작 (디자인 킷 원본, 수정 금지)
 lib/pet/assets.js       manifest 로더 + SVG 캐시
+lib/pet/room-engine.js  격자·충돌·경로 (디자인 킷 원본, 수정 금지)
+lib/pet/room.js         씬 좌표·벽·깊이 정렬 보조
 lib/game.js             서버 RPC 래퍼. 점수 계산을 여기서 하지 마라
 app/PetCanvas.js        rig+motion 을 React 에 얹는 껍데기
-app/PetView.js          펫 · 먹이 · 활동기록 · 랭킹 화면
+app/PetView.js          펫 · 먹이 · 출석 · 활동기록 · 랭킹 화면
+app/AttendCalendar.js   출석 달력 (도장)
+app/RoomView.js         미니룸 — 자율 행동, 가구 배치
 ```
 
 ## 설계 원칙
@@ -41,9 +45,29 @@ app/PetView.js          펫 · 먹이 · 활동기록 · 랭킹 화면
 **에셋 경로는 manifest 로만 찾는다.** 파일명 규칙을 직접 조립하지 마라 —
 어른 단계만 `growth/` 가 아니라 베이스 파일을 쓰는 등 예외가 있다.
 
+## 미니룸 좌표 규약
+
+킷 인계서 기준이다. **바꾸지 마라.** 가구·펫 위치가 통째로 어긋난다.
+
+```
+screenX = N*32 + (gx-gy)*32
+screenY = 112 + (gx+gy)*16
+가구 SVG  viewBox 0 0 256 224, 바닥 기준점 (128,164)
+펫  SVG  viewBox 0 0 200 190, 바닥 기준선 y=176
+```
+
+정적 에셋(가구·바닥·벽지)은 `<image href>` 로 그린다. 펫만 인라인하는 이유는
+부위별로 움직여야 하기 때문이다. 씬 안에서는 `foreignObject` 가 아니라
+**중첩 `<svg>`** 를 쓴다 (PetCanvas 의 `embedded` 모드).
+
+⚠️ 전역 `svg { width: ... }` 같은 CSS 를 추가하지 마라. 중첩된 펫 svg 의
+width 속성을 덮어써서 방 안에서 펫만 거대해진다. 실제로 겪은 사고다.
+
 ## 아직 안 만든 것
 
-- 미니룸 (가구 배치·방 확장) — 에셋과 `room-engine.js` 는 준비돼 있음
+- 가구 상점 (지금은 저장된 가구만 옮길 수 있다. 구매·인벤토리 없음)
+- 벽지 구매 UI (`game_buy` 는 준비돼 있음)
+- 방 확장 UI (`game_buy` 의 room-1 / room-2)
 - 뽑기 상자 로직
 - 칭찬 보내기 / 친구 방 구경
 - 의국 전체 목표 판정
