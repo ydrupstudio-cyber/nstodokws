@@ -122,15 +122,21 @@ export function WallpaperPreview({ coll, item, owned, roomSize = 8, onClose, foo
       <div style={s.roomBox}>
         <svg viewBox={vb.join(' ')} style={{ display: 'block', width: '100%', height: 'auto' }}
              role="img" aria-label={coll.name + ' 미리보기'}>
-          <defs>
-            <pattern id={pid} width="120" height="60" patternUnits="userSpaceOnUse">
-              <image href={ASSET_BASE + coll.patternSource} width="120" height="60" />
-            </pattern>
-          </defs>
+          {coll.patternSource && (
+            <defs>
+              <pattern id={pid} width="120" height="60" patternUnits="userSpaceOnUse">
+                <image href={ASSET_BASE + coll.patternSource} width="120" height="60" />
+              </pattern>
+            </defs>
+          )}
           <polygon points={walls.left} fill={coll.side} />
           <polygon points={walls.right} fill={coll.base} />
-          <polygon points={walls.left} fill={`url(#${pid})`} />
-          <polygon points={walls.right} fill={`url(#${pid})`} />
+          {/* 무늬 없는 벽지(기본 벽)는 단색 그대로 둔다 — 없는 파일을 깔면
+              깨진 이미지가 벽 전체에 타일로 찍힌다 (실제로 그랬다) */}
+          {coll.patternSource && <>
+            <polygon points={walls.left} fill={`url(#${pid})`} />
+            <polygon points={walls.right} fill={`url(#${pid})`} />
+          </>}
           {coll.baseColor && (() => {
             const bb = wallBaseboard(roomSize, coll.baseboardHeight || 20);
             return (<>
@@ -139,7 +145,7 @@ export function WallpaperPreview({ coll, item, owned, roomSize = 8, onClose, foo
             </>);
           })()}
           <polygon points={walls.left} fill="#000" opacity="0.10" />
-          <polygon points={corners.map((p) => `${p.x},${p.y}`).join(' ')} fill="var(--surface-2)" />
+          <polygon points={corners.map((p) => `${p.x},${p.y}`).join(' ')} fill="#EFE7DA" />
           {tiles}
         </svg>
       </div>

@@ -645,8 +645,14 @@ export default function RoomView({
   const walls = wallShapes(size, wallH);
   const corners = floorCorners(size);
   const coll = manifest.wallpaperCollections.find((c) => c.id === room.wallpaper);
-  const baseCol = coll?.base || 'var(--surface-2)';
-  const sideCol = coll?.side || 'var(--surface-3)';
+  /*
+    방은 UI 테마를 따라가면 안 된다. 어두운 테마에서 벽이 --surface-2 로
+    칠해지면 벽이 배경에 묻혀 바닥만 떠 있는 것처럼 보인다 (실제로 그랬다).
+    밤에 불 켜진 방을 들여다보는 그림이라, 방 안쪽은 늘 밝게 둔다.
+    벽지를 못 찾을 때 쓰는 값도 고정 색이다.
+  */
+  const baseCol = coll?.base || '#F2EDE3';
+  const sideCol = coll?.side || '#E3DCCE';
   const floorAsset = catalog['floor-' + room.floor];
   // 드래그 중인 가구는 제자리에서 빼고 유령으로 따로 그린다
   const shown = drag?.cell ? items.filter((i) => i.uid !== drag.uid) : items;
@@ -715,13 +721,17 @@ export default function RoomView({
                   무늬가 뭉개지고, 거기에 opacity 까지 걸면 단색 벽처럼 보인다 (그랬다).
                   원본은 자기 배경색을 안에 갖고 있으므로 불투명하게 그대로 깐다 —
                   아래 base 색은 도안을 못 불러왔을 때를 위한 바탕이다. */}
-              <defs>
-                <pattern id="wp" width="120" height="60" patternUnits="userSpaceOnUse">
-                  <image href={ASSET_BASE + coll.patternSource} width="120" height="60" />
-                </pattern>
-              </defs>
-              <polygon points={walls.left} fill="url(#wp)" />
-              <polygon points={walls.right} fill="url(#wp)" />
+              {coll.patternSource && (
+                <>
+                  <defs>
+                    <pattern id="wp" width="120" height="60" patternUnits="userSpaceOnUse">
+                      <image href={ASSET_BASE + coll.patternSource} width="120" height="60" />
+                    </pattern>
+                  </defs>
+                  <polygon points={walls.left} fill="url(#wp)" />
+                  <polygon points={walls.right} fill="url(#wp)" />
+                </>
+              )}
               {/* 걸레받이. 3차 벽지부터 색을 들고 온다 */}
               {coll.baseColor && (() => {
                 const bb = wallBaseboard(size, coll.baseboardHeight || 20);
@@ -738,7 +748,7 @@ export default function RoomView({
             </>
           )}
           {/* 바닥 */}
-          <polygon points={corners.map((p) => `${p.x},${p.y}`).join(' ')} fill="var(--surface-2)" />
+          <polygon points={corners.map((p) => `${p.x},${p.y}`).join(' ')} fill="#EFE7DA" />
           {tiles}
 
           {/* 편집 중 선택된 가구의 자리 안내 */}
