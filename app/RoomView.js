@@ -25,6 +25,7 @@ import {
 } from '../lib/pet/room';
 import { extraActions } from '../lib/pet/actions';
 import { Controller, RoomObjects, toWorldItems, POSE_ACTION } from '../lib/pet/life';
+import { useCanvasMirror } from './RoomMirror';
 import { supabase } from '../lib/supabase';
 import { stageOf, josa } from '../lib/game';
 
@@ -107,6 +108,7 @@ export default function RoomView({
   const [inv, setInv] = useState({});               // asset_id -> 보유 수량
 
   const svgRef = useRef(null);
+  const canvasRef = useRef(null);
   const rafRef = useRef(0);
   const guestRef = useRef(0);   // guest 동작이 끝나는 시각 (performance.now 기준)
   const petTapRef = useRef(0);  // 쓰다듬기 연타 방지
@@ -637,6 +639,17 @@ export default function RoomView({
 
   useEffect(() => { if (!msg) return; const t = setTimeout(() => setMsg(null), 2800); return () => clearTimeout(t); }, [msg]);
 
+  /*
+    배경(벽·바닥·가구)이 바뀌었는지 알려주는 열쇠.
+    이게 그대로면 캔버스가 구워 둔 배경을 다시 쓴다 — 매 프레임 굽지 않는다.
+  */
+  const bgKey = [room?.wallpaper, room?.floor, size, editing ? 'e' : '',
+                 selected || '', drag?.uid || '', drag?.cell?.x, drag?.cell?.y,
+                 items.map((i) => `${i.uid}@${i.x},${i.y},${i.rotation || 0}`).join('|'),
+                 Object.keys(propSrc).length].join('~');
+
+  useCanvasMirror(svgRef, canvasRef, bgKey);
+
   if (err) return <div style={st.empty}>{err}</div>;
   if (!manifest || !room) return <div style={st.empty}>불러오는 중…</div>;
 
@@ -704,11 +717,19 @@ export default function RoomView({
     return c.map((p) => `${p.x},${p.y}`).join(' ');
   }
 
+
   return (
     <>
       <div style={st.stageWrap}>
+        {/*
+          방은 캔버스로 보여준다. SVG 는 자리를 잡고 클릭을 받기 위해 그대로 두되
+          눈에는 안 보이게 한다 — 삼성 인터넷의 '웹페이지 어둡게' 가 SVG 색은
+          깎고 캔버스 픽셀은 못 건드리기 때문이다 (폰에서 직접 재서 확인했다).
+        */}
+        <canvas ref={canvasRef} aria-hidden="true" style={st.mirror} />
         <svg ref={svgRef} viewBox={vb.join(' ')}
-             style={{ ...st.svg, touchAction: editing ? 'none' : 'manipulation' }}
+             style={{ ...st.svg, opacity: 0,
+                      touchAction: editing ? 'none' : 'manipulation' }}
              onClick={onSurface}
              onPointerMove={onMove} onPointerUp={endDrag} onPointerCancel={endDrag}
              role="img" aria-label="펫의 방">
@@ -770,7 +791,7 @@ export default function RoomView({
           {order.map((o, i) => {
             if (o.kind === 'visitor') {
               return (
-                <g key="visitor">
+                <g key="visitor" data-live="visitor">
                   <g transform={visFacing < 0
                       ? `translate(${(vp.x * 2 + visW).toFixed(2)} 0) scale(-1 1)` : undefined}>
                     <PetCanvas asset={guestPet.asset}
@@ -813,7 +834,7 @@ export default function RoomView({
               // foreignObject 가 아니라 중첩 <svg> 로 넣는다. 브라우저 호환과
               // 좌표 처리가 훨씬 단순하고, 실제로 그려보고 확인한 방식이다
               return (
-                <g key="pet">
+                <g key="pet" data-live="pet">
                   {clipId && (
                     <defs>
                       <clipPath id={clipId}>
@@ -886,7 +907,7 @@ export default function RoomView({
             // 떠오르는 높이(RISE)까지 미리 빼 둬야 올라가다 잘리지 않는다
             const y = Math.max(vb[1] + 4 + RISE, bodyTop - FX - 4);
             return (
-              <g key={mark.id} style={{ pointerEvents: 'none' }}>
+              <g key={mark.id} data-live="fx" style={{ pointerEvents: 'none' }}>
                 <image href={ASSET_BASE + FX_SRC[mark.fx]}
                        x={pp.x + petW / 2 - FX / 2} y={y} width={FX} height={FX}>
                   <animateTransform attributeName="transform" type="translate"
@@ -912,7 +933,7 @@ export default function RoomView({
             const dia = (k) => [[0, -16 * k], [32 * k, 0], [0, 16 * k], [-32 * k, 0]]
               .map(([dx, dy]) => `${c.x + dx},${c.y + dy}`).join(' ');
             return (
-              <g key={ripple.id} style={{ pointerEvents: 'none' }}>
+              <g key={ripple.id} data-live="mark" style={{ pointerEvents: 'none' }}>
                 <polygon points={dia(1)} fill="#FFF0D5" opacity="0.34" stroke="#443C4E"
                          strokeWidth="3" strokeOpacity="0.5" strokeLinejoin="round">
                   <animate attributeName="opacity" values="0.42;0.26;0.42"
@@ -996,6 +1017,9 @@ export default function RoomView({
 const st = {
   empty: { textAlign: 'center', padding: '50px 0', color: 'var(--text-3)' },
   stageWrap: { position: 'relative', borderRadius: 12, overflow: 'hidden', background: 'var(--surface-2)' },
+  // 캔버스가 SVG 자리를 그대로 덮는다. 클릭은 아래 SVG 가 받는다
+  mirror: { position: 'absolute', inset: 0, width: '100%', height: '100%',
+            display: 'block', pointerEvents: 'none' },
   svg: { display: 'block', width: '100%', height: 'auto' },
   toast: { position: 'absolute', left: 10, bottom: 10, padding: '7px 11px', borderRadius: 18,
            background: 'var(--text)', color: 'var(--bg)', fontSize: 12, maxWidth: 'calc(100% - 20px)' },
