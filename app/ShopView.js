@@ -10,7 +10,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { supabase } from '../lib/supabase';
 import { ASSET_BASE } from '../lib/pet/room';
-import { WEAR_SLOTS, josa } from '../lib/game';
+import { VISIBLE_WEAR_SLOTS, josa } from '../lib/game';
 import { FurniturePreview, WearPreview, WallpaperPreview } from './ShopPreview';
 
 const KIND_LABEL = {
@@ -196,7 +196,7 @@ export default function ShopView({ currentMember, manifest, room, balance,
               한 자리에 하나씩 입힙니다. 산 것은 <b>옷장</b> 에 들어가요.
               독립시켜도 옷은 남습니다 — 다음 친구가 물려받습니다.
             </p>
-            {WEAR_SLOTS.filter((w) => bySlot[w.slot]?.length).map((w) => (
+            {VISIBLE_WEAR_SLOTS.filter((w) => bySlot[w.slot]?.length).map((w) => (
               <div key={w.slot} style={{ marginBottom: 18 }}>
                 <div style={s.sectionHead}>{w.label}</div>
                 <div style={s.grid}>

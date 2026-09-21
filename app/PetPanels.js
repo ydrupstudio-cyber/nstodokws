@@ -14,7 +14,7 @@ import PetCanvas from './PetCanvas';
 import { findAsset, SPECIES_LABEL } from '../lib/pet/assets';
 import {
   feed, equip, release, loadPetHistory, josa, livedSpan, stageOf,
-  sellItem, loadRefundable, WEAR_SLOTS, STAGE_LABELS,
+  sellItem, loadRefundable, WEAR_SLOTS, HIDDEN_SLOTS, STAGE_LABELS,
 } from '../lib/game';
 
 /**
@@ -231,8 +231,15 @@ export function ClosetPanel({ currentMember, inventory, catalog, shopItems, equi
   const wearableHere = (item) =>
     !Array.isArray(item.available) || item.available.includes(species);
 
-  const slotsWithItems = WEAR_SLOTS.filter((w) => owned.some((o) => o.slot === w.slot));
-  const shown = cat === 'all' ? owned : owned.filter((o) => o.slot === cat);
+  /**
+   * 접어 둔 자리(귀걸이·옷·장갑·신발)는 옷장에서 뺀다. 자료는 그대로 있고
+   * 화면에만 안 보인다. 다만 지금 입고 있는 것은 남겨 둔다 — 안 그러면
+   * 벗을 방법이 없어진다.
+   */
+  const visible = owned.filter(
+    (o) => !HIDDEN_SLOTS.has(o.slot) || equipped?.[o.slot] === o.id);
+  const slotsWithItems = WEAR_SLOTS.filter((w) => visible.some((o) => o.slot === w.slot));
+  const shown = cat === 'all' ? visible : visible.filter((o) => o.slot === cat);
 
   async function toggle(item) {
     if (busy) return;
