@@ -1,0 +1,391 @@
+{
+  "version": 1,
+  "profiles": {
+    "fn-bed-single-oak": {
+      "mode": "rest",
+      "height": 36,
+      "mount": true,
+      "entry": "any",
+      "enterSeconds": 0.95,
+      "exitSeconds": 0.85,
+      "useSeconds": 5,
+      "autoSeconds": 18,
+      "holdOnClick": true,
+      "automatic": true,
+      "weight": 1,
+      "target": [
+        0.5,
+        0.6
+      ]
+    },
+    "fn-bed-bunk-mint": {
+      "mode": "rest",
+      "height": 87,
+      "mount": true,
+      "entry": "right",
+      "enterSeconds": 1.8,
+      "exitSeconds": 1.5,
+      "useSeconds": 5,
+      "autoSeconds": 18,
+      "holdOnClick": true,
+      "automatic": true,
+      "weight": 1,
+      "target": [
+        0.5,
+        0.6
+      ],
+      "entryStyle": "climb",
+      "entryIndex": 2
+    },
+    "fn-bed-duty-fold": {
+      "mode": "rest",
+      "height": 27,
+      "mount": true,
+      "entry": "any",
+      "enterSeconds": 0.95,
+      "exitSeconds": 0.85,
+      "useSeconds": 5,
+      "autoSeconds": 18,
+      "holdOnClick": true,
+      "automatic": true,
+      "weight": 1,
+      "target": [
+        0.5,
+        0.6
+      ]
+    },
+    "fn-bed-floor-quilt": {
+      "mode": "rest",
+      "height": 9,
+      "mount": true,
+      "entry": "any",
+      "enterSeconds": 0.95,
+      "exitSeconds": 0.85,
+      "useSeconds": 5,
+      "autoSeconds": 18,
+      "holdOnClick": true,
+      "automatic": true,
+      "weight": 1,
+      "target": [
+        0.5,
+        0.6
+      ]
+    },
+    "fn-bed-canopy-linen": {
+      "mode": "rest",
+      "height": 37,
+      "mount": true,
+      "entry": "any",
+      "enterSeconds": 0.95,
+      "exitSeconds": 0.85,
+      "useSeconds": 5,
+      "autoSeconds": 18,
+      "holdOnClick": true,
+      "automatic": true,
+      "weight": 1,
+      "target": [
+        0.5,
+        0.6
+      ]
+    },
+    "fn-bed-round-cloud": {
+      "mode": "rest",
+      "height": 18,
+      "mount": true,
+      "entry": "any",
+      "enterSeconds": 0.95,
+      "exitSeconds": 0.85,
+      "useSeconds": 5,
+      "autoSeconds": 18,
+      "holdOnClick": true,
+      "automatic": true,
+      "weight": 1,
+      "target": [
+        0.5,
+        0.6
+      ]
+    },
+    "fn-hideout-felt": {
+      "mode": "hide",
+      "height": 10,
+      "mount": true,
+      "entry": "front",
+      "enterSeconds": 0.95,
+      "exitSeconds": 0.85,
+      "useSeconds": 5,
+      "autoSeconds": 18,
+      "holdOnClick": true,
+      "automatic": true,
+      "weight": 1.4,
+      "target": [
+        0.5,
+        0.55
+      ],
+      "peekTarget": [
+        0.5,
+        0.87
+      ],
+      "peekHeight": 0,
+      "occlusion": "fn-hideout-felt"
+    },
+    "fn-window-perch": {
+      "mode": "sit",
+      "height": 38,
+      "mount": true,
+      "entry": "any",
+      "enterSeconds": 0.95,
+      "exitSeconds": 0.85,
+      "useSeconds": 5,
+      "autoSeconds": 18,
+      "holdOnClick": true,
+      "automatic": true,
+      "weight": 1,
+      "target": [
+        0.5,
+        0.65
+      ]
+    },
+    "fn-sofa-long-knit": {
+      "mode": "sit",
+      "height": 33,
+      "mount": true,
+      "entry": "any",
+      "enterSeconds": 0.95,
+      "exitSeconds": 0.85,
+      "useSeconds": 5,
+      "autoSeconds": 18,
+      "holdOnClick": true,
+      "automatic": true,
+      "weight": 1,
+      "target": [
+        0.5,
+        0.65
+      ]
+    },
+    "fn-sofa-corner-cloud": {
+      "mode": "sit",
+      "height": 36,
+      "mount": true,
+      "entry": "any",
+      "enterSeconds": 0.95,
+      "exitSeconds": 0.85,
+      "useSeconds": 5,
+      "autoSeconds": 18,
+      "holdOnClick": true,
+      "automatic": true,
+      "weight": 1,
+      "target": [
+        0.5,
+        0.65
+      ]
+    },
+    "fn-budget-starter-stool": {
+      "mode": "sit",
+      "height": 34,
+      "mount": true,
+      "entry": "any",
+      "enterSeconds": 0.95,
+      "exitSeconds": 0.85,
+      "useSeconds": 5,
+      "autoSeconds": 18,
+      "holdOnClick": true,
+      "automatic": true,
+      "weight": 1,
+      "target": [
+        0.5,
+        0.65
+      ]
+    },
+    "fn-toy-orbit-ball": {
+      "mode": "ball",
+      "height": 0,
+      "mount": false,
+      "entry": "any",
+      "enterSeconds": 0.95,
+      "exitSeconds": 0.85,
+      "useSeconds": 5,
+      "autoSeconds": 5,
+      "holdOnClick": false,
+      "automatic": true,
+      "weight": 1,
+      "target": [
+        0.5,
+        0.55
+      ],
+      "fx": "paw-pop",
+      "preferredEntry": "right"
+    },
+    "fn-toy-feather-dock": {
+      "mode": "feather",
+      "height": 0,
+      "mount": false,
+      "entry": "any",
+      "enterSeconds": 0.95,
+      "exitSeconds": 0.85,
+      "useSeconds": 5,
+      "autoSeconds": 5,
+      "holdOnClick": false,
+      "automatic": true,
+      "weight": 1,
+      "target": [
+        0.5,
+        0.55
+      ],
+      "fx": "paw-pop",
+      "preferredEntry": "right"
+    },
+    "fn-toy-treat-puzzle": {
+      "mode": "puzzle",
+      "height": 0,
+      "mount": false,
+      "entry": "any",
+      "enterSeconds": 0.95,
+      "exitSeconds": 0.85,
+      "useSeconds": 5,
+      "autoSeconds": 5,
+      "holdOnClick": false,
+      "automatic": true,
+      "weight": 1,
+      "target": [
+        0.5,
+        0.55
+      ],
+      "fx": "paw-pop",
+      "preferredEntry": "right"
+    },
+    "fn-toy-sniff-meadow": {
+      "mode": "sniff",
+      "height": 3,
+      "mount": true,
+      "entry": "any",
+      "enterSeconds": 0.95,
+      "exitSeconds": 0.85,
+      "useSeconds": 5,
+      "autoSeconds": 5,
+      "holdOnClick": false,
+      "automatic": true,
+      "weight": 1,
+      "target": [
+        0.5,
+        0.55
+      ],
+      "fx": "paw-pop"
+    },
+    "fn-decor-moon-nightlight": {
+      "mode": "light",
+      "height": 0,
+      "mount": false,
+      "entry": "any",
+      "enterSeconds": 0.95,
+      "exitSeconds": 0.85,
+      "useSeconds": 5,
+      "autoSeconds": 5,
+      "holdOnClick": false,
+      "automatic": true,
+      "weight": 1,
+      "target": [
+        0.5,
+        0.55
+      ],
+      "fx": "soft-heart",
+      "preferredEntry": "right"
+    },
+    "fn-decor-flower-musicbox": {
+      "mode": "music",
+      "height": 0,
+      "mount": false,
+      "entry": "any",
+      "enterSeconds": 0.95,
+      "exitSeconds": 0.85,
+      "useSeconds": 5,
+      "autoSeconds": 5,
+      "holdOnClick": false,
+      "automatic": true,
+      "weight": 1,
+      "target": [
+        0.5,
+        0.55
+      ],
+      "fx": "soft-notes",
+      "preferredEntry": "right"
+    },
+    "win-square": {
+      "mode": "look",
+      "height": 0,
+      "mount": false,
+      "entry": "any",
+      "enterSeconds": 0.95,
+      "exitSeconds": 0.85,
+      "useSeconds": 5,
+      "autoSeconds": 5,
+      "holdOnClick": false,
+      "automatic": true,
+      "weight": 1
+    },
+    "win-panorama": {
+      "mode": "look",
+      "height": 0,
+      "mount": false,
+      "entry": "any",
+      "enterSeconds": 0.95,
+      "exitSeconds": 0.85,
+      "useSeconds": 5,
+      "autoSeconds": 5,
+      "holdOnClick": false,
+      "automatic": true,
+      "weight": 1
+    },
+    "win-arch": {
+      "mode": "look",
+      "height": 0,
+      "mount": false,
+      "entry": "any",
+      "enterSeconds": 0.95,
+      "exitSeconds": 0.85,
+      "useSeconds": 5,
+      "autoSeconds": 5,
+      "holdOnClick": false,
+      "automatic": true,
+      "weight": 1
+    },
+    "win-round": {
+      "mode": "look",
+      "height": 0,
+      "mount": false,
+      "entry": "any",
+      "enterSeconds": 0.95,
+      "exitSeconds": 0.85,
+      "useSeconds": 5,
+      "autoSeconds": 5,
+      "holdOnClick": false,
+      "automatic": true,
+      "weight": 1
+    },
+    "win-blind": {
+      "mode": "look",
+      "height": 0,
+      "mount": false,
+      "entry": "any",
+      "enterSeconds": 0.95,
+      "exitSeconds": 0.85,
+      "useSeconds": 5,
+      "autoSeconds": 5,
+      "holdOnClick": false,
+      "automatic": true,
+      "weight": 1
+    },
+    "win-curtain": {
+      "mode": "look",
+      "height": 0,
+      "mount": false,
+      "entry": "any",
+      "enterSeconds": 0.95,
+      "exitSeconds": 0.85,
+      "useSeconds": 5,
+      "autoSeconds": 5,
+      "holdOnClick": false,
+      "automatic": true,
+      "weight": 1
+    }
+  }
+}

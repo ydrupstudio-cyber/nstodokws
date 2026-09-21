@@ -10,7 +10,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { supabase } from '../lib/supabase';
 import { ASSET_BASE } from '../lib/pet/room';
-import { VISIBLE_WEAR_SLOTS, josa } from '../lib/game';
+import { WEAR_SLOTS, hiddenWearables, josa } from '../lib/game';
 import { FurniturePreview, WearPreview, WallpaperPreview } from './ShopPreview';
 
 const KIND_LABEL = {
@@ -96,9 +96,11 @@ export default function ShopView({ currentMember, manifest, room, balance,
   // (착용 아이템은 에셋 카탈로그가 아니라 별도 목록에 있다)
   const wearMeta = {};
   (manifest.wearables || []).forEach((w) => { wearMeta[w.id] = w; });
+  // 이 친구가 못 입는 것은 아예 안 보여준다 (지금은 뇌의 일반 상의 10종)
+  const noFit = hiddenWearables(profile?.breed);
   const wearables = shop.filter((x) => x.kind === 'wearable')
     .map((x) => ({ ...x, meta: wearMeta[x.item_id] }))
-    .filter((x) => x.meta);
+    .filter((x) => x.meta && !noFit.has(x.item_id));
   const bySlot = {};
   wearables.forEach((x) => { (bySlot[x.meta.slot] = bySlot[x.meta.slot] || []).push(x); });
   Object.values(bySlot).forEach((list) => list.sort((a, b) => a.price - b.price));
@@ -196,7 +198,7 @@ export default function ShopView({ currentMember, manifest, room, balance,
               한 자리에 하나씩 입힙니다. 산 것은 <b>옷장</b> 에 들어가요.
               독립시켜도 옷은 남습니다 — 다음 친구가 물려받습니다.
             </p>
-            {VISIBLE_WEAR_SLOTS.filter((w) => bySlot[w.slot]?.length).map((w) => (
+            {WEAR_SLOTS.filter((w) => bySlot[w.slot]?.length).map((w) => (
               <div key={w.slot} style={{ marginBottom: 18 }}>
                 <div style={s.sectionHead}>{w.label}</div>
                 <div style={s.grid}>

@@ -18,8 +18,9 @@ import { useEffect, useRef, useState } from 'react';
 import { svgNode, growth } from '../lib/pet/rig';
 import { actionPose, animateAction } from '../lib/pet/motion';
 import { equip, syncEquipment, expressionExtra } from '../lib/pet/equipment';
+import { equipWithFit } from '../lib/pet/wear-fit';
 import { extraActions, extraPose, animateExtra, resetExtra } from '../lib/pet/actions';
-import { loadSvgSource, loadManifest, loadMotionAnchors } from '../lib/pet/assets';
+import { loadSvgSource, loadManifest, loadMotionAnchors, loadWearFitRules } from '../lib/pet/assets';
 
 const EXTRA = new Set(extraActions.map((a) => a.id));
 const ONE_SHOT = new Set(['celebrate', 'wave', 'stretch', 'wake', 'perk', 'highfive', 'show', 'sulk']);
@@ -113,15 +114,26 @@ export default function PetCanvas({
       svg.dataset.stage = String(st);
       growth(svg, asset, st);
 
-      // 착용. 걷기·휴식 원본에는 부착점이 없어서 사이드카 좌표를 쓴다
+      // 착용. 걷기·휴식 원본에는 부착점이 없어서 사이드카 좌표를 쓴다.
+      // 그 위에 그림별 보정(equipWithFit)을 얹는다 — 목도리가 얼굴을 덮던 문제.
+      // 보정은 '지금 그리고 있는 그림의 정확한 경로'를 기준으로 하므로
+      // sources.path 를 그대로 넘긴다. 기본/걷기/휴식이 각각 다른 값이다.
       if (sources.entries.length) {
-        let sidecar = null;
+        let sidecar = null, rules = null;
         try {
           const all = await loadMotionAnchors();
           sidecar = all?.[sources.path] || null;
         } catch { /* 사이드카가 없으면 원본의 앵커를 쓴다 */ }
+        try { rules = await loadWearFitRules(); } catch { /* 규칙이 없으면 예전대로 */ }
         if (cancelled) return;
-        try { equip(svg, sources.entries, sidecar); } catch { /* 한 아이템이 안 붙어도 펫은 나와야 한다 */ }
+        try {
+          if (rules) equipWithFit(svg, sources.entries, {
+            rules, source: sources.path, breed: asset.breed, sidecar, hideBrainBody: true,
+          });
+          else equip(svg, sources.entries, sidecar);
+        } catch { /* 한 아이템이 안 붙어도 펫은 나와야 한다 */
+          try { equip(svg, sources.entries, sidecar); } catch {}
+        }
       }
 
       host.replaceChildren(svg);

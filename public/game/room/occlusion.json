@@ -1,0 +1,24 @@
+{
+  "fn-hideout-felt": [
+    {
+      "degrees": 0,
+      "source": "room/occlusion/fn-hideout-felt-front.svg",
+      "doorway": "M 90.88 155.12 L 90.88 137.12 L 94.72 124.04 L 104.32 122.84 L 113.92 133.64 L 117.76 150.56 L 117.76 168.56 Z"
+    },
+    {
+      "degrees": 90,
+      "source": "room/occlusion/directions/fn-hideout-felt-front-90.svg",
+      "doorway": null
+    },
+    {
+      "degrees": 180,
+      "source": "room/occlusion/directions/fn-hideout-felt-front-180.svg",
+      "doorway": null
+    },
+    {
+      "degrees": 270,
+      "source": "room/occlusion/directions/fn-hideout-felt-front-270.svg",
+      "doorway": "M 138.24 168.56 L 138.24 150.56 L 142.08 133.64 L 151.68 122.84 L 161.28 124.04 L 165.12 137.12 L 165.12 155.12 Z"
+    }
+  ]
+}

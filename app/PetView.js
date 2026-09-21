@@ -315,7 +315,7 @@ export default function PetView({ currentMember, onClose }) {
             {panel === 'closet' && (
               <ClosetPanel currentMember={currentMember} inventory={inventory} catalog={catalog}
                 shopItems={shopItems} equipped={profile.equipped || {}}
-                wearables={manifest?.wearables || []} species={profile.species}
+                wearables={manifest?.wearables || []} species={profile.species} breed={profile.breed}
                 onClose={() => setPanel(null)} bottom={dockH} onSold={() => refresh()}
                 onChanged={() => {
                   // 2차 킷의 'show' 는 갈아입은 걸 자랑하는 동작이다

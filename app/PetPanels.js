@@ -14,7 +14,7 @@ import PetCanvas from './PetCanvas';
 import { findAsset, SPECIES_LABEL } from '../lib/pet/assets';
 import {
   feed, equip, release, loadPetHistory, josa, livedSpan, stageOf,
-  sellItem, loadRefundable, WEAR_SLOTS, HIDDEN_SLOTS, STAGE_LABELS,
+  sellItem, loadRefundable, WEAR_SLOTS, hiddenWearables, STAGE_LABELS,
 } from '../lib/game';
 
 /**
@@ -192,7 +192,7 @@ export function BagPanel({ currentMember, inventory, foods, fedToday, discovered
 // 옷장 — 전체 / 자리별
 // ============================================================
 export function ClosetPanel({ currentMember, inventory, catalog, shopItems, equipped,
-                              wearables = [], species, onClose, onChanged, onSold, bottom }) {
+                              wearables = [], species, breed, onClose, onChanged, onSold, bottom }) {
   const [cat, setCat] = useState('all');
   const [busy, setBusy] = useState(null);
   const [msg, setMsg] = useState(null);
@@ -232,12 +232,11 @@ export function ClosetPanel({ currentMember, inventory, catalog, shopItems, equi
     !Array.isArray(item.available) || item.available.includes(species);
 
   /**
-   * 접어 둔 자리(귀걸이·옷·장갑·신발)는 옷장에서 뺀다. 자료는 그대로 있고
-   * 화면에만 안 보인다. 다만 지금 입고 있는 것은 남겨 둔다 — 안 그러면
-   * 벗을 방법이 없어진다.
+   * 이 친구가 못 입는 것은 옷장에서 뺀다 (지금은 뇌의 일반 상의 10종).
+   * 이미 입고 있는 것은 남겨 둔다 — 안 그러면 벗을 방법이 없어진다.
    */
-  const visible = owned.filter(
-    (o) => !HIDDEN_SLOTS.has(o.slot) || equipped?.[o.slot] === o.id);
+  const noFit = hiddenWearables(breed);
+  const visible = owned.filter((o) => !noFit.has(o.id) || equipped?.[o.slot] === o.id);
   const slotsWithItems = WEAR_SLOTS.filter((w) => visible.some((o) => o.slot === w.slot));
   const shown = cat === 'all' ? visible : visible.filter((o) => o.slot === cat);
 
