@@ -94,6 +94,7 @@ export default function RoomView({
   const [drag, setDrag] = useState(null);           // { uid, cell, ok }
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
+  const savingRef = useRef(false);   // 자동 저장이 겹쳐 들어오지 않게
   const [msg, setMsg] = useState(null);
   const [inv, setInv] = useState({});               // asset_id -> 보유 수량
 
@@ -507,22 +508,37 @@ export default function RoomView({
     setDirty(true); setMsg(null);
   }
 
+  const saveRef = useRef(null);
+
   async function save() {
+    if (savingRef.current) return;
+    savingRef.current = true;
     setSaving(true);
     const { data, error } = await supabase.rpc('game_save_room', {
       p_member: currentMember.id, p_items: items, p_revision: room.revision,
       p_wallpaper: null, p_floor: null,
     });
+    savingRef.current = false;
     setSaving(false);
     if (error) { setMsg('저장하지 못했어요'); return; }
     if (!data?.ok) {
       setMsg(data?.reason || '저장하지 못했어요');
       if (data?.room) setRoom(data.room);   // 서버 최신본으로 되돌린다
+      setDirty(false);
       return;
     }
     setRoom((r) => ({ ...r, revision: data.revision }));
-    setDirty(false); setMsg('저장했어요');
+    setDirty(false);
   }
+  saveRef.current = save;
+
+  // 옮기고 나면 알아서 저장한다. 저장 버튼을 누르게 하지 않는다.
+  // 연달아 옮기는 동안에는 타이머가 계속 밀려서 요청이 한 번으로 묶인다.
+  useEffect(() => {
+    if (!dirty || saving) return;
+    const t = setTimeout(() => saveRef.current?.(), 700);
+    return () => clearTimeout(t);
+  }, [dirty, saving, items]);
 
   useEffect(() => { if (!msg) return; const t = setTimeout(() => setMsg(null), 2800); return () => clearTimeout(t); }, [msg]);
 
@@ -713,11 +729,15 @@ export default function RoomView({
           <div style={st.bar}>
             <button onClick={() => rotate(selected)} disabled={!selected} style={st.btn}>돌리기</button>
             <button onClick={() => storeItem(selected)} disabled={!selected} style={st.btn}>치우기</button>
-            <button onClick={save} disabled={!dirty || saving} style={st.primary}>
-              {saving ? '저장 중…' : dirty ? '저장' : '저장됨'}
-            </button>
-            <button onClick={() => { setEditing?.(false); setSelected(null); setDrag(null); }}
-                    style={st.btn}>완료</button>
+            <span style={st.saveState}>
+              {saving ? '저장 중…' : dirty ? '바뀜' : '저장됨'}
+            </span>
+            <button onClick={() => {
+                      // 나가기 전에 남은 변경을 흘려보내지 않는다
+                      if (dirty && !saving) save();
+                      setEditing?.(false); setSelected(null); setDrag(null);
+                    }}
+                    style={st.primary}>완료</button>
           </div>
 
           {spare.length > 0 && (
@@ -737,6 +757,7 @@ export default function RoomView({
 
           <p style={st.hint}>
             가구를 끌어서 옮기세요. 놓을 수 있는 자리는 초록, 안 되는 자리는 붉게 표시됩니다.
+            <b> 놓으면 바로 저장됩니다</b> — 다른 가구를 누르면 그 가구가 바로 끌립니다.
             눌러서 고른 뒤 빈 칸을 톡 눌러도 옮겨져요.
             <b> 치우기</b>는 없애는 게 아니라 보관함에 넣는 것입니다.
           </p>
@@ -754,6 +775,7 @@ const st = {
            background: 'var(--text)', color: 'var(--bg)', fontSize: 12, maxWidth: 'calc(100% - 20px)' },
   editPane: { marginTop: 10 },
   bar: { display: 'flex', alignItems: 'center', gap: 6 },
+  saveState: { flex: 1, textAlign: 'right', fontSize: 12, color: 'var(--text-3)' },
   primary: { padding: '10px 15px', borderRadius: 10, fontSize: 13, fontWeight: 600, background: 'var(--text)', color: 'var(--bg)' },
   btn: { padding: '10px 13px', borderRadius: 10, fontSize: 13, border: '1px solid var(--border)', color: 'var(--text-2)' },
   hint: { fontSize: 12, color: 'var(--text-3)', lineHeight: 1.6, marginTop: 10 },
