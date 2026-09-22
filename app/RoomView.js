@@ -21,7 +21,7 @@ import {
 } from '../lib/pet/room-engine';
 import {
   buildCatalog, viewBoxFor, floorCorners, wallShapes, wallBaseboard, furniturePos,
-  depthSorted, petPos, randomFreeCell, frontCell, ASSET_BASE,
+  depthSorted, petPos, randomFreeCell, frontCell, ASSET_BASE, EXTRA_PROFILES,
 } from '../lib/pet/room';
 import { extraActions } from '../lib/pet/actions';
 import { Controller, RoomObjects, toWorldItems, POSE_ACTION } from '../lib/pet/life';
@@ -215,6 +215,8 @@ export default function RoomView({
         const r = await fetch(ASSET_BASE + 'room/interaction-profiles.json');
         if (r.ok) { const j = await r.json(); profiles = j.profiles || j; }
       } catch { /* 표가 없으면 가구를 쓰지 않고 돌아다니기만 한다 */ }
+      // 납품 표에 없는 1·2차 가구를 덧댄다. 납품 것이 있으면 그쪽이 이긴다
+      profiles = { ...EXTRA_PROFILES, ...profiles };
       try {
         const r = await fetch(ASSET_BASE + 'room/occlusion.json');
         if (r.ok && !dead) setOcclusion(await r.json());
@@ -432,8 +434,21 @@ export default function RoomView({
     }
     const ctl = lifeRef.current;
     if (!ctl) return;
+    /*
+      가구 안(숨숨집·침대·소파)에 들어가 있을 때는 어디를 눌러도 먼저 나온다.
+      ⚠ 이 검사가 아래 '쓰다듬기' 보다 앞에 있어야 한다. 숨숨집에 들어가면
+      펫의 칸이 곧 숨숨집 칸이라, 순서가 반대면 누를 때마다 쓰다듬기로 빠져
+      영영 못 나왔다 (미니룸을 닫았다 열어야 나왔다).
+    */
+    const st = stateRef.current;
+    if (st?.host && ['entering', 'using', 'exiting'].includes(st.phase)) {
+      guestRef.current = 0;
+      ctl.wake();
+      setRipple({ ...cell, id: performance.now() });
+      return;
+    }
     // 펫이 서 있는 칸을 누른 것도 쓰다듬기다 (머리 위를 눌러도 되도록)
-    const here = stateRef.current?.position || { x: 3.5, y: 3.5 };
+    const here = st?.position || { x: 3.5, y: 3.5 };
     if (Math.floor(here.x) === cell.x && Math.floor(here.y) === cell.y) {
       petTap(evt); return;
     }

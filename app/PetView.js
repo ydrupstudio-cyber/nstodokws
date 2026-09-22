@@ -5,7 +5,7 @@
 //
 // 들어오면 바로 방에 있는 친구가 보인다. 탭을 눌러 '펫 화면' 으로
 // 들어가는 구조가 아니다. 주변 UI 에 점수·친밀도가 늘 떠 있고,
-// 아래 서랍에서 가방·옷장·상점·가구를 연다. 미니홈피와 같은 배치다.
+// 아래 서랍에서 가방·옷장·가구·상점을 연다. 내가 가진 것 먼저, 사러 가는 곳은 그다음.
 //
 // 성장은 친밀도가 정한다 (V12). 누적 점수로는 크지 않는다 —
 // 점수는 사는 데 쓰고, 먹이고 돌본 만큼 자란다.
@@ -298,8 +298,8 @@ export default function PetView({ currentMember, onClose }) {
               <div style={s.dock} ref={dockRef}>
                 <Dock icon="icon-bag"    label="가방"  on={panel === 'bag'}    onClick={() => setPanel(panel === 'bag' ? null : 'bag')} />
                 <Dock icon="icon-closet" label="옷장"  on={panel === 'closet'} onClick={() => setPanel(panel === 'closet' ? null : 'closet')} />
-                <Dock icon="icon-shop"   label="상점"  onClick={() => { setPanel(null); setShopOpen(true); }} />
                 <Dock icon="icon-room"   label="가구"  onClick={() => { setPanel(null); setEditing(true); }} />
+                <Dock icon="icon-shop"   label="상점"  onClick={() => { setPanel(null); setShopOpen(true); }} />
                 <Dock icon="icon-more"   label="더보기" on={MORE_PANELS.includes(panel)}
                       onClick={() => setPanel(MORE_PANELS.includes(panel) ? null : 'more')} />
               </div>
