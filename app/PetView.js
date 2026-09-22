@@ -536,7 +536,7 @@ const s = {
   speciesRow: { display: 'flex', gap: 6, marginBottom: 12 },
   speciesBtn: { flex: 1, padding: 9, border: '1px solid var(--border)', borderRadius: 8, fontSize: 13, color: 'var(--text-2)' },
   speciesOn: { background: 'var(--surface-2)', color: 'var(--text)', borderColor: 'var(--text-3)', fontWeight: 600 },
-  breedGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 6, marginBottom: 14 },
+  breedGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 6, marginBottom: 14 },
   breedCard: { padding: '6px 0 8px', border: '2px solid var(--border)', borderRadius: 12, background: 'var(--surface)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 },
   breedOn: { borderColor: 'var(--text-2)', background: 'var(--surface-2)' },
   breedName: { fontSize: 11, fontWeight: 500 },

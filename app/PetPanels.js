@@ -41,8 +41,8 @@ function SellConfirm({ item, refund, onCancel, onDone, busy }) {
           </p>
         )}
         <div style={s.confirmRow}>
-          <button onClick={onCancel} style={s.cancelBtn}>그만두기</button>
-          <button onClick={onDone} disabled={busy} style={s.releaseBtn}>
+          <button onClick={onCancel} style={{ ...s.cancelBtn, ...s.rowBtn }}>그만두기</button>
+          <button onClick={onDone} disabled={busy} style={{ ...s.releaseBtn, ...s.rowBtn }}>
             {busy ? '파는 중…' : '되팔기'}
           </button>
         </div>
@@ -403,9 +403,11 @@ export function FamilyPanel({ currentMember, profile, onClose, onReleased, botto
                 placeholder={name} style={s.confirmInput} />
               {msg && <div style={{ ...s.msg, ...s.msgBad }}>{msg}</div>}
               <div style={s.confirmRow}>
-                <button onClick={() => { setStep(0); setTyped(''); }} style={s.cancelBtn}>그만두기</button>
+                <button onClick={() => { setStep(0); setTyped(''); }}
+                  style={{ ...s.cancelBtn, ...s.rowBtn }}>그만두기</button>
                 <button onClick={doRelease} disabled={busy || typed.trim() !== name}
-                  style={{ ...s.releaseBtn, ...(typed.trim() !== name ? s.off : {}) }}>
+                  style={{ ...s.releaseBtn, ...s.rowBtn,
+                           ...(typed.trim() !== name ? s.off : {}) }}>
                   {busy ? '보내는 중…' : '보내주기'}
                 </button>
               </div>
@@ -438,7 +440,7 @@ const s = {
   off: { opacity: .42 },
   heart: { color: '#c2607a' },
 
-  bagGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 7 },
+  bagGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 7 },
   bagCard: { position: 'relative', padding: '10px 4px 6px', border: '1px solid var(--border)',
              borderRadius: 11, background: 'var(--surface)', display: 'flex',
              flexDirection: 'column', gap: 4, alignItems: 'center' },
@@ -461,7 +463,7 @@ const s = {
   chip: { flexShrink: 0, padding: '6px 12px', borderRadius: 16, fontSize: 12,
           border: '1px solid var(--border)', color: 'var(--text-2)', whiteSpace: 'nowrap' },
   chipOn: { background: 'var(--text)', color: 'var(--bg)', borderColor: 'var(--text)', fontWeight: 600 },
-  wearGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 7 },
+  wearGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 7 },
   wearCard: { border: '1px solid var(--border)', borderRadius: 11, padding: '6px 4px 6px',
               background: 'var(--surface)', textAlign: 'center',
               display: 'flex', flexDirection: 'column', gap: 4 },
@@ -497,4 +499,10 @@ const s = {
   confirmRow: { display: 'flex', gap: 7 },
   cancelBtn: { flex: 1, padding: 12, borderRadius: 10, fontSize: 14, fontWeight: 600,
                background: 'var(--text)', color: 'var(--bg)' },
+  /*
+    한 줄에 나란히 놓을 때 쓴다. releaseBtn 은 width:100% 라서 그냥 두면
+    줄 전체를 차지하고, 옆의 '그만두기' 가 글자 한 자 폭으로 눌려 세로로
+    쌓였다 (실제로 그랬다). 둘 다 같은 몫을 갖게 하고 글자는 안 접는다.
+  */
+  rowBtn: { flex: 1, width: 'auto', minWidth: 0, whiteSpace: 'nowrap' },
 };

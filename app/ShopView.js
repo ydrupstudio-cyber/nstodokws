@@ -361,13 +361,20 @@ const s = {
   msgBad: { background: 'var(--danger-bg)', color: 'var(--danger)' },
   hint: { fontSize: 12, color: 'var(--text-3)', lineHeight: 1.65, marginBottom: 12 },
   sectionHead: { fontSize: 12, fontWeight: 600, color: 'var(--text-2)', marginBottom: 7 },
-  grid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 7 },
+  grid: { display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 7 },
   card: { border: '1px solid var(--border)', borderRadius: 10, padding: '6px 5px 7px', background: 'var(--surface)', textAlign: 'center' },
   thumb: { position: 'relative', height: 54, display: 'grid', placeItems: 'center', overflow: 'hidden' },
   thumbImg: { width: 76, height: 66, objectFit: 'contain' },
   haveTag: { position: 'absolute', top: 0, right: 2, fontSize: 10, fontWeight: 700,
              background: 'var(--text)', color: 'var(--bg)', borderRadius: 10, padding: '1px 6px' },
-  cardName: { fontSize: 11, fontWeight: 600, marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
+  /*
+    한 줄로 자르면 '송편 색동 머리 장식 · 여자' 가 '… 머리 장식 …' 이 되어
+    남녀 구분이 사라진다. 두 줄까지 보여주고, 낱말은 keep-all 로 안 쪼갠다.
+    두 줄 높이를 미리 잡아 둬야 칸마다 버튼 높이가 들쭉날쭉하지 않다.
+  */
+  cardName: { fontSize: 11, fontWeight: 600, marginTop: 2, lineHeight: 1.3, height: 29,
+              display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
+              overflow: 'hidden', wordBreak: 'keep-all' },
   rarity: { fontSize: 10, marginBottom: 4 },
   pvFoot: { padding: '10px 16px 16px', borderTop: '1px solid var(--border)' },
   pvBuy: { width: '100%', padding: 13, borderRadius: 11, fontSize: 14, fontWeight: 700,

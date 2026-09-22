@@ -195,7 +195,7 @@ const s = {
   msg: { marginTop: 10, padding: '9px 12px', borderRadius: 10, background: 'var(--surface-2)', fontSize: 13 },
   msgBad: { background: 'var(--danger-bg)', color: 'var(--danger)' },
 
-  giftGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 7 },
+  giftGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 7 },
   giftCard: { position: 'relative', padding: '12px 4px 10px', border: '1px solid var(--border)',
               borderRadius: 11, background: 'var(--surface)', display: 'flex',
               flexDirection: 'column', gap: 3, alignItems: 'center' },
