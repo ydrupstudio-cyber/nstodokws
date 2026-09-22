@@ -17,6 +17,7 @@ const KIND_LABEL = {
   seating: '앉는 것', surface: '놓는 것', 'pet-supply': '펫 용품',
   plant: '식물', light: '조명', 'wall-decor': '벽 장식', misc: '잡화',
   storage: '수납', pet: '펫 전용', rug: '바닥깔개', wall: '벽걸이',
+  window: '창문',
 };
 const RARITY_COLOR = { 일반: 'var(--text-3)', 고급: '#5b7a99', 희귀: '#7a5b8e', 특별: '#8a6e4b' };
 
@@ -71,8 +72,8 @@ export default function ShopView({ currentMember, manifest, room, balance,
 
   // 벽걸이(거울·달력)는 벽면 배치 UI 가 생기기 전까지 상점에 올리지 않는다.
   // 바닥 배치기에 넣으면 좌표계가 어긋난다 — 킷 인계서가 경고한 부분이다
-  const furniture = shop.filter((x) => x.kind === 'furniture')
-    .filter((x) => catalog[x.item_id] && catalog[x.item_id].layer !== 'wall');
+  // 벽에 거는 물건도 이제 판다. 배치기가 벽줄을 알아본다
+  const furniture = shop.filter((x) => x.kind === 'furniture').filter((x) => catalog[x.item_id]);
   const byKind = {};
   furniture.forEach((x) => {
     const k = catalog[x.item_id]?.kind || 'misc';

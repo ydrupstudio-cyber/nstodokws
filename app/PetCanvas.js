@@ -20,6 +20,7 @@ import { actionPose, animateAction } from '../lib/pet/motion';
 import { equip, syncEquipment, expressionExtra } from '../lib/pet/equipment';
 import { equipWithFit } from '../lib/pet/wear-fit';
 import { extraActions, extraPose, animateExtra, resetExtra } from '../lib/pet/actions';
+import { animateRoomPet } from '../lib/pet/room-motion';
 import { loadSvgSource, loadManifest, loadMotionAnchors, loadWearFitRules } from '../lib/pet/assets';
 
 const EXTRA = new Set(extraActions.map((a) => a.id));
@@ -39,6 +40,13 @@ export default function PetCanvas({
   mood = null,      // 'happy' | 'neutral' | null. 친밀도가 쌓이면 표정이 남는다
   wearing = null,   // { slot: itemId } — game_profiles.equipped 그대로
   onBounds,         // embedded 일 때 그려진 몸의 실제 범위를 씬 좌표로 알려준다
+  /*
+    미니룸 전용. 생활 컨트롤러가 내주는 스냅샷을 담은 ref 를 그대로 받는다.
+    ref 인 이유 — 매 프레임 바뀌는 값을 prop 으로 내리면 방 전체가 다시 렌더된다.
+    .current 에 값이 있으면 납품 팩의 방 전용 모션으로 팔다리를 움직이고,
+    null 이면(간식·쓰다듬기처럼 밖에서 시킨 동작 중) 기존 동작 킷이 그대로 돈다.
+  */
+  roomState = null,
 }) {
   const hostRef = useRef(null);
   const rafRef = useRef(0);
@@ -171,7 +179,12 @@ export default function PetCanvas({
         if (cancelled) return;
         const t = (now - start) / 1000;
         try {
-          if (isExtra) {
+          const rs = roomState?.current;
+          if (rs) {
+            // 방 전용 모션 — 걷기·쉬기·앉기·놀기·빼꼼을 자세별로 직접 움직인다
+            resetExtra(svg);
+            animateRoomPet(svg, asset, st, rs);
+          } else if (isExtra) {
             animateExtra(svg, asset, st, action, t, false);
           } else {
             // 2차 킷이 얹은 표정·앞발 순서를 되돌린 뒤 1차 동작을 돌린다
@@ -180,7 +193,7 @@ export default function PetCanvas({
             syncEquipment(svg);   // 등 장식은 몸 변형을 따로 따라가야 한다
           }
           // 애니메이션은 매 프레임 표정을 되돌린다. 기분은 그 뒤에 덧씌운다
-          applyMood(svg, action, mood);
+          if (!roomState?.current) applyMood(svg, action, mood);
         } catch { /* 한 프레임 실패는 무시 */ }
         if (onDone && ONE_SHOT.has(action) && t > 1.9) { onDone(); return; }
         rafRef.current = requestAnimationFrame(tick);

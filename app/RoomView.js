@@ -22,6 +22,7 @@ import {
 import {
   buildCatalog, viewBoxFor, floorCorners, wallShapes, wallBaseboard, furniturePos,
   depthSorted, petPos, randomFreeCell, frontCell, ASSET_BASE, EXTRA_PROFILES,
+  isNight, sourceOf,
 } from '../lib/pet/room';
 import { extraActions } from '../lib/pet/actions';
 import { Controller, RoomObjects, toWorldItems, POSE_ACTION } from '../lib/pet/life';
@@ -87,7 +88,16 @@ export default function RoomView({
   const [petCell, setPetCell] = useState({ x: 3.5, y: 3.5 });
   const [action, setAction] = useState('idle');
   const [facing, setFacing] = useState(1);
-  const [lift, setLift] = useState(0);        // 가구 위에 올라가 있으면 그 높이만큼 뜬다
+  const [lift, setLift] = useState(0);
+  /*
+    창밖이 밤인가. 저녁 8시~아침 6시.
+    1분마다 다시 본다 — 방을 열어 둔 채로 8시를 넘기면 그때 바뀐다.
+  */
+  const [night, setNight] = useState(() => isNight());
+  useEffect(() => {
+    const t = setInterval(() => setNight(isNight()), 60000);
+    return () => clearInterval(t);
+  }, []);        // 가구 위에 올라가 있으면 그 높이만큼 뜬다
   const [mark, setMark] = useState(null);     // 머리 위 하트·반짝임
   const [petBox, setPetBox] = useState(null); // 그려진 몸의 실제 범위 (PetCanvas 가 알려준다)
   // 놀러 온 펫. 집주인 펫과 따로 움직인다
@@ -109,6 +119,12 @@ export default function RoomView({
   const svgRef = useRef(null);
   const rafRef = useRef(0);
   const guestRef = useRef(0);   // guest 동작이 끝나는 시각 (performance.now 기준)
+  /*
+    납품 팩의 방 전용 모션에 넘길 스냅샷.
+    간식·쓰다듬기처럼 밖에서 시킨 동작이 도는 동안에는 비워 둔다 —
+    그동안은 기존 동작 킷(먹기·좋아하기)이 그려야 하기 때문이다.
+  */
+  const motionRef = useRef(null);
   const petTapRef = useRef(0);  // 쓰다듬기 연타 방지
   const visRef = useRef({ pos: { x: 1.5, y: 1.5 }, path: [], hold: 1.6, action: 'idle' });
   const greetedRef = useRef(false);
@@ -267,10 +283,11 @@ export default function RoomView({
       // 밖에서 시킨 동작(간식·쓰다듬기)이 끝날 때까지는 자율 행동을 멈춘다
       const held = now < guestRef.current;
       if (ctl.paused !== held && !editing) ctl.setPaused(held);
-      if (held) { rafRef.current = requestAnimationFrame(tick); return; }
+      if (held) { motionRef.current = null; rafRef.current = requestAnimationFrame(tick); return; }
 
       const st = ctl.tick(dt);
       stateRef.current = st;
+      motionRef.current = st;
       const d = st.displayPosition;
       setPetCell({ x: d.x, y: d.y });
       setLift(d.z || 0);
@@ -302,7 +319,7 @@ export default function RoomView({
     const want = items
       .map((it) => ({ it, a: catalog[it.assetId] }))
       .filter(({ a }) => a?.lifeMode)
-      .map(({ it, a }) => a.rotations?.[it.rotation || 0]?.source || a.path);
+      .map(({ it }) => sourceOf(it, catalog, night));
     const missing = [...new Set(want)].filter((src) => !propSrc[src]);
     if (!missing.length) return;
     (async () => {
@@ -316,7 +333,7 @@ export default function RoomView({
       if (!dead && Object.keys(got).length) setPropSrc((prev) => ({ ...prev, ...got }));
     })();
     return () => { dead = true; };
-  }, [catalog, items, propSrc]);
+  }, [catalog, items, propSrc, night]);
 
   // 소품 모션 — 공이 튀고 오르골 꽃이 돈다. 인라인으로 그린 것만 움직인다
   useEffect(() => {
@@ -851,6 +868,7 @@ export default function RoomView({
                     {asset && <PetCanvas asset={asset} stage={stage} action={action}
                                          size={petW} embedded x={pp.x} y={pp.y}
                                          mood={temper.mood} wearing={wearing}
+                                         roomState={readOnly ? null : motionRef}
                                          onBounds={onPetBounds} />}
                   </g>
                   </g>
@@ -876,7 +894,7 @@ export default function RoomView({
             const a = catalog[it.assetId];
             if (!a) return null;
             const pos = furniturePos(it, catalog, size);
-            const src = a.rotations?.[it.rotation || 0]?.source || a.path;
+            const src = sourceOf(it, catalog, night);
             if (a.lifeMode && propSrc[src]) {
               // 바깥을 <svg viewBox="0 0 256 224"> 로 감싸야 안쪽 그림이 가구 한 칸
               // 크기로 맞는다. <g> 로만 감싸면 원본이 화면 전체로 늘어난다 (겪었다)
@@ -964,7 +982,7 @@ export default function RoomView({
           {ghostItem && (() => {
             const a = catalog[ghostItem.assetId];
             const pos = furniturePos({ ...ghostItem, x: drag.cell.x, y: drag.cell.y }, catalog, size);
-            const src = a.rotations?.[ghostItem.rotation || 0]?.source || a.path;
+            const src = sourceOf(ghostItem, catalog, night);
             return <image href={ASSET_BASE + src} x={pos.x} y={pos.y} width={256} height={224}
                           opacity={drag.ok ? 0.6 : 0.32} style={{ pointerEvents: 'none' }} />;
           })()}
