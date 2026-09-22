@@ -20,6 +20,7 @@ import SearchView from './SearchView';
 import PhotoViewer from './PhotoViewer';
 import ScheduleBoardsView from './ScheduleBoardsView';
 import NoticesModal from './NoticesModal';
+import BrandMark from './BrandMark';
 import StatsView from './StatsView';
 import UpcomingSection from './UpcomingSection';
 import TemplatesPicker from './TemplatesPicker';
@@ -522,7 +523,12 @@ export default function Home() {
               <button onClick={() => setShowPet(true)} style={styles.iconBtn} title="내 펫">🐾</button>
             </div>
             <div style={styles.titleWrap}>
-              <h1 style={styles.title} className="display-font">NS_To-Do</h1>
+              {/* 마크 + 이름을 한 덩어리로 묶는다. 좁은 폰에서 'NS_To-' / 'Do' 로
+                  두 줄로 갈라지던 걸 막으려고 줄바꿈을 끈다 */}
+              <div style={styles.lockup}>
+                <BrandMark size={19} style={{ color: 'var(--text-2)' }} />
+                <h1 style={styles.title} className="display-font">NS To-Do</h1>
+              </div>
               <p style={styles.subtitle}>by WS.Kim</p>
             </div>
             <div style={styles.headerRight}>
@@ -810,8 +816,12 @@ const styles = {
   headerTop: { display: 'flex', alignItems: 'center', gap: 6 },
   headerLeft: { display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 },
   headerRight: { display: 'flex', alignItems: 'center', flexShrink: 0 },
-  titleWrap: { textAlign: 'center', flex: 1, minWidth: 0, padding: '0 8px' },
-  title: { fontSize: 22, fontWeight: 400, color: 'var(--text)', letterSpacing: '-0.02em' },
+  titleWrap: { textAlign: 'center', flex: 1, minWidth: 0, padding: '0 6px' },
+  lockup: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 },
+  // ⚠ 좁은 폰(360px)에서는 왼쪽 아이콘 6개 + 오른쪽 톱니가 자리를 거의 다 먹는다.
+  // 줄바꿈을 끄고 글자를 18px 로 낮춰야 'NS_To-' / 'Do' 로 갈라지지 않는다
+  title: { fontSize: 18, fontWeight: 400, color: 'var(--text)', letterSpacing: '-0.01em',
+           whiteSpace: 'nowrap' },
   subtitle: { fontSize: 10, color: 'var(--text-3)', marginTop: 2, letterSpacing: '0.1em' },
   iconBtn: { width: 32, height: 32, fontSize: 15, color: 'var(--text-2)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
   iconBtnBadge: { width: 32, height: 32, fontSize: 15, color: 'var(--text-2)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, position: 'relative' },
