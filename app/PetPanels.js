@@ -124,13 +124,14 @@ export function BagPanel({ currentMember, inventory, foods, fedToday, discovered
     const r = await feed(currentMember.id, f.food_id);
     setBusy(null);
     if (!r?.ok) { setMsg({ bad: true, text: r?.reason || '먹이지 못했어요' }); return; }
-    setMsg({
-      good: true,
-      text: r.liked
-        ? `${r.food} — 제일 좋아하는 거예요! 친밀도 +${r.gained}`
-        : `${r.food} 맛있게 먹었어요. 친밀도 +${r.gained}`,
-    });
-    onFed?.(r);
+    /*
+      먹인 결과를 이 서랍 안에 띄우면 안 된다 — 서랍이 방을 덮고 있어서
+      정작 친구가 먹는 모습을 못 본다 (그게 제일 보고 싶은 장면인데).
+      알림글을 위로 넘기고 서랍을 닫는다. 방에서 먹기 → 좋아하기가 이어 돈다.
+    */
+    onFed?.(r, r.liked
+      ? `${r.food} — 제일 좋아하는 거예요! 친밀도 +${r.gained}`
+      : `${r.food} 맛있게 먹었어요. 친밀도 +${r.gained}`);
   }
 
   return (

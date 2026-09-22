@@ -160,7 +160,10 @@ export default function PetView({ currentMember, onClose }) {
   }
 
   /** 가방에서 먹였다 — 방에 있는 친구가 실제로 먹는 모습을 보여준다 */
-  function onFed(r) {
+  function onFed(r, text) {
+    // 서랍을 닫아 방을 내준다. 안 그러면 먹는 동작이 서랍 뒤에서 혼자 돈다
+    setPanel(null);
+    if (text) setFlash({ good: true, text });
     setGuest({ id: Date.now(), action: 'eat', hold: 2800 });
     if (r?.grew) {
       setTimeout(() => setGuest({ id: Date.now() + 1, action: 'celebrate', hold: 3000 }), 2600);
