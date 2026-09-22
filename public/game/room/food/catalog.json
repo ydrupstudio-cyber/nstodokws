@@ -1,0 +1,295 @@
+{
+  "version": 1,
+  "timeline": [
+    {
+      "stage": "full",
+      "start": 0,
+      "end": 0.9
+    },
+    {
+      "stage": "half",
+      "start": 0.9,
+      "end": 2
+    },
+    {
+      "stage": "empty",
+      "start": 2,
+      "end": 2.8
+    }
+  ],
+  "eatSeconds": 2.8,
+  "hideAfterEatSeconds": 0.6,
+  "ownsEconomy": false,
+  "items": [
+    {
+      "id": "kibble",
+      "name": "사료",
+      "bondReference": 10,
+      "path": "room/food/eat-kibble.svg",
+      "frames": {
+        "full": "room/food/eat-kibble-full.svg",
+        "half": "room/food/eat-kibble-half.svg",
+        "empty": "room/food/eat-kibble-empty.svg"
+      },
+      "anchor": [
+        128,
+        164
+      ],
+      "footprint": [
+        0,
+        0
+      ],
+      "blocksMovement": false,
+      "layer": "transient",
+      "iconViewBox": [
+        82,
+        92,
+        112,
+        85
+      ]
+    },
+    {
+      "id": "churu",
+      "name": "츄르",
+      "bondReference": 15,
+      "path": "room/food/eat-churu.svg",
+      "frames": {
+        "full": "room/food/eat-churu-full.svg",
+        "half": "room/food/eat-churu-half.svg",
+        "empty": "room/food/eat-churu-empty.svg"
+      },
+      "anchor": [
+        128,
+        164
+      ],
+      "footprint": [
+        0,
+        0
+      ],
+      "blocksMovement": false,
+      "layer": "transient",
+      "iconViewBox": [
+        82,
+        92,
+        112,
+        85
+      ]
+    },
+    {
+      "id": "milk",
+      "name": "우유",
+      "bondReference": 15,
+      "path": "room/food/eat-milk.svg",
+      "frames": {
+        "full": "room/food/eat-milk-full.svg",
+        "half": "room/food/eat-milk-half.svg",
+        "empty": "room/food/eat-milk-empty.svg"
+      },
+      "anchor": [
+        128,
+        164
+      ],
+      "footprint": [
+        0,
+        0
+      ],
+      "blocksMovement": false,
+      "layer": "transient",
+      "iconViewBox": [
+        82,
+        92,
+        112,
+        85
+      ]
+    },
+    {
+      "id": "cookie",
+      "name": "쿠키",
+      "bondReference": 20,
+      "path": "room/food/eat-cookie.svg",
+      "frames": {
+        "full": "room/food/eat-cookie-full.svg",
+        "half": "room/food/eat-cookie-half.svg",
+        "empty": "room/food/eat-cookie-empty.svg"
+      },
+      "anchor": [
+        128,
+        164
+      ],
+      "footprint": [
+        0,
+        0
+      ],
+      "blocksMovement": false,
+      "layer": "transient",
+      "iconViewBox": [
+        82,
+        92,
+        112,
+        85
+      ]
+    },
+    {
+      "id": "jerky",
+      "name": "육포",
+      "bondReference": 25,
+      "path": "room/food/eat-jerky.svg",
+      "frames": {
+        "full": "room/food/eat-jerky-full.svg",
+        "half": "room/food/eat-jerky-half.svg",
+        "empty": "room/food/eat-jerky-empty.svg"
+      },
+      "anchor": [
+        128,
+        164
+      ],
+      "footprint": [
+        0,
+        0
+      ],
+      "blocksMovement": false,
+      "layer": "transient",
+      "iconViewBox": [
+        82,
+        92,
+        112,
+        85
+      ]
+    },
+    {
+      "id": "sausage",
+      "name": "소세지",
+      "bondReference": 25,
+      "path": "room/food/eat-sausage.svg",
+      "frames": {
+        "full": "room/food/eat-sausage-full.svg",
+        "half": "room/food/eat-sausage-half.svg",
+        "empty": "room/food/eat-sausage-empty.svg"
+      },
+      "anchor": [
+        128,
+        164
+      ],
+      "footprint": [
+        0,
+        0
+      ],
+      "blocksMovement": false,
+      "layer": "transient",
+      "iconViewBox": [
+        82,
+        92,
+        112,
+        85
+      ]
+    },
+    {
+      "id": "cup-ramen",
+      "name": "컵라면",
+      "bondReference": 30,
+      "path": "room/food/eat-cup-ramen.svg",
+      "frames": {
+        "full": "room/food/eat-cup-ramen-full.svg",
+        "half": "room/food/eat-cup-ramen-half.svg",
+        "empty": "room/food/eat-cup-ramen-empty.svg"
+      },
+      "anchor": [
+        128,
+        164
+      ],
+      "footprint": [
+        0,
+        0
+      ],
+      "blocksMovement": false,
+      "layer": "transient",
+      "iconViewBox": [
+        82,
+        92,
+        112,
+        85
+      ]
+    },
+    {
+      "id": "protein-drink",
+      "name": "단백질 음료",
+      "bondReference": 35,
+      "path": "room/food/eat-protein-drink.svg",
+      "frames": {
+        "full": "room/food/eat-protein-drink-full.svg",
+        "half": "room/food/eat-protein-drink-half.svg",
+        "empty": "room/food/eat-protein-drink-empty.svg"
+      },
+      "anchor": [
+        128,
+        164
+      ],
+      "footprint": [
+        0,
+        0
+      ],
+      "blocksMovement": false,
+      "layer": "transient",
+      "iconViewBox": [
+        82,
+        92,
+        112,
+        85
+      ]
+    },
+    {
+      "id": "cup-rice",
+      "name": "컵밥",
+      "bondReference": 40,
+      "path": "room/food/eat-cup-rice.svg",
+      "frames": {
+        "full": "room/food/eat-cup-rice-full.svg",
+        "half": "room/food/eat-cup-rice-half.svg",
+        "empty": "room/food/eat-cup-rice-empty.svg"
+      },
+      "anchor": [
+        128,
+        164
+      ],
+      "footprint": [
+        0,
+        0
+      ],
+      "blocksMovement": false,
+      "layer": "transient",
+      "iconViewBox": [
+        82,
+        92,
+        112,
+        85
+      ]
+    },
+    {
+      "id": "special-cake",
+      "name": "특별식",
+      "bondReference": 150,
+      "path": "room/food/eat-special-cake.svg",
+      "frames": {
+        "full": "room/food/eat-special-cake-full.svg",
+        "half": "room/food/eat-special-cake-half.svg",
+        "empty": "room/food/eat-special-cake-empty.svg"
+      },
+      "anchor": [
+        128,
+        164
+      ],
+      "footprint": [
+        0,
+        0
+      ],
+      "blocksMovement": false,
+      "layer": "transient",
+      "iconViewBox": [
+        82,
+        92,
+        112,
+        85
+      ]
+    }
+  ]
+}

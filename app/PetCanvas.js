@@ -21,6 +21,7 @@ import { equip, syncEquipment, expressionExtra } from '../lib/pet/equipment';
 import { equipWithFit } from '../lib/pet/wear-fit';
 import { extraActions, extraPose, animateExtra, resetExtra } from '../lib/pet/actions';
 import { animateRoomPet } from '../lib/pet/room-motion';
+import { updateChew } from '../lib/pet/food-chew';
 import { loadSvgSource, loadManifest, loadMotionAnchors, loadWearFitRules } from '../lib/pet/assets';
 
 const EXTRA = new Set(extraActions.map((a) => a.id));
@@ -192,6 +193,13 @@ export default function PetCanvas({
             animateAction(svg, asset, action, t, false);
             syncEquipment(svg);   // 등 장식은 몸 변형을 따로 따라가야 한다
           }
+          /*
+            오물거리는 입. 납품 팩이 mouth-open 안쪽에 mouth-chew 를 만들어 넣는다.
+            expression(svg,'eat') 가 이미 돈 뒤에 불러야 한다 — 그래서 여기다.
+            먹는 동작이 아니면 null 로 불러 원래 입을 돌려준다.
+          */
+          try { updateChew(svg, action === 'eat' ? t : null, { reducedMotion: reduced }); }
+          catch { /* 입 모양 하나 못 만들어도 나머지는 돈다 */ }
           // 애니메이션은 매 프레임 표정을 되돌린다. 기분은 그 뒤에 덧씌운다
           if (!roomState?.current) applyMood(svg, action, mood);
         } catch { /* 한 프레임 실패는 무시 */ }

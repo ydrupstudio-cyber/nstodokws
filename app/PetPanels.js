@@ -131,7 +131,7 @@ export function BagPanel({ currentMember, inventory, foods, fedToday, discovered
     */
     onFed?.(r, r.liked
       ? `${r.food} — 제일 좋아하는 거예요! 친밀도 +${r.gained}`
-      : `${r.food} 맛있게 먹었어요. 친밀도 +${r.gained}`);
+      : `${r.food} 맛있게 먹었어요. 친밀도 +${r.gained}`, f.food_id);
   }
 
   return (

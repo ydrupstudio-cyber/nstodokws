@@ -24,6 +24,8 @@ import {
   depthSorted, petPos, randomFreeCell, frontCell, ASSET_BASE, EXTRA_PROFILES,
   isNight, sourceOf,
 } from '../lib/pet/room';
+import { foodFrame, foodPlacement } from '../lib/pet/room-food';
+import { resolveOpening } from '../lib/pet/hide-peek';
 import { extraActions } from '../lib/pet/actions';
 import { Controller, RoomObjects, toWorldItems, POSE_ACTION } from '../lib/pet/life';
 import { supabase } from '../lib/supabase';
@@ -86,6 +88,12 @@ export default function RoomView({
 
   // 펫 상태
   const [petCell, setPetCell] = useState({ x: 3.5, y: 3.5 });
+  /*
+    먹이 소품. 간식을 먹이면 펫 앞 바닥에 놓이고 세 단계로 바뀐다.
+    단계를 나누는 시각은 납품 함수(foodFrame)가 정한다 — 여기서 따로 정하지 않는다.
+    타이머는 앱이 갖는다(납품 팩에는 타이머가 없다). 빈 그릇은 0.6초 더 두고 치운다.
+  */
+  const [foodShow, setFoodShow] = useState(null);
   const [action, setAction] = useState('idle');
   const [facing, setFacing] = useState(1);
   const [lift, setLift] = useState(0);
@@ -125,6 +133,7 @@ export default function RoomView({
     그동안은 기존 동작 킷(먹기·좋아하기)이 그려야 하기 때문이다.
   */
   const motionRef = useRef(null);
+  const foodTimersRef = useRef([]);
   const petTapRef = useRef(0);  // 쓰다듬기 연타 방지
   const visRef = useRef({ pos: { x: 1.5, y: 1.5 }, path: [], hold: 1.6, action: 'idle' });
   const greetedRef = useRef(false);
@@ -207,10 +216,19 @@ export default function RoomView({
 
   // ── 밖에서 시킨 동작 (간식을 먹였다) ──
   useEffect(() => {
+    if (guest?.action === 'eat' && guest.foodId) {
+      const at = (sec) => foodFrame(guest.foodId, sec);
+      setFoodShow(at(0));
+      const t1 = setTimeout(() => setFoodShow(at(1.2)), 900);
+      const t2 = setTimeout(() => setFoodShow(at(2.4)), 2000);
+      const t3 = setTimeout(() => setFoodShow(null), 3400);
+      foodTimersRef.current = [t1, t2, t3];
+    }
     if (!guest?.action) return;
     lifeRef.current?.wake();          // 가구에 올라가 있었으면 내려온다
     setAction(guest.action);
     guestRef.current = performance.now() + (guest.hold || 3400);
+    return () => { foodTimersRef.current.forEach(clearTimeout); foodTimersRef.current = []; };
   }, [guest?.id]);   // eslint-disable-line react-hooks/exhaustive-deps
 
   /**
@@ -298,9 +316,11 @@ export default function RoomView({
           && now - rippleRef.current.id > 350) setRipple(null);
       setLife((prev) => {
         const next = { opacity: st.opacity, hostUid: st.host?.uid || null,
-                       phase: st.phase, mode: st.mode, peek: st.peek };
+                       phase: st.phase, mode: st.mode, peek: st.peek,
+                       portId: st.hostProfile?.portId || null };
         return (prev && prev.opacity === next.opacity && prev.hostUid === next.hostUid
-                && prev.phase === next.phase && prev.peek === next.peek) ? prev : next;
+                && prev.phase === next.phase && prev.peek === next.peek
+                && prev.portId === next.portId) ? prev : next;
       });
       rafRef.current = requestAnimationFrame(tick);
     };
@@ -473,21 +493,31 @@ export default function RoomView({
       안이면 이동이 아니라 쓰다듬기로 본다. 펫이 서 있는 칸도 마찬가지다.
     */
     const here = st?.position || { x: 3.5, y: 3.5 };
-    const near = (() => {
-      const pt = svgPoint(evt);
-      if (!pt || !hitRect) return false;
-      const M = 28;
-      return pt.x >= hitRect.x - M && pt.x <= hitRect.x + hitRect.w + M
-          && pt.y >= hitRect.y - M && pt.y <= hitRect.y + hitRect.h + M;
-    })();
-    if (near || (Math.floor(here.x) === cell.x && Math.floor(here.y) === cell.y)) {
-      petTap(evt); return;
-    }
+    // 펫이 서 있는 칸을 누른 것도 쓰다듬기다 (머리 위를 눌러도 되도록)
+    const onPet = Math.floor(here.x) === cell.x && Math.floor(here.y) === cell.y;
+
     // 가구를 누르면 그 가구를 쓰러 간다. 같은 가구를 다시 누르면 나온다
     const hit = items.find((it) => {
       const [w, h] = dimensions(it, catalog);
       return cell.x >= it.x && cell.x < it.x + w && cell.y >= it.y && cell.y < it.y + h;
     });
+
+    /*
+      ⚠ 순서가 중요하다. 쓰다듬기 여유 판정이 가구보다 앞에 있으면,
+      펫이 강아지집 앞에 서 있을 때 집을 눌러도 쓰다듬기로 빠져 영영 못 들어간다
+      (실제로 그랬다). 펫 위는 투명한 판이 이미 받아 주므로,
+      여기서는 **가구를 먼저** 보고, 가구가 아닐 때만 여유를 준다.
+    */
+    if (!hit && !onPet) {
+      const pt = svgPoint(evt);
+      const M = 28;
+      if (pt && hitRect
+          && pt.x >= hitRect.x - M && pt.x <= hitRect.x + hitRect.w + M
+          && pt.y >= hitRect.y - M && pt.y <= hitRect.y + hitRect.h + M) {
+        petTap(evt); return;
+      }
+    }
+    if (onPet && !hit) { petTap(evt); return; }
     guestRef.current = 0;
     if (hit) {
       if (stateRef.current?.host?.uid === hit.uid) { ctl.wake(); setRipple({ ...cell, id: performance.now() }); return; }
@@ -872,7 +902,10 @@ export default function RoomView({
               */
               const host = life?.hostUid ? items.find((x) => x.uid === life.hostUid) : null;
               const occ = host && occlusion?.[host.assetId];
-              const face = occ?.[(host.rotation || 0) % 4];
+              // 캣터널처럼 입구가 둘이면 지금 들어간 쪽 구멍을 쓴다.
+              // 기본 필드만 보면 늘 왼쪽 구멍으로 오려내 오른쪽으로 들어간 펫이 잘린다
+              const rot = occ?.[(host.rotation || 0) % 4];
+              const face = rot ? (resolveOpening(rot, life?.portId) || rot) : null;
               const inside = !!face && ['entering', 'using', 'exiting'].includes(life.phase);
               const hp = host ? furniturePos(host, catalog, size) : null;
               const clipId = inside && face.doorway ? `door-${host.uid}` : null;
@@ -898,6 +931,14 @@ export default function RoomView({
                                          onBounds={onPetBounds} />}
                   </g>
                   </g>
+                  {/* 먹이. 펫 바로 앞 바닥에 놓인다. 칸을 차지하지 않고 클릭도 안 받는다 */}
+                  {foodShow && (() => {
+                    const foot = project(petCell.x, petCell.y, size);
+                    const box = foodPlacement(foot, { offset: [0, 14], scale: 0.76 });
+                    return <image href={ASSET_BASE + foodShow.source}
+                                 x={box.x} y={box.y} width={box.width} height={box.height}
+                                 style={{ pointerEvents: 'none' }} />;
+                  })()}
                   {inside && (
                     <image href={ASSET_BASE + face.source} x={hp.x} y={hp.y}
                            width={256} height={224} style={{ pointerEvents: 'none' }} />
@@ -908,10 +949,16 @@ export default function RoomView({
                       ⚠ 크기를 상수로 어림잡으면 안 된다. 캐릭터마다 몸이 달라서
                       머리를 눌렀는데 판 밖이면 펫이 그리로 걸어가 버린다 (실제로 겪었다).
                       PetCanvas 가 실제로 그려진 범위를 알려주고, 여기서 여유를 더한다. */}
+                  {/*
+                    ⚠ 이 판은 더 이상 탭을 직접 받지 않는다 (pointerEvents: none).
+                    판을 손가락 크기로 키웠더니, 펫이 강아지집 앞에 서 있을 때
+                    집을 눌러도 판이 먼저 삼켜서 영영 못 들어갔다 (실제로 그랬다).
+                    지금은 tapFloor 한 곳에서 '가구 먼저, 그다음 펫' 으로 정리한다.
+                    판은 그 판정에 쓰는 자리 기준으로만 남는다.
+                  */}
                   {!editing && hitRect && (
                     <rect x={hitRect.x} y={hitRect.y} width={hitRect.w} height={hitRect.h}
-                          fill="transparent" style={{ cursor: 'pointer' }}
-                          onPointerDown={petTap} onClick={(e) => e.stopPropagation()} />
+                          fill="transparent" style={{ pointerEvents: 'none' }} />
                   )}
                 </g>
               );
