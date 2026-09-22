@@ -464,9 +464,23 @@ export default function RoomView({
       setRipple({ ...cell, id: performance.now() });
       return;
     }
-    // 펫이 서 있는 칸을 누른 것도 쓰다듬기다 (머리 위를 눌러도 되도록)
+    /*
+      쓰다듬기 판정.
+
+      펫 위에는 투명한 판(hitRect)이 얹혀 있지만, 펫이 걸어 다니는 동안에는
+      손가락이 닿는 순간 이미 조금 움직여 있어서 판을 자주 놓친다.
+      그래서 여기서 한 번 더 받아준다 — 누른 자리가 판 언저리(여유 28)
+      안이면 이동이 아니라 쓰다듬기로 본다. 펫이 서 있는 칸도 마찬가지다.
+    */
     const here = st?.position || { x: 3.5, y: 3.5 };
-    if (Math.floor(here.x) === cell.x && Math.floor(here.y) === cell.y) {
+    const near = (() => {
+      const pt = svgPoint(evt);
+      if (!pt || !hitRect) return false;
+      const M = 28;
+      return pt.x >= hitRect.x - M && pt.x <= hitRect.x + hitRect.w + M
+          && pt.y >= hitRect.y - M && pt.y <= hitRect.y + hitRect.h + M;
+    })();
+    if (near || (Math.floor(here.x) === cell.x && Math.floor(here.y) === cell.y)) {
       petTap(evt); return;
     }
     // 가구를 누르면 그 가구를 쓰러 간다. 같은 가구를 다시 누르면 나온다
@@ -531,15 +545,21 @@ export default function RoomView({
   }, [guestPet, catalog, room, editing, items, size]);
 
   // ── 좌표 ──
-  function svgCell(evt) {
+  /** 누른 자리의 씬 좌표 (격자 말고 그림 좌표) */
+  function svgPoint(evt) {
     const svg = svgRef.current;
     if (!svg) return null;
     const pt = svg.createSVGPoint();
     pt.x = evt.clientX; pt.y = evt.clientY;
-    // CSS 픽셀을 그대로 격자로 쓰면 창 크기·모바일에서 어긋난다
     const ctm = svg.getScreenCTM();
     if (!ctm) return null;
-    const local = pt.matrixTransform(ctm.inverse());
+    return pt.matrixTransform(ctm.inverse());
+  }
+
+  function svgCell(evt) {
+    const local = svgPoint(evt);
+    if (!local) return null;
+    // CSS 픽셀을 그대로 격자로 쓰면 창 크기·모바일에서 어긋난다
     const g = unproject(local.x, local.y, size);
     return { x: Math.floor(g.x), y: Math.floor(g.y) };
   }
@@ -711,7 +731,13 @@ export default function RoomView({
    * 판은 반전 <g> 바깥에 있어서 저절로 따라가지 않는다.
    */
   const hitRect = (() => {
-    const PAD = 10, MIN = 62;          // 씬 단위. 방 한 칸이 64 다
+    /*
+      ⚠ 씬 단위다. 방 한 칸이 64 이고, 화면에서는 방 전체(796)가 350px 남짓으로
+      줄어든다 — 대략 0.44배. 예전 값 62 는 화면에서 27px 밖에 안 됐고,
+      움직이는 펫을 그 크기로 맞추는 건 무리다 (손가락 권장치는 44px 이상).
+      112 로 올리면 화면에서 약 49px 이 된다.
+    */
+    const PAD = 16, MIN = 112;
     const b = petBox || { dx: 55 * petScale, dy: 95 * petScale,
                           w: 90 * petScale, h: 85 * petScale };
     let x = pp.x + b.dx - PAD, y = pp.y + b.dy - PAD, w = b.w + PAD * 2, h = b.h + PAD * 2;
