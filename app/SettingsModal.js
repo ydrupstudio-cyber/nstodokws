@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { YEAR_LEVELS, YEAR_ORDER, ASSIGNEE_ORDER, DEFAULT_ASSIGNEE } from '../lib/config';
 import { applyTheme } from '../lib/theme';
+import { hasPin, setPin, updateSelf, pinMessage, trustDevice } from '../lib/pin';
+import { PinField } from './PinGate';
 import {
   isPushSupported, getNotificationPermission, subscribeToPush, unsubscribeFromPush,
   checkSubscriptionStatus,
@@ -107,7 +109,7 @@ export default function SettingsModal({ onClose, currentMember, onMemberChange }
         )}
 
         {tab === 'push' && <PushTab currentMember={currentMember} />}
-        {tab === 'members' && <MembersTab members={members} onReload={loadMembers} />}
+        {tab === 'members' && <MembersTab members={members} onReload={loadMembers} currentMember={currentMember} />}
         {tab === 'professors' && <ProfessorsTab professors={professors} onReload={loadProfessors} />}
         {tab === 'recurring' && <RecurringTab recurring={recurring} onReload={loadRecurring} />}
       </div>
@@ -222,7 +224,107 @@ function PushTab({ currentMember }) {
   );
 }
 
-function MembersTab({ members, onReload }) {
+/*
+  내 정보 상자 — 명단 관리 맨 위에 붙는다.
+
+  핀을 걸어 둔 사람은 이름·연차를 고칠 때도 핀을 맞춰야 한다.
+  안 걸어 둔 사람은 지금처럼 그냥 고쳐진다 (기존 사용자를 막지 않기 위해서다).
+  핀은 두 번 받아서 맞는지 본다 — 한 번만 받으면 오타 하나로 자기 계정에서
+  잠겨버리는데, 되돌릴 방법이 없다.
+*/
+function SelfBox({ me, onReload }) {
+  const [name, setName] = useState(me?.name || '');
+  const [year, setYear] = useState(me?.year_level || 'r1');
+  const [locked, setLocked] = useState(false);
+  const [cur, setCur] = useState('');
+  const [msg, setMsg] = useState(null);
+  const [busy, setBusy] = useState(false);
+  const [pinMode, setPinMode] = useState(false);
+  const [p1, setP1] = useState(''); const [p2, setP2] = useState('');
+
+  useEffect(() => { if (me?.id) hasPin(me.id).then(setLocked); }, [me?.id]);
+  useEffect(() => { if (!msg) return; const t = setTimeout(() => setMsg(null), 3600); return () => clearTimeout(t); }, [msg]);
+  if (!me) return null;
+
+  const dirty = name.trim() !== me.name || year !== me.year_level;
+
+  async function save() {
+    if (!dirty) return;
+    if (locked && cur.length !== 4) { setMsg({ bad: true, text: '지금 핀을 넣어주세요' }); return; }
+    setBusy(true);
+    const r = await updateSelf(me.id, locked ? cur : null, name.trim(), year);
+    setBusy(false); setCur('');
+    if (!r?.ok) { setMsg({ bad: true, text: pinMessage(r) }); return; }
+    setMsg({ text: '고쳤어요' }); onReload();
+  }
+
+  async function savePin() {
+    if (p1.length !== 4 || p2.length !== 4) { setMsg({ bad: true, text: '네 자리를 두 번 넣어주세요' }); return; }
+    if (p1 !== p2) { setMsg({ bad: true, text: '두 번 넣은 핀이 서로 달라요' }); return; }
+    if (locked && cur.length !== 4) { setMsg({ bad: true, text: '지금 핀을 넣어주세요' }); return; }
+    setBusy(true);
+    const r = await setPin(me.id, p1, locked ? cur : null);
+    setBusy(false);
+    if (!r?.ok) { setMsg({ bad: true, text: pinMessage(r) }); return; }
+    trustDevice(me.id);           // 방금 건 사람에게 바로 다시 묻지 않는다
+    setLocked(true); setPinMode(false); setP1(''); setP2(''); setCur('');
+    setMsg({ text: '핀을 걸었어요' });
+  }
+
+  return (
+    <div style={styles.selfBox}>
+      <div style={styles.boxLabel}>내 정보</div>
+      <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="이름" />
+      <select value={year} onChange={(e) => setYear(e.target.value)} style={{ marginTop: 8 }}>
+        <option value="r1">전공의 1년차</option>
+        <option value="r2">전공의 2년차</option>
+        <option value="r3">전공의 3년차</option>
+        <option value="r4">전공의 4년차</option>
+        <option value="pa">PA</option>
+      </select>
+
+      {locked && (dirty || pinMode) && (
+        <div style={{ marginTop: 8 }}>
+          <PinField label="지금 핀" value={cur} onChange={setCur} />
+        </div>
+      )}
+
+      {pinMode && (
+        <div style={{ marginTop: 4 }}>
+          <PinField label="새 핀 (숫자 네 자리)" value={p1} onChange={setP1} />
+          <PinField label="새 핀 한 번 더" value={p2} onChange={setP2} />
+        </div>
+      )}
+
+      {msg && <div style={{ ...styles.selfMsg, ...(msg.bad ? styles.selfMsgBad : {}) }}>{msg.text}</div>}
+
+      <div style={styles.selfRow}>
+        {pinMode ? (
+          <>
+            <button onClick={() => { setPinMode(false); setP1(''); setP2(''); }} style={styles.cancelBtn}>취소</button>
+            <button onClick={savePin} disabled={busy} style={styles.confirmBtn}>핀 저장</button>
+          </>
+        ) : (
+          <>
+            <button onClick={() => setPinMode(true)} style={styles.cancelBtn}>
+              {locked ? '핀 바꾸기' : '핀 걸기'}
+            </button>
+            <button onClick={save} disabled={busy || !dirty}
+              style={{ ...styles.confirmBtn, ...(dirty ? {} : { opacity: 0.45 }) }}>저장</button>
+          </>
+        )}
+      </div>
+
+      <p style={styles.selfHint}>
+        {locked
+          ? '핀이 걸려 있어요. 다른 사람이 이 계정으로 바꿔 들어오려면 핀이 필요합니다. 내 기기에서는 다시 묻지 않아요.'
+          : '핀을 걸면 다른 사람이 내 계정으로 바꿔 들어올 수 없어요. 평소 접속할 때는 묻지 않습니다.'}
+      </p>
+    </div>
+  );
+}
+
+function MembersTab({ members, onReload, currentMember }) {
   const [adding, setAdding] = useState(false);
   const [name, setName] = useState('');
   const [yearLevel, setYearLevel] = useState('r1');
@@ -245,6 +347,7 @@ function MembersTab({ members, onReload }) {
 
   return (
     <div style={styles.content}>
+      <SelfBox me={members.find((x) => x.id === currentMember?.id) || currentMember} onReload={onReload} />
       <p style={styles.hintText}>등록된 인원은 본인 선택 화면에 표시돼요.</p>
       {members.length === 0 && <div style={styles.empty}>등록된 인원이 없어요.</div>}
       {members.map((m) => {
@@ -457,6 +560,13 @@ const styles = {
   menuRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 16px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, fontSize: 14, color: 'var(--text)', textAlign: 'left' },
   arrow: { color: 'var(--text-3)' },
   themeSection: { background: 'var(--surface-2)', padding: 14, borderRadius: 12 },
+  selfBox: { border: '1px solid var(--border)', borderRadius: 12, padding: '12px 12px 10px',
+             background: 'var(--surface)', marginBottom: 14 },
+  selfRow: { display: 'flex', gap: 8, marginTop: 10 },
+  selfMsg: { fontSize: 12.5, padding: '7px 10px', borderRadius: 8, marginTop: 9,
+             background: 'var(--surface-2)', color: 'var(--text-2)' },
+  selfMsgBad: { background: 'var(--danger-bg)', color: 'var(--danger)' },
+  selfHint: { fontSize: 11.5, color: 'var(--text-3)', lineHeight: 1.6, marginTop: 9 },
   themeBtns: { display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 6 },
   themeBtn: { padding: '10px 8px', border: '1px solid var(--border)', borderRadius: 8, fontSize: 13 },
   hintText: { fontSize: 12, color: 'var(--text-3)', lineHeight: 1.6, padding: '0 4px', marginBottom: 4 },

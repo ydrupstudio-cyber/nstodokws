@@ -1,13 +1,43 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { YEAR_LEVELS } from '../lib/config';
+import { lockedMembers, isTrusted, trustDevice, checkPin, pinMessage } from '../lib/pin';
+import PinGate from './PinGate';
 
 export default function MemberSelect({ members, onSelect, onRefresh }) {
   const [adding, setAdding] = useState(false);
   const [newName, setNewName] = useState('');
   const [newYearLevel, setNewYearLevel] = useState('r1');
+  const [locked, setLocked] = useState(new Set());   // 핀을 걸어 둔 사람들
+  const [asking, setAsking] = useState(null);        // 지금 핀을 묻고 있는 사람
+  const [pinBusy, setPinBusy] = useState(false);
+  const [pinErr, setPinErr] = useState(null);
+
+  useEffect(() => { lockedMembers().then(setLocked); }, []);
+
+  /*
+    핀을 건 사람이고, 이 기기에서 아직 확인한 적이 없을 때만 묻는다.
+    한 번 확인하면 기기에 적어 두므로 자기 계정으로 다시 들어올 땐 안 묻는다 —
+    매번 물으면 아무도 안 쓴다.
+  */
+  function pick(m) {
+    if (locked.has(Number(m.id)) && !isTrusted(m.id)) {
+      setPinErr(null); setAsking(m); return;
+    }
+    onSelect(m);
+  }
+
+  async function submitPin(pin) {
+    setPinBusy(true);
+    const r = await checkPin(asking.id, pin);
+    setPinBusy(false);
+    if (!r?.ok) { setPinErr(pinMessage(r)); return; }
+    trustDevice(asking.id);
+    const m = asking; setAsking(null);
+    onSelect(m);
+  }
 
   const residents = members.filter((m) => m.role === 'resident');
   const pas = members.filter((m) => m.role === 'pa');
@@ -55,7 +85,8 @@ export default function MemberSelect({ members, onSelect, onRefresh }) {
             </div>
             <div style={styles.grid}>
               {residents.map((m) => (
-                <MemberCard key={m.id} member={m} onClick={() => onSelect(m)} />
+                <MemberCard key={m.id} member={m} locked={locked.has(Number(m.id))}
+                  onClick={() => pick(m)} />
               ))}
             </div>
           </section>
@@ -69,7 +100,8 @@ export default function MemberSelect({ members, onSelect, onRefresh }) {
             </div>
             <div style={styles.grid}>
               {pas.map((m) => (
-                <MemberCard key={m.id} member={m} onClick={() => onSelect(m)} />
+                <MemberCard key={m.id} member={m} locked={locked.has(Number(m.id))}
+                  onClick={() => pick(m)} />
               ))}
             </div>
           </section>
@@ -97,17 +129,25 @@ export default function MemberSelect({ members, onSelect, onRefresh }) {
         <footer style={styles.footer}>
           한 번 선택하면 이 기기에 저장돼요. 다른 사람이라면 설정에서 변경 가능.
         </footer>
+
+        {asking && (
+          <PinGate name={asking.name} busy={pinBusy} error={pinErr}
+            onCancel={() => { setAsking(null); setPinErr(null); }}
+            onSubmit={submitPin} />
+        )}
       </div>
     </main>
   );
 }
 
-function MemberCard({ member, onClick }) {
+function MemberCard({ member, onClick, locked }) {
   const yl = YEAR_LEVELS[member.year_level] || YEAR_LEVELS.r1;
   return (
     <button onClick={onClick} style={styles.memberCard}>
       <div style={{ ...styles.badge, background: yl.bg, color: yl.color }}>{yl.label}</div>
-      <div style={styles.memberName}>{member.name}</div>
+      <div style={styles.memberName}>
+        {member.name}{locked && <span style={styles.lock} title="핀이 걸려 있어요"> 🔒</span>}
+      </div>
     </button>
   );
 }
@@ -134,6 +174,7 @@ const styles = {
     transition: 'all 0.15s',
   },
   badge: { fontSize: 11, fontWeight: 500, padding: '2px 8px', borderRadius: 100 },
+  lock: { fontSize: 11, opacity: 0.75 },
   memberName: { fontSize: 14, fontWeight: 500, color: 'var(--text)' },
   addMemberBtn: {
     width: '100%', padding: '14px', marginTop: 8, background: 'transparent',
