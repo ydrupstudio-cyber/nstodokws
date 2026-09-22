@@ -31,13 +31,13 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
         />
         {/*
-          홈화면에 설치해 쓰는 경우, 안드로이드는 이 앱이 밝은 앱인지 어두운 앱인지를
-          매니페스트와 이 메타로 판단한다. 밝은 앱으로 등록되면 기기가 어두울 때
-          시스템이 화면을 강제로 어둡게 만든다 — 페이지 CSS 로는 못 막는다.
-          그래서 둘 다 어두운 값을 알려 준다.
+          주소창·상태바 색. 기기 설정이 아니라 **지금 쓰는 테마** 를 따라야 한다 —
+          기기가 밝고 앱이 어두우면 예전엔 밝은 값이 나가서 위아래가 따로 놀았다.
+          아래 스크립트가 테마를 정한 뒤 이 값을 고쳐 쓴다.
+          supported-color-schemes 는 옛 안드로이드 브라우저용 같은 뜻의 선언이다.
         */}
-        <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fafaf7" />
-        <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1a1a18" />
+        <meta name="theme-color" content="#1a1a18" />
+        <meta name="supported-color-schemes" content="dark light" />
         <link rel="icon" href="/icon-192.png" />
         <link rel="apple-touch-icon" href="/icon-192.png" />
         <script
@@ -51,6 +51,10 @@ export default function RootLayout({ children }) {
                     actual = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
                   }
                   document.documentElement.setAttribute('data-theme', actual);
+                  // 브라우저에게 '이 페이지는 어둡다' 고 알린다. 이 선언이 없으면
+                  // 삼성 인터넷의 '웹페이지 어둡게' 가 색을 0.85배로 깎는다
+                  var m = document.querySelector('meta[name="theme-color"]');
+                  if (m) m.setAttribute('content', actual === 'dark' ? '#1a1a18' : '#fafaf7');
                 } catch (e) {}
               })();
             `,
